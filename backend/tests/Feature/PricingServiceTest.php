@@ -41,7 +41,7 @@ class PricingServiceTest extends TestCase
 
     private function tax(float $rate, bool $inclusive, string $appliesTo = 'all'): void
     {
-        TaxRule::create(['country_id' => $this->vehicle->branch->location->city->country_id, 'name' => 'T',
+        TaxRule::create(['country_id' => $this->vehicle->branch->location->city->country_id, 'name' => 'GST', // referenced by the IN country pack
             'rate_pct' => $rate, 'applies_to' => $appliesTo, 'inclusive' => $inclusive]);
     }
 

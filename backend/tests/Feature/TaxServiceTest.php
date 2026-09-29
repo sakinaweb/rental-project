@@ -71,4 +71,28 @@ class TaxServiceTest extends TestCase
         $this->assertSame(150, $this->apply(1000, 'bike')['tax']);
         $this->assertSame(50, $this->apply(1000, 'car')['tax']);
     }
+
+    public function test_only_rules_named_by_the_country_pack_apply(): void
+    {
+        $this->rule(5, inclusive: false); // 'VAT', referenced by config/countrypacks/ae.php
+        TaxRule::create(['country_id' => $this->countryId, 'name' => 'Tourism fee', 'rate_pct' => 10, 'applies_to' => 'all', 'inclusive' => false]);
+
+        $this->assertSame(50, $this->apply(1000)['tax']);
+    }
+
+    public function test_pack_override_can_reference_several_rules_or_none(): void
+    {
+        $this->rule(5, inclusive: false);
+        TaxRule::create(['country_id' => $this->countryId, 'name' => 'Tourism fee', 'rate_pct' => 10, 'applies_to' => 'all', 'inclusive' => false]);
+        $pack = Country::find($this->countryId)->pack;
+
+        $pack->update(['config_json' => ['tax_rules' => ['VAT', 'Tourism fee']]]);
+        $this->assertSame(150, $this->apply(1000)['tax']);
+
+        $pack->update(['config_json' => ['tax_rules' => 'Tourism fee']]);
+        $this->assertSame(100, $this->apply(1000)['tax']);
+
+        $pack->update(['config_json' => ['tax_rules' => []]]);
+        $this->assertSame(0, $this->apply(1000)['tax']);
+    }
 }
