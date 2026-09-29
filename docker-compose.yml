@@ -1,0 +1,51 @@
+# Local dev stack matching the spec: PHP 8.3, MySQL 8, Redis.
+services:
+  app:
+    build: docker/php
+    volumes:
+      - ./:/app
+    working_dir: /app/backend
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  # Runs the scheduler exactly like shared-hosting cron (`schedule:run` every minute).
+  scheduler:
+    build: docker/php
+    volumes:
+      - ./:/app
+    working_dir: /app/backend
+    command: php artisan schedule:work
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: rental
+      MYSQL_USER: rental
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql-data:

@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Providers;
+
+use App\Services\Sms\LogSmsDriver;
+use App\Services\Sms\SmsDriver;
+use App\Support\DatabaseTranslationLoader;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\FileLoader;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        // ponytail: only the log driver exists; add an SMS_DRIVER config switch with the first real provider.
+        $this->app->bind(SmsDriver::class, LogSmsDriver::class);
+
+        $this->app->extend('translation.loader', fn (FileLoader $loader) => DatabaseTranslationLoader::from($loader));
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}
