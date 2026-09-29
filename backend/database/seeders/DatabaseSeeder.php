@@ -38,5 +38,8 @@ class DatabaseSeeder extends Seeder
         foreach (['features.partner', 'features.investor'] as $flag) {
             Setting::firstOrCreate(['key' => $flag], ['value_json' => false]);
         }
+
+        // Turnaround minutes kept free around every booking (MD §5 availability buffer).
+        Setting::firstOrCreate(['key' => 'availability.buffer_minutes'], ['value_json' => 60]);
     }
 }
