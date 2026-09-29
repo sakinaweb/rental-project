@@ -41,5 +41,8 @@ class DatabaseSeeder extends Seeder
 
         // Turnaround minutes kept free around every booking (MD §5 availability buffer).
         Setting::firstOrCreate(['key' => 'availability.buffer_minutes'], ['value_json' => 60]);
+        // Unpaid drafts stop holding the vehicle after this long; completed bookings settle after the damage hold window (MD §6).
+        Setting::firstOrCreate(['key' => 'booking.draft_ttl_minutes'], ['value_json' => 15]);
+        Setting::firstOrCreate(['key' => 'booking.damage_hold_hours'], ['value_json' => 72]);
     }
 }

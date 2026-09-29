@@ -25,4 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+        // Business-rule refusals (unavailable vehicle, illegal status transition, invalid coupon…) are 422s.
+        $exceptions->render(fn (DomainException $e, Request $request) => $request->is('api/*')
+            ? response()->json(['message' => $e->getMessage()], 422)
+            : null);
     })->create();

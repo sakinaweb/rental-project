@@ -22,9 +22,10 @@ class PricingService
      * Units starting on a weekend get weekend_multiplier; rentals of 30+ days get monthly_discount_pct off.
      *
      * @param  array<int, int>  $addons  addon_id => quantity
+     * @param  CarbonInterface|null  $couponCheckedAt  when coupon validity is judged (default now; extensions pass the booking time)
      * @return array<string, int|string>
      */
-    public function quote(Vehicle $vehicle, CarbonInterface $from, CarbonInterface $to, array $addons = [], ?Coupon $coupon = null): array
+    public function quote(Vehicle $vehicle, CarbonInterface $from, CarbonInterface $to, array $addons = [], ?Coupon $coupon = null, ?CarbonInterface $couponCheckedAt = null): array
     {
         $vehicle->loadMissing('vehicleModel.category', 'branch.location.city.country');
         $country = $vehicle->branch->location->city->country;
@@ -35,12 +36,12 @@ class PricingService
         $best = $this->rulesFor($vehicle)
             ->map(fn (PricingRule $rule) => $this->rental($rule, $from, $hours, $days))
             ->sortBy(fn (array $price) => $price['rental'] - $price['long_rental_discount'])
-            ->first() ?? throw new DomainException("No pricing rule applies to vehicle {$vehicle->id}.");
+            ->first() ?? throw new DomainException(__('messages.no_price'));
 
         ['unit' => $unit, 'units' => $units, 'rental' => $rental, 'long_rental_discount' => $longRentalDiscount] = $best;
         $addonsTotal = $this->addonsTotal($addons, $days);
         $subtotal = $rental + $addonsTotal;
-        $couponDiscount = $coupon ? $this->couponDiscount($coupon, $subtotal - $longRentalDiscount) : 0;
+        $couponDiscount = $coupon ? $this->couponDiscount($coupon, $subtotal - $longRentalDiscount, $couponCheckedAt ?? now()) : 0;
         $discountTotal = $longRentalDiscount + $couponDiscount;
 
         $tax = $this->tax->apply($subtotal - $discountTotal, $country->id, $vehicle->vehicleModel->category->type);
@@ -108,9 +109,9 @@ class PricingService
 
         $total = 0;
         foreach ($addons as $id => $qty) {
-            $addon = $found->get($id) ?? throw new DomainException("Unknown add-on {$id}.");
+            $addon = $found->get($id) ?? throw new DomainException(__('messages.addon_invalid'));
             if ($qty < 1) {
-                throw new DomainException("Add-on {$id} quantity must be at least 1.");
+                throw new DomainException(__('messages.addon_invalid'));
             }
             $total += $addon->price * $qty * ($addon->type === Addon::PER_DAY ? $days : 1);
         }
@@ -118,10 +119,10 @@ class PricingService
         return $total;
     }
 
-    private function couponDiscount(Coupon $coupon, int $amount): int
+    private function couponDiscount(Coupon $coupon, int $amount, CarbonInterface $at): int
     {
-        if (! $coupon->isValidAt(now())) {
-            throw new DomainException("Coupon {$coupon->code} is not valid now.");
+        if (! $coupon->isValidAt($at)) {
+            throw new DomainException(__('messages.coupon_invalid'));
         }
 
         $discount = $coupon->type === Coupon::PERCENT

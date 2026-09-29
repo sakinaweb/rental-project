@@ -10,6 +10,8 @@ return [
     ],
     'kyc_document_types' => ['driving_licence', 'national_id', 'passport'],
     'tax_rules' => 'MwSt', // tax_rules.name for this country
+    // Refundable deposit per vehicle type, in minor units of the country currency. Held at confirmation.
+    'deposit' => ['bike' => 20000, 'car' => 50000],
     'features' => [
         'partner' => true,
         'investor' => false, // off until explicitly tested for this pack (MD §7.11)

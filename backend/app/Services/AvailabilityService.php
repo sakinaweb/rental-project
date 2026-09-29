@@ -11,8 +11,11 @@ class AvailabilityService
     /**
      * Row-locked check (MD §5). Locks the vehicle row, so two bookings for the same vehicle serialize.
      * Call it inside the DB transaction that creates the booking; the lock is held until that commits.
+     * The bookings read is a locking read too, so it sees rows committed after the transaction began.
+     *
+     * @param  int|null  $ignoreBookingId  a booking being extended, which must not block itself
      */
-    public function isAvailable(int $vehicleId, CarbonInterface $from, CarbonInterface $to): bool
+    public function isAvailable(int $vehicleId, CarbonInterface $from, CarbonInterface $to, ?int $ignoreBookingId = null): bool
     {
         $vehicle = Vehicle::whereKey($vehicleId)->lockForUpdate()->first();
 
@@ -20,7 +23,11 @@ class AvailabilityService
             return false;
         }
 
-        return ! $vehicle->bookings()->blocking($from, $to, $this->bufferMinutes())->exists();
+        return ! $vehicle->bookings()
+            ->blocking($from, $to, $this->bufferMinutes())
+            ->when($ignoreBookingId, fn ($q, $id) => $q->whereKeyNot($id))
+            ->sharedLock()
+            ->exists();
     }
 
     /** Turnaround time kept free before and after every booking. Admin-editable in settings. */
