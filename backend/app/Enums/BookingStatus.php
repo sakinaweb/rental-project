@@ -6,6 +6,9 @@ namespace App\Enums;
  * Booking lifecycle (MD §6):
  * draft → pending_payment → confirmed → picked_up → returned → completed → (damage hold window) → settled,
  * with cancelled (from draft, pending_payment, confirmed) and no_show (from confirmed).
+ *
+ * Approved deviation: the §6 diagram draws cancelled from confirmed only. Cancelling from draft and
+ * pending_payment as well was explicitly approved by the project owner in Phase 3.
  */
 enum BookingStatus: string
 {

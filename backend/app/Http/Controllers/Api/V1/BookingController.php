@@ -19,7 +19,10 @@ class BookingController extends Controller
 
     public function __construct(private BookingService $bookings) {}
 
-    /** Pricing quote endpoint (MD §7.3). Public: same input as creating a booking. */
+    /**
+     * Pricing quote endpoint (MD §7.3). Public: same input as creating a booking.
+     * The path POST /bookings/quote is an implementation choice: the MD requires the endpoint but §4 gives no path.
+     */
     public function quote(BookingRequest $request): JsonResponse
     {
         [$from, $to] = $request->period();
