@@ -191,6 +191,47 @@ class BookingService
         });
     }
 
+    /**
+     * Lifecycle steps without money effects (picked_up, returned, completed, no_show), under the booking lock and
+     * the §6 guards. Confirm, cancel and settle move money and have their own methods.
+     */
+    public function advance(Booking $booking, BookingStatus $to): Booking
+    {
+        if (! in_array($to, [BookingStatus::PickedUp, BookingStatus::Returned, BookingStatus::Completed, BookingStatus::NoShow], true)) {
+            throw new DomainException(__('messages.booking_invalid_status'));
+        }
+
+        return DB::transaction(function () use ($booking, $to) {
+            $booking = $this->lock($booking);
+            $booking->transitionTo($to);
+
+            return $booking;
+        });
+    }
+
+    /**
+     * POST /admin/bookings/{id}/assign (decision D2): moves a booking that hasn't started to another vehicle in the
+     * same country (same currency), re-checking availability under the new vehicle's row lock. Price is unchanged.
+     */
+    public function reassign(Booking $booking, Vehicle $vehicle): Booking
+    {
+        return DB::transaction(function () use ($booking, $vehicle) {
+            $booking = $this->lock($booking);
+
+            if (! in_array($booking->status, [BookingStatus::Draft, BookingStatus::PendingPayment, BookingStatus::Confirmed], true)) {
+                throw new DomainException(__('messages.booking_invalid_status'));
+            }
+            if ($vehicle->branch->location->city->country_id !== $booking->vehicle->branch->location->city->country_id
+                || ! $this->availability->isAvailable($vehicle->id, $booking->start_at, $booking->end_at)) {
+                throw new DomainException(__('messages.vehicle_unavailable'));
+            }
+
+            $booking->update(['vehicle_id' => $vehicle->id]);
+
+            return $booking;
+        });
+    }
+
     private function lock(Booking $booking): Booking
     {
         return Booking::whereKey($booking->id)->lockForUpdate()->firstOrFail();

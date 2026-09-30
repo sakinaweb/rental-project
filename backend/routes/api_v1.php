@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\PricingRuleController as AdminPricingRuleController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\VehicleController as AdminVehicleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
@@ -55,4 +56,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'role:admin'
     Route::apiResource('vehicles', AdminVehicleController::class);
     Route::apiResource('pricing-rules', AdminPricingRuleController::class)->only(['index', 'store']);
     Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
+    Route::post('bookings/{booking}/assign', [AdminBookingController::class, 'assign'])->whereNumber('booking')->name('bookings.assign');
+    Route::get('reports/revenue', [ReportController::class, 'revenue'])->name('reports.revenue');
 });

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Phase 5: Admin panel (MD §7.5)
+
+- Filament 5.9 admin panel at `/admin` (web session login). **D1:** only active admins can open it (`User::canAccessPanel`). `php artisan app:create-admin {email} --password=…` creates or promotes an admin (Filament's own user command can't set `role_id`). English only (**D8**).
+- CRUD for the Phase 1–4 data: countries (with country-pack overrides as JSON in `country_packs.config_json`), cities, locations, branches, vehicle categories, brands, models, vehicles, pricing rules (one per scope + unit, scope must exist), tax rules, add-ons, coupons, translations, users (edit profile/role/status only; no passwords, no deletes). Forms keep the API's validation rules. Permanent (force) deletes are not offered; soft delete and restore are.
+- Bookings: list with status filter and a detail view; no create/edit forms. Status changes are actions that call `BookingService` (MD §6 guards, row locks, refunds, deposits): picked up, returned, completed, no-show (new `BookingService::advance()` for these money-free steps), cancel (refund to wallet), settle, move to another vehicle, and invoice PDF. Each action shows only when §6 allows it. Damages: record, approve, waive (feeds settlement); read-only once settled.
+- Payments, deposits, wallet transactions and the audit log are read-only screens: money changes only through the Phase 4 services.
+- Settings page (MD §9): partner/investor feature flags, turnaround buffer, draft expiry, payment timeout, damage hold window.
+- Audit log (**D6**): booking actions, vehicle reassignment, damages, settings changes, and user role/status changes, with the acting admin. Suspending a user also revokes their API tokens (closes the Phase 1 open item).
+- Dashboard (**D5**): active rentals, today's pickups and returns, awaiting payment, net revenue this month per currency, fleet utilisation, vehicles in maintenance, vehicle documents expiring within 30 days.
+- Revenue report (**D3:** earned revenue = completed/settled bookings by completion date, per currency; net = total − tax; deposits excluded): panel page with day/month grouping and country/branch filters, CSV export via Laravel Excel, and `GET /api/v1/admin/reports/revenue` (admin, paginated, minor units).
+- `POST /api/v1/admin/bookings/{id}/assign` (**D2**): moves a booking that hasn't started to another available vehicle in the same country; price unchanged; audited.
+- Booking invoice PDF via DomPDF (**D4:** admin download now; customer download with the website in Phase 6).
+- Packages: `filament/filament` ^5.9, `maatwebsite/excel` ^4.0, `barryvdh/laravel-dompdf` ^3.1. No migrations.
+- Not included: KYC upload/review (**D7**, later), Horizon (optional in the MD), payout batches (Phase 9).
+
 ### Phase 4: Payments (MD §7.4)
 
 - Gateway driver interface `PaymentGateway` (MD §5) with Stripe (PaymentIntents) and Razorpay (Orders) drivers on the official REST APIs via Laravel's HTTP client (no SDK packages). A gateway is offered only when its keys and webhook secret are configured (`.env.example` documents them and the webhook URLs).
