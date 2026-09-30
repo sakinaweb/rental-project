@@ -17,4 +17,9 @@ return [
     'coupon_used_up' => 'Este cupón ha alcanzado su límite de uso.',
     'addon_invalid' => 'Uno de los extras seleccionados no está disponible.',
     'no_price' => 'Este vehículo no tiene precio para el periodo seleccionado.',
+    'payment_gateway_unavailable' => 'Este método de pago no está disponible.',
+    'payment_gateway_error' => 'No se pudo contactar con el proveedor de pagos. Inténtalo de nuevo.',
+    'payment_nothing_due' => 'No queda nada por pagar en esta reserva.',
+    'wallet_insufficient' => 'El saldo de tu monedero no es suficiente para este pago.',
+    'wallet_currency_required' => 'Elige una moneda para recargar tu monedero.',
 ];

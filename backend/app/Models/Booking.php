@@ -68,12 +68,20 @@ class Booking extends Model
         $this->save();
     }
 
+    /** Net money held for this booking: succeeded payments minus refunds already returned to the wallet. */
     public function amountPaid(): int
     {
-        return (int) $this->payments
+        $paid = $this->payments
             ->where('status', Payment::SUCCEEDED)
             ->where('currency_code', $this->currency_code)
             ->sum('amount');
+        $refunded = WalletTransaction::where('reference_type', 'booking')
+            ->where('reference_id', $this->id)
+            ->where('type', WalletTransaction::REFUND)
+            ->where('currency_code', $this->currency_code)
+            ->sum('amount');
+
+        return (int) ($paid - $refunded);
     }
 
     /** @return BelongsTo<User, $this> */

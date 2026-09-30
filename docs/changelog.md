@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Phase 4: Payments (MD §7.4)
+
+- Gateway driver interface `PaymentGateway` (MD §5) with Stripe (PaymentIntents) and Razorpay (Orders) drivers on the official REST APIs via Laravel's HTTP client (no SDK packages). A gateway is offered only when its keys and webhook secret are configured (`.env.example` documents them and the webhook URLs).
+- `POST /payments/intent` (`booking_id`, `gateway`: stripe | razorpay | wallet): collects what is still due (grand total + deposit − net paid). A draft moves to pending_payment. Gateway: creates a pending payment and returns the client data (Stripe client_secret, Razorpay order_id). Wallet: debits immediately and confirms the booking. Also pays the difference after an extension on a confirmed booking.
+- `POST /payments/webhook/{gateway}`: signature verified by the driver (Stripe `Stripe-Signature` with 5-minute tolerance and rotated secrets; Razorpay `X-Razorpay-Signature`), 400 on a bad signature. Idempotent (MD §8): the payment row is locked and an already-succeeded payment is never processed again. Amount and currency must match the payment. Success confirms a fully paid pending_payment booking; a failed payment can still succeed later on the same intent.
+- Wallet: `GET /wallet` (balance per currency + paginated transactions), `POST /wallet/topup` (gateway payment, credited by the webhook; currency defaults to the user's country). Append-only `wallet_transactions` with balance_after, serialized per user by a row lock. **Owner decision:** the wallet pays bookings and receives refunds.
+- Refunds (**owner decision:** full refund to the wallet, no cancellation fee): cancelling refunds everything paid (rental + deposit); money arriving after cancellation, and overpayment (two intents completed), is refunded automatically; settlement credits the released deposit minus approved damages. "Paid" on a booking is now net of refunds.
+- Payment timeout (**owner decision:** 30 minutes, `settings.payment.timeout_minutes`; the MD specifies none): `payments:expire` (every minute) cancels pending_payment bookings not paid in time and marks their open payments expired. Measured from entering pending_payment.
+- Schema: `payments.user_id`, `payments.booking_id` nullable (top-ups have no booking), `wallet_transactions.currency_code` (one balance per currency, since refunds arrive in each booking's currency).
+- **Testing without real keys (owner decision):** drivers tested with faked HTTP and self-signed webhooks; the live Docker test confirmed a real call reaches Stripe (401 with a dummy key) and drove the webhook, wallet, refund and timeout flows end to end.
+
 ### Phase 3: Booking engine (MD §7.3)
 
 - Booking API (Sanctum): `POST /bookings` creates a draft that holds the vehicle, `GET /bookings` (mine, paginated), `GET /bookings/{id}`, `POST /bookings/{id}/confirm|cancel|extend`. Customers act on their own bookings only (BookingPolicy); admins on all. `GET /admin/bookings` (admin).

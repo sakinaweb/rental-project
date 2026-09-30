@@ -17,4 +17,9 @@ return [
     'coupon_used_up' => 'Dieser Gutschein hat sein Nutzungslimit erreicht.',
     'addon_invalid' => 'Eines der gewählten Extras ist nicht verfügbar.',
     'no_price' => 'Für dieses Fahrzeug gibt es im gewählten Zeitraum keinen Preis.',
+    'payment_gateway_unavailable' => 'Diese Zahlungsmethode ist nicht verfügbar.',
+    'payment_gateway_error' => 'Der Zahlungsanbieter ist nicht erreichbar. Bitte versuchen Sie es erneut.',
+    'payment_nothing_due' => 'Für diese Buchung ist nichts mehr zu bezahlen.',
+    'wallet_insufficient' => 'Ihr Wallet-Guthaben reicht für diese Zahlung nicht aus.',
+    'wallet_currency_required' => 'Wählen Sie eine Währung für die Wallet-Aufladung.',
 ];

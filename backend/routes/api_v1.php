@@ -6,7 +6,10 @@ use App\Http\Controllers\Admin\VehicleController as AdminVehicleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\GeographyController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\VehicleController;
+use App\Http\Controllers\Api\V1\WalletController;
+use App\Services\PaymentService;
 use Illuminate\Support\Facades\Route;
 
 // Base: /api/v1 (MD §4). Auth via Sanctum bearer token.
@@ -37,6 +40,15 @@ Route::middleware('auth:sanctum')->prefix('bookings')->controller(BookingControl
     Route::post('{booking}/confirm', 'confirm')->whereNumber('booking');
     Route::post('{booking}/cancel', 'cancel')->whereNumber('booking');
     Route::post('{booking}/extend', 'extend')->whereNumber('booking');
+});
+
+// Called by the gateways (no auth); the driver verifies the signature.
+Route::post('payments/webhook/{gateway}', [PaymentController::class, 'webhook'])->whereIn('gateway', PaymentService::GATEWAYS);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('payments/intent', [PaymentController::class, 'intent'])->middleware('throttle:20,1');
+    Route::get('wallet', [WalletController::class, 'show']);
+    Route::post('wallet/topup', [WalletController::class, 'topup'])->middleware('throttle:10,1');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'role:admin'])->group(function () {

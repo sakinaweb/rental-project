@@ -51,7 +51,7 @@ class BookingApiTest extends TestCase
 
     private function pay(Booking $booking, int $amount, string $currency = 'INR'): void
     {
-        Payment::create(['booking_id' => $booking->id, 'gateway' => 'test', 'gateway_ref' => uniqid(), 'amount' => $amount, 'currency_code' => $currency, 'status' => Payment::SUCCEEDED]);
+        Payment::create(['user_id' => $booking->user_id, 'booking_id' => $booking->id, 'gateway' => 'test', 'gateway_ref' => uniqid(), 'amount' => $amount, 'currency_code' => $currency, 'status' => Payment::SUCCEEDED]);
     }
 
     public function test_quote_is_public_and_includes_deposit(): void

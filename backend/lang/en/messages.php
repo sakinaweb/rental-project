@@ -17,4 +17,9 @@ return [
     'coupon_used_up' => 'This coupon has reached its usage limit.',
     'addon_invalid' => 'One of the selected add-ons is not available.',
     'no_price' => 'This vehicle has no price for the selected period.',
+    'payment_gateway_unavailable' => 'This payment method is not available.',
+    'payment_gateway_error' => 'The payment provider could not be reached. Please try again.',
+    'payment_nothing_due' => 'There is nothing left to pay for this booking.',
+    'wallet_insufficient' => 'Your wallet balance is too low for this payment.',
+    'wallet_currency_required' => 'Choose a currency for your wallet top-up.',
 ];

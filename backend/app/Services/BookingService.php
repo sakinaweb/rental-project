@@ -11,6 +11,7 @@ use App\Models\Deposit;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\WalletTransaction;
 use Carbon\CarbonInterface;
 use DomainException;
 use Illuminate\Support\Carbon;
@@ -24,6 +25,7 @@ class BookingService
         private AvailabilityService $availability,
         private PricingService $pricing,
         private CountryPackService $packs,
+        private WalletService $wallet,
     ) {}
 
     /**
@@ -102,7 +104,10 @@ class BookingService
         });
     }
 
-    /** Frees the vehicle and releases a held deposit in full. Refunding payments is Phase 4. */
+    /**
+     * Frees the vehicle, releases a held deposit, and refunds everything paid (rental + deposit) to the wallet
+     * in the booking currency. No cancellation fee (project owner decision, Phase 4).
+     */
     public function cancel(Booking $booking): Booking
     {
         return DB::transaction(function () use ($booking) {
@@ -110,6 +115,11 @@ class BookingService
             $booking->transitionTo(BookingStatus::Cancelled);
             if ($booking->deposit?->status === Deposit::HELD) {
                 $booking->deposit->release($booking->deposit->amount);
+            }
+
+            $paid = $booking->amountPaid();
+            if ($paid > 0) {
+                $this->wallet->credit($booking->user_id, $paid, $booking->currency_code, WalletTransaction::REFUND, 'booking', $booking->id);
             }
 
             return $booking;
@@ -170,7 +180,11 @@ class BookingService
 
             if ($booking->deposit?->status === Deposit::HELD) {
                 $charged = (int) $booking->damages()->where('status', Damage::APPROVED)->sum('cost');
-                $booking->deposit->release(max(0, $booking->deposit->amount - $charged));
+                $refund = max(0, $booking->deposit->amount - $charged);
+                $booking->deposit->release($refund);
+                if ($refund > 0) {
+                    $this->wallet->credit($booking->user_id, $refund, $booking->currency_code, WalletTransaction::DEPOSIT_RELEASE, 'booking', $booking->id);
+                }
             }
 
             return $booking;

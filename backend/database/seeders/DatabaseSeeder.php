@@ -44,5 +44,7 @@ class DatabaseSeeder extends Seeder
         // Unpaid drafts stop holding the vehicle after this long; completed bookings settle after the damage hold window (MD §6).
         Setting::firstOrCreate(['key' => 'booking.draft_ttl_minutes'], ['value_json' => 15]);
         Setting::firstOrCreate(['key' => 'booking.damage_hold_hours'], ['value_json' => 72]);
+        // Unpaid pending_payment bookings are cancelled after this long (Phase 4 payment timeout).
+        Setting::firstOrCreate(['key' => 'payment.timeout_minutes'], ['value_json' => 30]);
     }
 }
