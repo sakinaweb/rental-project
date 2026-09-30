@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\PricingRuleController as AdminPricingRuleController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\VehicleController as AdminVehicleController;
+use App\Http\Controllers\Api\V1\AddonController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\GeographyController;
@@ -23,6 +24,8 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
 });
 
 Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+Route::patch('me', [AuthController::class, 'updateMe'])->middleware('auth:sanctum');
+Route::get('addons', [AddonController::class, 'index']);
 
 Route::get('countries', [GeographyController::class, 'countries']);
 Route::get('cities', [GeographyController::class, 'cities']);
@@ -38,6 +41,7 @@ Route::middleware('auth:sanctum')->prefix('bookings')->controller(BookingControl
     Route::get('/', 'index');
     Route::post('/', 'store')->middleware('throttle:20,1');
     Route::get('{booking}', 'show')->whereNumber('booking');
+    Route::get('{booking}/invoice', 'invoice')->whereNumber('booking');
     Route::post('{booking}/confirm', 'confirm')->whereNumber('booking');
     Route::post('{booking}/cancel', 'cancel')->whereNumber('booking');
     Route::post('{booking}/extend', 'extend')->whereNumber('booking');

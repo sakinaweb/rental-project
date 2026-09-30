@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Phase 6: Customer website (MD §7.6)
+
+- Customer website inside `backend/` with Blade + Livewire 4 (**D1**), server-rendered, Tailwind 4 via Vite (`npm install && npm run build` in `backend/`). Clean responsive layout, name from `APP_NAME`, no logo/maps (**D7**).
+- Flow: search (country, city, dates, category, type, seats) → results (real quote per vehicle when dates are chosen) → vehicle details → availability → quote (add-ons, coupon, tax, deposit, amount due now) → sign in / register / phone OTP (**D8**, returns to the vehicle) → checkout → payment → confirmation → my bookings → booking detail (cancel with refund to wallet, extend, pay balance, invoice PDF).
+- Everything goes through the existing services and rules: `VehicleSearch` (new; the `GET /vehicles` query moved here unchanged and shared with the API), `AvailabilityService`, `BookingService` (create/quote/cancel/extend), `PaymentService` (intents, top-up), `WalletService`, `BookingRequest`/`RegisterRequest` rules, `AccountService` (new; registration, sign-in and profile rules shared with the API). No pricing, booking, payment or state-machine logic in the pages.
+- Payments (**D5**): wallet pays in-page and works without gateway keys; Stripe (Payment Element) and Razorpay (Checkout) are offered only when configured, loaded from the provider only when used. The browser never marks anything paid: the confirmation page shows the stored status and refreshes itself until the webhook confirms or the payment times out.
+- Account area: my bookings, booking detail, wallet (balances per currency, history, top-up via a configured gateway; balance changes only on the webhook), profile (name, phone, country, language).
+- Security: customers only reach their own bookings, invoices and wallet (existing `BookingPolicy`); guests are sent to sign-in; suspended users are refused at sign-in and signed out mid-session (`EnsureActiveUser`); sign-in and OTP are rate-limited like the API.
+- Languages (**D6**): en, ar, hi, es, de (`lang/*/site.php`), switcher in the header, Arabic right-to-left (`dir="rtl"`, logical spacing); order: chosen language → profile language → browser language.
+- New API endpoints (additive, used by the website and the future app): `GET /api/v1/addons` (**D2**), `PATCH /api/v1/me` (**D3**; name, phone, country, locale only), `GET /api/v1/bookings/{id}/invoice` (**D4**; owner or admin).
+- Refactors without behaviour change: vehicle search moved into `VehicleSearch`; API register/login use `AccountService`. `PaymentService::configuredGateways()` added. `Money::format()` follows the current locale; `Money::toMinor()` added.
+
 ### Phase 5: Admin panel (MD §7.5)
 
 - Filament 5.9 admin panel at `/admin` (web session login). **D1:** only active admins can open it (`User::canAccessPanel`). `php artisan app:create-admin {email} --password=…` creates or promotes an admin (Filament's own user command can't set `role_id`). English only (**D8**).

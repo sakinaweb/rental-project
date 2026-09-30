@@ -87,6 +87,9 @@ return [
     // Locales shipped in lang/ (MD §2). Arabic is RTL.
     'supported_locales' => ['en', 'ar', 'hi', 'es', 'de'],
 
+    // Names shown in the website's language pickers, in their own language.
+    'locale_names' => ['en' => 'English', 'ar' => 'العربية', 'hi' => 'हिन्दी', 'es' => 'Español', 'de' => 'Deutsch'],
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key

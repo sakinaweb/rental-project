@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
+use App\Services\BookingInvoice;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 
@@ -52,6 +54,17 @@ class BookingController extends Controller
         Gate::authorize('view', $booking);
 
         return new BookingResource($booking->load(self::RELATIONS));
+    }
+
+    /** GET /bookings/{id}/invoice (Phase 6, D4): the Phase 5 invoice PDF, for the booking's owner (or an admin). */
+    public function invoice(Booking $booking, BookingInvoice $invoice): Response
+    {
+        Gate::authorize('view', $booking);
+
+        return response($invoice->pdf($booking), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$invoice->filename($booking).'"',
+        ]);
     }
 
     public function confirm(Booking $booking): BookingResource

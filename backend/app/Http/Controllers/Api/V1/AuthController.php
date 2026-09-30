@@ -5,41 +5,37 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Role;
 use App\Models\User;
+use App\Services\AccountService;
 use App\Services\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request, AccountService $accounts): JsonResponse
     {
-        $user = User::create([
-            ...$request->validated(),
-            'locale' => $request->validated('locale') ?? app()->getLocale(),
-            'role_id' => Role::idFor(Role::CUSTOMER),
-        ]);
-
-        return $this->tokenResponse($user, 201);
+        return $this->tokenResponse($accounts->register($request->validated()), 201);
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(Request $request, AccountService $accounts): JsonResponse
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        return $this->tokenResponse($accounts->authenticate($data['email'], $data['password']));
+    }
 
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages(['email' => __('messages.invalid_credentials')]);
-        }
+    /** PATCH /me (Phase 6, D3): name, phone, country, language. */
+    public function updateMe(Request $request): UserResource
+    {
+        $user = $request->user();
+        $user->update($request->validate(AccountService::profileRules($user)));
 
-        return $this->tokenResponse($user);
+        return new UserResource($user->load('role'));
     }
 
     public function requestOtp(Request $request, OtpService $otp): JsonResponse
@@ -79,9 +75,7 @@ class AuthController extends Controller
 
     private function tokenResponse(User $user, int $status = 200): JsonResponse
     {
-        if (! $user->isActive()) {
-            throw ValidationException::withMessages(['email' => __('messages.account_inactive')]);
-        }
+        app(AccountService::class)->ensureActive($user);
 
         return response()->json([
             'token' => $user->createToken('api')->plainTextToken,

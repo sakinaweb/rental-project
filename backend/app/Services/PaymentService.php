@@ -23,6 +23,18 @@ class PaymentService
 
     public function __construct(private BookingService $bookings, private WalletService $wallet) {}
 
+    /** @return list<string> gateways with keys and webhook secret configured (what the website may offer) */
+    public function configuredGateways(): array
+    {
+        return array_values(array_filter(self::GATEWAYS, function (string $name) {
+            try {
+                return (bool) $this->gateway($name);
+            } catch (DomainException) {
+                return false;
+            }
+        }));
+    }
+
     public function gateway(string $name): PaymentGateway
     {
         $gateway = match ($name) {
