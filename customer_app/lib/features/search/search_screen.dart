@@ -23,87 +23,95 @@ class SearchScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                SizedBox(
-                  width: 200,
-                  child: ref
-                      .watch(countriesProvider)
-                      .maybeWhen(
-                        data: (countries) => DropdownButtonFormField<int?>(
-                          isExpanded: true,
-                          key: const Key('country'),
-                          initialValue: f.countryId,
-                          decoration: InputDecoration(labelText: context.t.searchCountry),
-                          items: [
-                            DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
-                            for (final c in countries) DropdownMenuItem(value: c.id, child: Text(c.name)),
-                          ],
-                          onChanged: (id) => set(f.copyWith(countryId: id, cityId: null)),
-                        ),
-                        orElse: () => const LinearProgressIndicator(),
-                      ),
-                ),
-                if (f.countryId != null)
-                  SizedBox(
-                    width: 200,
-                    child: ref
-                        .watch(citiesProvider(f.countryId!))
-                        .maybeWhen(
-                          data: (cities) => DropdownButtonFormField<int?>(
-                            isExpanded: true,
-                            key: const Key('city'),
-                            initialValue: f.cityId,
-                            decoration: InputDecoration(labelText: context.t.searchCity),
-                            items: [
-                              DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
-                              for (final c in cities) DropdownMenuItem(value: c.id, child: Text(c.name)),
-                            ],
-                            onChanged: (id) => set(f.copyWith(cityId: id)),
+            LayoutBuilder(
+              // Phones: one full-width field per row; wider screens: 200 px fields side by side.
+              builder: (context, c) {
+                final w = c.maxWidth < 412 ? c.maxWidth : 200.0;
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    SizedBox(
+                      width: w,
+                      child: ref
+                          .watch(countriesProvider)
+                          .maybeWhen(
+                            data: (countries) => DropdownButtonFormField<int?>(
+                              isExpanded: true,
+                              key: const Key('country'),
+                              initialValue: f.countryId,
+                              decoration: InputDecoration(labelText: context.t.searchCountry),
+                              items: [
+                                DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
+                                for (final c in countries) DropdownMenuItem(value: c.id, child: Text(c.name)),
+                              ],
+                              onChanged: (id) => set(f.copyWith(countryId: id, cityId: null)),
+                            ),
+                            orElse: () => const LinearProgressIndicator(),
                           ),
-                          orElse: () => const LinearProgressIndicator(),
-                        ),
-                  ),
-                _DateField(
-                  label: context.t.searchPickUp,
-                  value: f.from,
-                  onPick: (d) => set(f.copyWith(from: d)),
-                ),
-                _DateField(
-                  label: context.t.searchReturn,
-                  value: f.to,
-                  onPick: (d) => set(f.copyWith(to: d)),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: ref
-                      .watch(categoriesProvider)
-                      .maybeWhen(
-                        data: (cats) => DropdownButtonFormField<int?>(
-                          isExpanded: true,
-                          initialValue: f.categoryId,
-                          decoration: InputDecoration(labelText: context.t.searchCategory),
-                          items: [
-                            DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
-                            for (final c in cats) DropdownMenuItem(value: c.id, child: Text(c.name)),
-                          ],
-                          onChanged: (id) => set(f.copyWith(categoryId: id)),
-                        ),
-                        orElse: () => const SizedBox.shrink(),
+                    ),
+                    if (f.countryId != null)
+                      SizedBox(
+                        width: w,
+                        child: ref
+                            .watch(citiesProvider(f.countryId!))
+                            .maybeWhen(
+                              data: (cities) => DropdownButtonFormField<int?>(
+                                isExpanded: true,
+                                key: const Key('city'),
+                                initialValue: f.cityId,
+                                decoration: InputDecoration(labelText: context.t.searchCity),
+                                items: [
+                                  DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
+                                  for (final c in cities) DropdownMenuItem(value: c.id, child: Text(c.name)),
+                                ],
+                                onChanged: (id) => set(f.copyWith(cityId: id)),
+                              ),
+                              orElse: () => const LinearProgressIndicator(),
+                            ),
                       ),
-                ),
-                SegmentedButton<String?>(
-                  segments: [
-                    ButtonSegment(value: null, label: Text(context.t.searchAny)),
-                    ButtonSegment(value: 'bike', label: Text(context.t.searchBike)),
-                    ButtonSegment(value: 'car', label: Text(context.t.searchCar)),
+                    _DateField(
+                      width: w,
+                      label: context.t.searchPickUp,
+                      value: f.from,
+                      onPick: (d) => set(f.copyWith(from: d)),
+                    ),
+                    _DateField(
+                      width: w,
+                      label: context.t.searchReturn,
+                      value: f.to,
+                      onPick: (d) => set(f.copyWith(to: d)),
+                    ),
+                    SizedBox(
+                      width: w,
+                      child: ref
+                          .watch(categoriesProvider)
+                          .maybeWhen(
+                            data: (cats) => DropdownButtonFormField<int?>(
+                              isExpanded: true,
+                              initialValue: f.categoryId,
+                              decoration: InputDecoration(labelText: context.t.searchCategory),
+                              items: [
+                                DropdownMenuItem(value: null, child: Text(context.t.searchAny)),
+                                for (final c in cats) DropdownMenuItem(value: c.id, child: Text(c.name)),
+                              ],
+                              onChanged: (id) => set(f.copyWith(categoryId: id)),
+                            ),
+                            orElse: () => const SizedBox.shrink(),
+                          ),
+                    ),
+                    SegmentedButton<String?>(
+                      segments: [
+                        ButtonSegment(value: null, label: Text(context.t.searchAny)),
+                        ButtonSegment(value: 'bike', label: Text(context.t.searchBike)),
+                        ButtonSegment(value: 'car', label: Text(context.t.searchCar)),
+                      ],
+                      selected: {f.type},
+                      onSelectionChanged: (s) => set(f.copyWith(type: s.first)),
+                    ),
                   ],
-                  selected: {f.type},
-                  onSelectionChanged: (s) => set(f.copyWith(type: s.first)),
-                ),
-              ],
+                );
+              },
             ),
             if (f.periodInvalid)
               Padding(
@@ -117,9 +125,11 @@ class SearchScreen extends ConsumerWidget {
               data: (page) => page.items.isEmpty
                   ? Empty(context.t.searchNoResults)
                   : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch, // full-width cards
                       children: [
                         for (final v in page.items) _VehicleCard(v, f.period),
-                        if (page.hasMore) TextButton(onPressed: ref.read(resultsProvider.notifier).loadMore, child: const Icon(Icons.expand_more)),
+                        if (page.hasMore)
+                          TextButton(onPressed: ref.read(resultsProvider.notifier).loadMore, child: const Icon(Icons.expand_more)),
                       ],
                     ),
             ),
@@ -131,14 +141,15 @@ class SearchScreen extends ConsumerWidget {
 }
 
 class _DateField extends StatelessWidget {
-  const _DateField({required this.label, required this.value, required this.onPick});
+  const _DateField({required this.width, required this.label, required this.value, required this.onPick});
+  final double width;
   final String label;
   final DateTime? value;
   final ValueChanged<DateTime?> onPick;
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 200,
+    width: width,
     child: Consumer(
       builder: (context, ref, _) => InputDecorator(
         decoration: InputDecoration(
@@ -175,7 +186,10 @@ class _VehicleCard extends ConsumerWidget {
         onTap: () => context.push(
           Uri(
             path: '/vehicles/${vehicle.id}',
-            queryParameters: {if (period != null) 'from': period!.from.toIso8601String(), if (period != null) 'to': period!.to.toIso8601String()},
+            queryParameters: {
+              if (period != null) 'from': period!.from.toIso8601String(),
+              if (period != null) 'to': period!.to.toIso8601String(),
+            },
           ).toString(),
         ),
         child: Padding(

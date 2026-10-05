@@ -415,4 +415,10 @@ class L10nEn extends L10n {
 
   @override
   String get selectDate => 'Select date and time';
+
+  @override
+  String get statusExpired => 'Expired';
+
+  @override
+  String get bookAgain => 'Book again';
 }

@@ -162,10 +162,10 @@ Map<String, dynamic> quoteJson({int addons = 0}) {
   };
 }
 
-Map<String, dynamic> bookingJson({int id = 42, String status = 'draft', int paid = 0, String currency = 'INR'}) => {
+Map<String, dynamic> bookingJson({int id = 42, String status = 'draft', int paid = 0, String currency = 'INR', bool expired = false}) => {
   'id': id,
   'status': status,
-  'expires_at': DateTime.now().add(const Duration(minutes: 15)).toUtc().toIso8601String(),
+  'expires_at': DateTime.now().add(Duration(minutes: expired ? -1 : 15)).toUtc().toIso8601String(),
   'vehicle': vehicleJson(),
   'start_at': '2026-11-02T10:00:00Z',
   'end_at': '2026-11-04T10:00:00Z',

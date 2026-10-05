@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api.dart';
 import '../../core/ui.dart';
 
+/// What the customer sees for a booking: an unpaid draft past its hold is "Expired", not "Awaiting payment".
+String bookingStatusLabel(BuildContext context, Booking b) => b.isExpiredDraft ? context.t.statusExpired : statusLabel(context, b.status);
+
 String statusLabel(BuildContext context, String status) => switch (status) {
   'draft' => context.t.statusDraft,
   'pending_payment' => context.t.statusPendingPayment,
@@ -33,7 +36,7 @@ class BookingSummary extends ConsumerWidget {
         Row(
           children: [
             Expanded(child: Text(b.vehicle?.title ?? '', style: Theme.of(context).textTheme.titleMedium)),
-            Chip(label: Text(statusLabel(context, b.status))),
+            Chip(label: Text(bookingStatusLabel(context, b))),
           ],
         ),
         Text('#${b.id} · ${b.vehicle?.branch ?? ''}'),

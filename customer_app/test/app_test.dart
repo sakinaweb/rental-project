@@ -175,6 +175,69 @@ void main() {
     expect(find.text('Waiting for payment confirmation. This page updates automatically.'), findsOneWidget);
   });
 
+  testWidgets('Back from checkout or confirmation opens the booking instead of closing the app', (tester) async {
+    final backend = indiaBackend()..on('GET /bookings/42', (_) => {'data': bookingJson()});
+    for (final screen in ['/checkout/42', '/confirmation/42']) {
+      await pumpApp(tester, backend, signedIn: true, initial: screen);
+      await tester.binding.handlePopRoute(); // Android back
+      await settle(tester);
+      expect(find.text('Booking #42'), findsOneWidget, reason: screen);
+    }
+  });
+
+  testWidgets('an expired draft says so once, is badged Expired and offers to book again', (tester) async {
+    final backend = indiaBackend()..on('GET /bookings/42', (_) => {'data': bookingJson(expired: true)});
+    await pumpApp(tester, backend, signedIn: true, initial: '/checkout/42');
+
+    expect(find.text('Expired'), findsOneWidget);
+    expect(find.text('Awaiting payment'), findsNothing);
+    expect(find.text('This booking draft has expired. Please start a new booking.'), findsOneWidget);
+    expect(find.textContaining('We hold this vehicle'), findsNothing);
+    expect(find.byKey(const Key('pay-wallet')), findsNothing);
+
+    await tester.tap(find.byKey(const Key('book-again')));
+    await settle(tester);
+    expect(backend.sent('GET /vehicles/7'), isNotEmpty);
+  });
+
+  testWidgets('My bookings labels an expired draft "Expired" too', (tester) async {
+    final backend = indiaBackend()..on('GET /bookings', (_) => page([bookingJson(id: 1, expired: true), bookingJson(id: 2)]));
+    await pumpApp(tester, backend, signedIn: true, initial: '/bookings');
+
+    expect(find.textContaining('Expired'), findsOneWidget); // #1
+    expect(find.textContaining('Awaiting payment'), findsOneWidget); // #2, still held
+  });
+
+  testWidgets('checkout reloads the wallet and booking when the app returns to the foreground', (tester) async {
+    final backend = indiaBackend()..on('GET /bookings/42', (_) => {'data': bookingJson()});
+    await pumpApp(tester, backend, signedIn: true, initial: '/checkout/42');
+    final wallets = backend.sent('GET /wallet').length;
+    final bookings = backend.sent('GET /bookings/42').length;
+
+    for (final state in [
+      AppLifecycleState.inactive,
+      AppLifecycleState.hidden,
+      AppLifecycleState.paused,
+      AppLifecycleState.hidden,
+      AppLifecycleState.inactive,
+      AppLifecycleState.resumed,
+    ]) {
+      tester.binding.handleAppLifecycleStateChanged(state);
+    }
+    await settle(tester);
+    expect(backend.sent('GET /wallet').length, greaterThan(wallets));
+    expect(backend.sent('GET /bookings/42').length, greaterThan(bookings));
+  });
+
+  testWidgets('on a phone the search fields use the full width', (tester) async {
+    tester.view.physicalSize = const Size(1080, 2340); // 411 × 891 logical, like the test emulator
+    tester.view.devicePixelRatio = 2.625;
+    addTearDown(tester.view.reset);
+    await pumpApp(tester, indiaBackend());
+
+    expect(tester.getSize(find.byKey(const Key('country'))).width, greaterThan(350)); // was a fixed 200 px
+  });
+
   testWidgets('confirmation polling waits for a slow server instead of restarting the request', (tester) async {
     var status = 'pending_payment';
     final backend = indiaBackend()..on('GET /bookings/42', (_) => {'data': bookingJson(status: status)});

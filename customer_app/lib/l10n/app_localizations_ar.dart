@@ -408,4 +408,10 @@ class L10nAr extends L10n {
 
   @override
   String get selectDate => 'اختر التاريخ والوقت';
+
+  @override
+  String get statusExpired => 'منتهي';
+
+  @override
+  String get bookAgain => 'احجز مرة أخرى';
 }

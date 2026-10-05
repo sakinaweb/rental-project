@@ -418,4 +418,10 @@ class L10nDe extends L10n {
 
   @override
   String get selectDate => 'Datum und Uhrzeit wählen';
+
+  @override
+  String get statusExpired => 'Abgelaufen';
+
+  @override
+  String get bookAgain => 'Erneut buchen';
 }

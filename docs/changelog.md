@@ -11,6 +11,7 @@
 - **App (owner decision):** Stripe card payments through the native PaymentSheet (`flutter_stripe`; Android host is now `FlutterFragmentActivity` with AppCompat themes). Checkout and wallet top-up show one button per allowed gateway.
 - Website wallet: the top-up form stays visible when the chosen currency has no gateway, and the gateway buttons follow the currency picker.
 - Tests per pack: currency, inclusive/exclusive tax, deposits, gateway restriction, Arabic right-to-left checkout in AED, and money formatting in each pack's main language (app).
+- App fixes from the Phase 7 emulator run: Back on checkout/confirmation opens the booking instead of closing the app; an expired draft is labelled "Expired" (booking, checkout and My bookings), says so once and offers "Book again"; checkout redraws when the hold runs out and reloads the wallet and booking on return to the app (and on pull-down); search fields use the full width on phones.
 
 ### Phase 7: Customer Flutter app (MD §7.7)
 

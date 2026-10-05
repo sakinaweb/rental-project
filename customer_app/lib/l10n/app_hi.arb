@@ -126,5 +126,7 @@
   "paymentNotCompleted": "भुगतान पूरा नहीं हुआ।",
   "invoiceSaved": "इनवॉइस {path} में सहेजा गया",
   "signInToContinue": "जारी रखने के लिए साइन इन करें",
-  "selectDate": "तारीख और समय चुनें"
+  "selectDate": "तारीख और समय चुनें",
+  "statusExpired": "समाप्त",
+  "bookAgain": "फिर से बुक करें"
 }

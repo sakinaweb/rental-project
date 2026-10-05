@@ -42,35 +42,40 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
   Widget build(BuildContext context) {
     final t = context.t;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(t.confirmationTitle), automaticallyImplyLeading: false),
-      body: AsyncView(
-        ref.watch(bookingProvider(widget.id)),
-        onRetry: () => ref.invalidate(bookingProvider(widget.id)),
-        data: (b) {
-          final (text, color) = switch (b.status) {
-            'cancelled' || 'no_show' => (t.confirmationFailed, Colors.red),
-            'draft' || 'pending_payment' => (t.confirmationWaiting, Colors.orange),
-            _ => (t.confirmationConfirmed, Colors.green),
-          };
+    // Opened with go(), so there is nothing to pop: Back leads to the booking instead of closing the app.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) => didPop ? null : context.go('/bookings/${widget.id}'),
+      child: Scaffold(
+        appBar: AppBar(title: Text(t.confirmationTitle), automaticallyImplyLeading: false),
+        body: AsyncView(
+          ref.watch(bookingProvider(widget.id)),
+          onRetry: () => ref.invalidate(bookingProvider(widget.id)),
+          data: (b) {
+            final (text, color) = switch (b.status) {
+              'cancelled' || 'no_show' => (t.confirmationFailed, Colors.red),
+              'draft' || 'pending_payment' => (t.confirmationWaiting, Colors.orange),
+              _ => (t.confirmationConfirmed, Colors.green),
+            };
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                text,
-                key: const Key('status-text'),
-                style: TextStyle(color: color, fontWeight: FontWeight.bold),
-              ),
-              if (b.waitingForPayment) const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: LinearProgressIndicator()),
-              const SizedBox(height: 12),
-              BookingSummary(b),
-              const SizedBox(height: 16),
-              FilledButton(onPressed: () => context.go('/bookings/${b.id}'), child: Text(t.confirmationViewBooking)),
-              if (b.waitingForPayment) TextButton(onPressed: () => context.go('/checkout/${b.id}'), child: Text(t.checkoutTitle)),
-            ],
-          );
-        },
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Text(
+                  text,
+                  key: const Key('status-text'),
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                ),
+                if (b.waitingForPayment) const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: LinearProgressIndicator()),
+                const SizedBox(height: 12),
+                BookingSummary(b),
+                const SizedBox(height: 16),
+                FilledButton(onPressed: () => context.go('/bookings/${b.id}'), child: Text(t.confirmationViewBooking)),
+                if (b.waitingForPayment) TextButton(onPressed: () => context.go('/checkout/${b.id}'), child: Text(t.checkoutTitle)),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

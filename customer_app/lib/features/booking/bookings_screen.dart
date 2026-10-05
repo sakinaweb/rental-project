@@ -31,7 +31,7 @@ class BookingsScreen extends ConsumerWidget {
                         child: ListTile(
                           onTap: () => context.go('/bookings/${b.id}'),
                           title: Text('${b.vehicle?.title ?? ''}  #${b.id}'),
-                          subtitle: Text('${dateTime(ref, b.start)} → ${dateTime(ref, b.end)}\n${statusLabel(context, b.status)}'),
+                          subtitle: Text('${dateTime(ref, b.start)} → ${dateTime(ref, b.end)}\n${bookingStatusLabel(context, b)}'),
                           isThreeLine: true,
                           trailing: Text(money(ref, b.total, b.currency), style: const TextStyle(fontWeight: FontWeight.w600)),
                         ),

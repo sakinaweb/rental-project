@@ -161,5 +161,7 @@
     }
   },
   "signInToContinue": "Sign in to continue",
-  "selectDate": "Select date and time"
+  "selectDate": "Select date and time",
+  "statusExpired": "Expired",
+  "bookAgain": "Book again"
 }

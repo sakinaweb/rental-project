@@ -410,4 +410,10 @@ class L10nHi extends L10n {
 
   @override
   String get selectDate => 'तारीख और समय चुनें';
+
+  @override
+  String get statusExpired => 'समाप्त';
+
+  @override
+  String get bookAgain => 'फिर से बुक करें';
 }

@@ -126,5 +126,7 @@
   "paymentNotCompleted": "لم تكتمل عملية الدفع.",
   "invoiceSaved": "تم حفظ الفاتورة في {path}",
   "signInToContinue": "سجّل الدخول للمتابعة",
-  "selectDate": "اختر التاريخ والوقت"
+  "selectDate": "اختر التاريخ والوقت",
+  "statusExpired": "منتهي",
+  "bookAgain": "احجز مرة أخرى"
 }

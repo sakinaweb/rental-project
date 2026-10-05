@@ -864,6 +864,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Select date and time'**
   String get selectDate;
+
+  /// No description provided for @statusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get statusExpired;
+
+  /// No description provided for @bookAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Book again'**
+  String get bookAgain;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

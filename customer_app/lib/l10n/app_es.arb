@@ -126,5 +126,7 @@
   "paymentNotCompleted": "El pago no se completó.",
   "invoiceSaved": "Factura guardada en {path}",
   "signInToContinue": "Inicia sesión para continuar",
-  "selectDate": "Elige fecha y hora"
+  "selectDate": "Elige fecha y hora",
+  "statusExpired": "Caducada",
+  "bookAgain": "Reservar de nuevo"
 }

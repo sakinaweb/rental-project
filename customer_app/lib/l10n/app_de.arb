@@ -126,5 +126,7 @@
   "paymentNotCompleted": "Die Zahlung wurde nicht abgeschlossen.",
   "invoiceSaved": "Rechnung gespeichert unter {path}",
   "signInToContinue": "Zum Fortfahren anmelden",
-  "selectDate": "Datum und Uhrzeit wählen"
+  "selectDate": "Datum und Uhrzeit wählen",
+  "statusExpired": "Abgelaufen",
+  "bookAgain": "Erneut buchen"
 }
