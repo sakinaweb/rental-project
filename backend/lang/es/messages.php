@@ -22,4 +22,6 @@ return [
     'payment_nothing_due' => 'No queda nada por pagar en esta reserva.',
     'wallet_insufficient' => 'El saldo de tu monedero no es suficiente para este pago.',
     'wallet_currency_required' => 'Elige una moneda para recargar tu monedero.',
+    'push_booking_confirmed' => 'La reserva n.º :id está confirmada.',
+    'push_booking_cancelled' => 'La reserva n.º :id se ha cancelado. Lo que pagaste ha vuelto a tu monedero.',
 ];

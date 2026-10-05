@@ -22,4 +22,6 @@ return [
     'payment_nothing_due' => 'There is nothing left to pay for this booking.',
     'wallet_insufficient' => 'Your wallet balance is too low for this payment.',
     'wallet_currency_required' => 'Choose a currency for your wallet top-up.',
+    'push_booking_confirmed' => 'Booking #:id is confirmed.',
+    'push_booking_cancelled' => 'Booking #:id was cancelled. Any payment is back in your wallet.',
 ];

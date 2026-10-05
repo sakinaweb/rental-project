@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Phase 7: Customer Flutter app (MD §7.7)
+
+- **API documentation first (MD §4):** `docs/openapi.json` (OpenAPI 3.1, every `/api/v1` route; importable into Postman/Swagger) and `docs/api-reference.md`. `OpenApiDocTest` fails if a route is added, removed or renamed without updating it.
+- **Customer app `customer_app/`** (Flutter 3.47, MD §1/§2 stack and layout: Riverpod, dio, go_router, intl, flutter_localizations + ARB): search (country, city, dates, category, type; real price per vehicle) → vehicle details (availability, add-ons, coupon, quote with tax and deposit) → sign in / register / phone OTP (returns to the vehicle) → checkout → confirmation → my bookings → booking detail (cancel, extend, pay balance, invoice PDF) → wallet (balances, history, top-up) → profile (name, phone, country, language, sign out). Signed-out users are sent to sign-in for account screens; a stored token the server rejects signs the app out.
+- **One country pack end to end (MD §7.7, owner decision: India):** INR, GST, wallet and Razorpay. The app never treats a finished Razorpay checkout as paid: the confirmation screen polls the booking until the webhook confirms it (or the payment timeout cancels it). Stripe for the other packs is Phase 8.
+- **Languages:** en, ar, hi, es, de, Arabic right-to-left. The app's ARB files are generated from the website's `lang/*/site.php` (`customer_app/tool/gen_arb.js`), so both share one set of translations.
+- **Push (owner decision: built, off until configured):** `POST /devices` / `DELETE /devices/{token}` (`device_tokens` table), MD §5 `NotificationService` with a push-driver interface — FCM HTTP v1 driver (service-account JWT, `FCM_CREDENTIALS`) or a log driver by default. Customers are notified in their language when a booking is confirmed or cancelled, only after the change is committed; dead tokens are removed. The app registers its FCM token after sign-in when built with the Firebase `--dart-define`s; tapping a notification opens the booking.
+- **Maps (owner decision: key-gated):** the vehicle page shows the branch on a Google map when built with `--dart-define=MAPS_API_KEY=…` (also placed in the Android manifest); otherwise the branch name and area.
+- `GET /payments/gateways` (public): card gateways configured on the server, used by the app.
+- The confirmation screen's 3-second status check waits for an unfinished request instead of restarting it, so a slow server (or slow mobile network) still reaches "confirmed".
+- Android: Android 36 SDK/emulator installed on `D:\Android`; debug builds use plain HTTP to the local Docker backend (`10.0.2.2`), release builds HTTPS only; Razorpay R8 rules.
+
 ### Phase 6: Customer website (MD §7.6)
 
 - Customer website inside `backend/` with Blade + Livewire 4 (**D1**), server-rendered, Tailwind 4 via Vite (`npm install && npm run build` in `backend/`). Clean responsive layout, name from `APP_NAME`, no logo/maps (**D7**).

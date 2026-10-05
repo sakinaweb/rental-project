@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\WalletTransaction;
+use App\Services\Notifications\NotificationService;
 use Carbon\CarbonInterface;
 use DomainException;
 use Illuminate\Support\Carbon;
@@ -26,6 +27,7 @@ class BookingService
         private PricingService $pricing,
         private CountryPackService $packs,
         private WalletService $wallet,
+        private NotificationService $notifications,
     ) {}
 
     /**
@@ -95,6 +97,7 @@ class BookingService
                 throw new DomainException(__('messages.booking_payment_required'));
             }
             $booking->transitionTo(BookingStatus::Confirmed);
+            $this->notifyAfterCommit($booking);
 
             if ($booking->deposit_amount > 0) {
                 $booking->deposit()->create(['amount' => $booking->deposit_amount, 'status' => Deposit::HELD]);
@@ -113,6 +116,7 @@ class BookingService
         return DB::transaction(function () use ($booking) {
             $booking = $this->lock($booking);
             $booking->transitionTo(BookingStatus::Cancelled);
+            $this->notifyAfterCommit($booking);
             if ($booking->deposit?->status === Deposit::HELD) {
                 $booking->deposit->release($booking->deposit->amount);
             }
@@ -230,6 +234,12 @@ class BookingService
 
             return $booking;
         });
+    }
+
+    // Push to the customer app once the change is committed (Phase 7); a rolled-back change sends nothing.
+    private function notifyAfterCommit(Booking $booking): void
+    {
+        DB::afterCommit(fn () => $this->notifications->bookingStatusChanged($booking->fresh()));
     }
 
     private function lock(Booking $booking): Booking

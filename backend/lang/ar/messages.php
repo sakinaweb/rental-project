@@ -22,4 +22,6 @@ return [
     'payment_nothing_due' => 'لا يوجد مبلغ متبقٍ للدفع لهذا الحجز.',
     'wallet_insufficient' => 'رصيد محفظتك غير كافٍ لهذه الدفعة.',
     'wallet_currency_required' => 'اختر عملة لشحن محفظتك.',
+    'push_booking_confirmed' => 'تم تأكيد الحجز رقم :id.',
+    'push_booking_cancelled' => 'تم إلغاء الحجز رقم :id. أُعيد أي مبلغ مدفوع إلى محفظتك.',
 ];

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\VehicleController as AdminVehicleController;
 use App\Http\Controllers\Api\V1\AddonController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
+use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\VehicleController;
@@ -50,7 +51,11 @@ Route::middleware('auth:sanctum')->prefix('bookings')->controller(BookingControl
 // Called by the gateways (no auth); the driver verifies the signature.
 Route::post('payments/webhook/{gateway}', [PaymentController::class, 'webhook'])->whereIn('gateway', PaymentService::GATEWAYS);
 
+Route::get('payments/gateways', [PaymentController::class, 'gateways']);
+
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('devices', [DeviceController::class, 'store'])->middleware('throttle:20,1');
+    Route::delete('devices/{token}', [DeviceController::class, 'destroy'])->where('token', '.+');
     Route::post('payments/intent', [PaymentController::class, 'intent'])->middleware('throttle:20,1');
     Route::get('wallet', [WalletController::class, 'show']);
     Route::post('wallet/topup', [WalletController::class, 'topup'])->middleware('throttle:10,1');

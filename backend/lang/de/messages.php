@@ -22,4 +22,6 @@ return [
     'payment_nothing_due' => 'Für diese Buchung ist nichts mehr zu bezahlen.',
     'wallet_insufficient' => 'Ihr Wallet-Guthaben reicht für diese Zahlung nicht aus.',
     'wallet_currency_required' => 'Wählen Sie eine Währung für die Wallet-Aufladung.',
+    'push_booking_confirmed' => 'Buchung Nr. :id ist bestätigt.',
+    'push_booking_cancelled' => 'Buchung Nr. :id wurde storniert. Bezahltes Geld ist wieder in Ihrem Wallet.',
 ];

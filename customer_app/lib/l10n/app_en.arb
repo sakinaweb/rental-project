@@ -1,0 +1,165 @@
+{
+  "@@locale": "en",
+  "navSearch": "Search",
+  "navMyBookings": "My bookings",
+  "navWallet": "Wallet",
+  "navProfile": "Profile",
+  "navLogin": "Sign in",
+  "navRegister": "Create account",
+  "navLogout": "Sign out",
+  "navLanguage": "Language",
+  "commonLoading": "Loading…",
+  "commonBack": "Back",
+  "commonOptional": "optional",
+  "commonTimesNote": "All times are shown in {tz}.",
+  "@commonTimesNote": {
+    "placeholders": {
+      "tz": {
+        "type": "String"
+      }
+    }
+  },
+  "searchTitle": "Find a bike or car",
+  "searchCountry": "Country",
+  "searchCity": "City",
+  "searchAny": "Any",
+  "searchPickUp": "Pick-up",
+  "searchReturn": "Return",
+  "searchCategory": "Category",
+  "searchType": "Type",
+  "searchBike": "Bike",
+  "searchCar": "Car",
+  "searchSeats": "Min. seats",
+  "searchButton": "Search",
+  "searchNoResults": "No vehicles match your search. Try other dates or filters.",
+  "searchDatesInvalid": "Return must be after pick-up.",
+  "searchTotalForDates": "total for your dates",
+  "searchPickDatesForPrice": "Choose pick-up and return to see the price.",
+  "vehicleSeats": "{n, plural, =1{{n} seat} other{{n} seats}}",
+  "@vehicleSeats": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vehicleSeatsLabel": "Seats",
+  "vehicleTransmission": "Transmission",
+  "vehicleFuel": "Fuel",
+  "vehicleBranch": "Branch",
+  "vehicleAvailable": "Available for these dates",
+  "vehicleUnavailable": "Not available for these dates",
+  "vehicleAddons": "Add-ons",
+  "vehicleAddonPerDay": "per day",
+  "vehicleAddonPerBooking": "per booking",
+  "vehicleQty": "Quantity",
+  "vehicleCoupon": "Coupon code",
+  "vehicleQuote": "Your price",
+  "vehicleSubtotal": "Subtotal",
+  "vehicleDiscounts": "Discounts",
+  "vehicleTax": "Tax",
+  "vehicleTotal": "Total",
+  "vehicleDeposit": "Refundable deposit",
+  "vehicleDueNow": "To pay now",
+  "vehicleBookNow": "Book now",
+  "vehicleLoginToBook": "Sign in to book",
+  "vehiclePriceUnavailable": "No price for these dates",
+  "authSignIn": "Sign in",
+  "authWithPassword": "Password",
+  "authWithOtp": "Phone code",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authPasswordConfirmation": "Confirm password",
+  "authName": "Full name",
+  "authPhone": "Phone",
+  "authPhoneHint": "International format, e.g. +919900000000",
+  "authCode": "6-digit code",
+  "authSendCode": "Send code",
+  "authVerify": "Verify and sign in",
+  "authNoAccount": "New here?",
+  "authHaveAccount": "Already have an account?",
+  "authCreateAccount": "Create account",
+  "authTooMany": "Too many attempts. Please wait a minute and try again.",
+  "checkoutTitle": "Checkout",
+  "checkoutPay": "Pay",
+  "checkoutPayWallet": "Pay with wallet",
+  "checkoutPayStripe": "Pay by card (Stripe)",
+  "checkoutPayRazorpay": "Pay with Razorpay",
+  "checkoutNoCard": "Card payments are not available right now.",
+  "checkoutHoldNote": "We hold this vehicle for you until {time}.",
+  "@checkoutHoldNote": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmationTitle": "Booking status",
+  "confirmationConfirmed": "Your booking is confirmed.",
+  "confirmationWaiting": "Waiting for payment confirmation. This page updates automatically.",
+  "confirmationFailed": "This booking was cancelled. Any money received has been returned to your wallet.",
+  "confirmationCardFailed": "The card payment did not go through. You can try again.",
+  "confirmationViewBooking": "View booking",
+  "bookingTitle": "Booking #{id}",
+  "@bookingTitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingNone": "You have no bookings yet.",
+  "bookingAmountDue": "Amount due",
+  "bookingAmountPaid": "Paid",
+  "bookingPayBalance": "Pay now",
+  "bookingNewEnd": "New return time",
+  "bookingExtend": "Extend booking",
+  "bookingCancel": "Cancel booking",
+  "bookingCancelConfirm": "Cancel this booking? Everything you paid goes back to your wallet.",
+  "bookingInvoice": "Download invoice (PDF)",
+  "bookingDepositStatus": "Deposit",
+  "bookingCancelledNotice": "Booking cancelled. The refund is in your wallet.",
+  "bookingExtendedNotice": "Booking extended.",
+  "depositHeld": "held",
+  "depositReleased": "released",
+  "statusDraft": "Awaiting payment",
+  "statusPendingPayment": "Payment in progress",
+  "statusConfirmed": "Confirmed",
+  "statusPickedUp": "On rent",
+  "statusReturned": "Returned",
+  "statusCompleted": "Completed",
+  "statusSettled": "Closed",
+  "statusCancelled": "Cancelled",
+  "statusNoShow": "No-show",
+  "walletBalance": "Balance",
+  "walletEmpty": "Your wallet is empty.",
+  "walletNoTransactions": "No transactions yet.",
+  "walletTopUp": "Top up",
+  "walletAmount": "Amount",
+  "walletCurrency": "Currency",
+  "walletDate": "Date",
+  "walletType": "Type",
+  "walletProcessing": "Complete the payment in the window that opened. Your balance updates once the payment provider confirms it.",
+  "walletAmountInvalid": "Enter a valid amount.",
+  "walletTypeTopup": "Top-up",
+  "walletTypePayment": "Booking payment",
+  "walletTypeRefund": "Refund",
+  "walletTypeDepositRelease": "Deposit returned",
+  "profileSave": "Save",
+  "profileSaved": "Profile saved.",
+  "draftExpired": "This booking draft has expired. Please start a new booking.",
+  "walletTooLow": "Your wallet balance is too low for this payment.",
+  "errorNetwork": "Can't reach the server. Check your connection.",
+  "retry": "Try again",
+  "paymentNotCompleted": "The payment was not completed.",
+  "invoiceSaved": "Invoice saved to {path}",
+  "@invoiceSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "signInToContinue": "Sign in to continue",
+  "selectDate": "Select date and time"
+}

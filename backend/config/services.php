@@ -41,6 +41,11 @@ return [
         'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
     ],
 
+    // Push notifications to the customer app (Phase 7). Path to a Firebase service-account JSON file.
+    'fcm' => [
+        'credentials' => env('FCM_CREDENTIALS'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
