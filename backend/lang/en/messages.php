@@ -24,4 +24,13 @@ return [
     'wallet_currency_required' => 'Choose a currency for your wallet top-up.',
     'push_booking_confirmed' => 'Booking #:id is confirmed.',
     'push_booking_cancelled' => 'Booking #:id was cancelled. Any payment is back in your wallet.',
+    'ledger_insufficient' => 'This would take the balance below zero.',
+    'partner_disabled' => 'The partner programme is not available in your country.',
+    'partner_already_applied' => 'You have already applied to become a partner.',
+    'partner_not_active' => 'Your partner account is not active yet.',
+    'partner_blockout_booked' => 'This vehicle is booked during that period. Choose other dates.',
+    'payout_exceeds_available' => 'The amount must be more than zero and no more than your available balance.',
+    'payout_none_pending' => 'There are no pending payout requests in this currency.',
+    'payout_batch_not_pending' => 'This payout batch has already been processed.',
+    'payout_request_not_pending' => 'Only pending payout requests can be rejected.',
 ];

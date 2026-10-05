@@ -23,3 +23,14 @@ The full, machine-readable contract is **[`openapi.json`](openapi.json)** (OpenA
 7. Poll `GET /bookings/{id}` until `confirmed` (set by the webhook), or `cancelled` after the 30-minute payment timeout
 8. `GET /bookings`, `POST /bookings/{id}/cancel|extend`, `GET /bookings/{id}/invoice`, `GET /wallet`, `POST /wallet/topup`, `PATCH /me`
 9. Push: `POST /devices` after sign-in with the FCM token; `DELETE /devices/{token}` on sign-out
+
+## Partner flow (Phase 9)
+
+Only where the partner feature is on (Settings and the user's country pack); otherwise every `/partner/*` call is `403`.
+
+1. `POST /partner/apply` with `payout_details` (bank details) → `pending` until the admin approves
+2. `GET /partner/dashboard` → status, vehicles, balances (`balance`, `available`), recent payout requests
+3. `POST /partner/vehicles` → `pending`; listed for customers once the admin approves it and sets the commission
+4. `POST /partner/vehicles/{id}/blockout` / `DELETE /partner/vehicles/{id}/blockouts/{blockout}` → dates customers can't book
+5. Earnings arrive when a booking of the vehicle settles: `GET /partner/earnings` (rental net of tax minus the platform commission)
+6. `POST /partner/payout-requests` up to `available` → the admin pays it by bank transfer in a batch (`POST /admin/payout-batches`)

@@ -28,6 +28,7 @@ class BookingService
         private CountryPackService $packs,
         private WalletService $wallet,
         private NotificationService $notifications,
+        private LedgerService $ledger,
     ) {}
 
     /**
@@ -165,8 +166,8 @@ class BookingService
     }
 
     /**
-     * completed → settled after the damage hold window (MD §6): the deposit is released minus approved damages.
-     * Ledger posting joins this step with LedgerService in Phase 9.
+     * completed → settled after the damage hold window (MD §6): the deposit is released minus approved damages, and the
+     * revenue waterfall is posted to the earnings ledger in the same transaction (MD §5, Phase 9).
      */
     public function settle(Booking $booking): Booking
     {
@@ -182,14 +183,17 @@ class BookingService
             }
             $booking->transitionTo(BookingStatus::Settled);
 
+            $kept = 0; // deposit kept for approved damages
             if ($booking->deposit?->status === Deposit::HELD) {
                 $charged = (int) $booking->damages()->where('status', Damage::APPROVED)->sum('cost');
                 $refund = max(0, $booking->deposit->amount - $charged);
+                $kept = $booking->deposit->amount - $refund;
                 $booking->deposit->release($refund);
                 if ($refund > 0) {
                     $this->wallet->credit($booking->user_id, $refund, $booking->currency_code, WalletTransaction::DEPOSIT_RELEASE, 'booking', $booking->id);
                 }
             }
+            $this->ledger->postBookingCompletion($booking, $kept);
 
             return $booking;
         });

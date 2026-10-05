@@ -52,7 +52,7 @@ class VehicleSearch
                 ->when($filters['seats'] ?? null, fn (Builder $q, $n) => $q->where('seats', '>=', $n)))
             ->when(isset($filters['from'], $filters['to']), fn (Builder $q) => $q->whereDoesntHave('bookings', fn (Builder $b) => $b->blocking(
                 self::toAppTime($filters['from']), self::toAppTime($filters['to']), $this->availability->bufferMinutes(),
-            )))
+            ))->whereDoesntHave('blockouts', fn (Builder $b) => $b->overlapping(self::toAppTime($filters['from']), self::toAppTime($filters['to']))))
             ->orderBy('id');
     }
 

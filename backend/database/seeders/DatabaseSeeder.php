@@ -46,5 +46,7 @@ class DatabaseSeeder extends Seeder
         Setting::firstOrCreate(['key' => 'booking.damage_hold_hours'], ['value_json' => 72]);
         // Unpaid pending_payment bookings are cancelled after this long (Phase 4 payment timeout).
         Setting::firstOrCreate(['key' => 'payment.timeout_minutes'], ['value_json' => 30]);
+        // Platform commission proposed for new partner vehicles (owner decision, Phase 9).
+        Setting::firstOrCreate(['key' => 'partner.default_commission_pct'], ['value_json' => 20]);
     }
 }

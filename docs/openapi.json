@@ -38,6 +38,10 @@
       "name": "Wallet"
     },
     {
+      "name": "Partner",
+      "description": "Vehicle owners (MD §7.9). Only where the partner feature is on: the global `features.partner` setting and the user's country pack. The platform keeps each vehicle's commission on the rental net of tax; the rest is the partner's, posted when a booking settles. Payouts are paid manually by the admin in batches."
+    },
+    {
       "name": "Admin"
     }
   ],
@@ -1691,6 +1695,565 @@
         }
       }
     },
+    "/partner/apply": {
+      "post": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Apply to become a partner (reviewed by the admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "payout_details"
+                ],
+                "properties": {
+                  "payout_details": {
+                    "type": "object",
+                    "required": [
+                      "account_holder",
+                      "bank_name",
+                      "account_number"
+                    ],
+                    "properties": {
+                      "account_holder": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "bank_name": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "account_number": {
+                        "type": "string",
+                        "maxLength": 50
+                      },
+                      "routing_code": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "description": "IFSC, IBAN/SWIFT, ABA…"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/partner/dashboard": {
+      "get": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Status, vehicles with blockouts, balances and recent payout requests",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PartnerDashboard"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/partner/earnings": {
+      "get": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "The partner's ledger entries, newest first",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "currency_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/LedgerEntry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/partner/vehicles": {
+      "post": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Add a vehicle (listed after admin approval, at a branch in the partner's country)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model_id",
+                  "branch_id",
+                  "plate_no"
+                ],
+                "properties": {
+                  "model_id": {
+                    "type": "integer"
+                  },
+                  "branch_id": {
+                    "type": "integer"
+                  },
+                  "plate_no": {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  "odometer": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        },
+                        "commission_pct": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/partner/vehicles/{vehicle}/blockout": {
+      "post": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Keep a vehicle off the market for a period (not over an existing booking)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vehicle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "start_at",
+                  "end_at"
+                ],
+                "properties": {
+                  "start_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "end_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "start_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "end_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          }
+        }
+      }
+    },
+    "/partner/vehicles/{vehicle}/blockouts/{blockout}": {
+      "delete": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Remove a blockout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vehicle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "blockout",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/partner/payout-requests": {
+      "post": {
+        "tags": [
+          "Partner"
+        ],
+        "summary": "Request a payout (up to the available balance in that currency)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "currency_code",
+                  "amount"
+                ],
+                "properties": {
+                  "currency_code": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 3
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Minor units"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayoutRequest"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Partner module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
     "/admin/vehicles": {
       "get": {
         "tags": [
@@ -2353,6 +2916,89 @@
                       "$ref": "#/components/schemas/PageMeta"
                     }
                   ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          }
+        }
+      }
+    },
+    "/admin/payout-batches": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Batch every pending payout request in a currency for manual bank transfer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "currency_code"
+                ],
+                "properties": {
+                  "currency_code": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "currency_code": {
+                          "type": "string"
+                        },
+                        "total_amount": {
+                          "type": "integer",
+                          "description": "Minor units"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        },
+                        "requests": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -3032,6 +3678,197 @@
           "net_revenue": {
             "type": "integer",
             "description": "grand_total − tax_total"
+          }
+        }
+      },
+      "LedgerEntry": {
+        "type": "object",
+        "required": [
+          "id",
+          "entry_type",
+          "amount",
+          "running_balance",
+          "currency_code",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "booking_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "entry_type": {
+            "type": "string",
+            "enum": [
+              "credit_share",
+              "debit_deduction",
+              "payout",
+              "reversal"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Signed minor units"
+          },
+          "running_balance": {
+            "type": "integer",
+            "description": "Minor units"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PayoutRequest": {
+        "type": "object",
+        "required": [
+          "id",
+          "amount",
+          "currency_code",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Minor units"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "batched",
+              "paid",
+              "rejected"
+            ]
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "PartnerDashboard": {
+        "type": "object",
+        "required": [
+          "status",
+          "vehicles",
+          "balances",
+          "payout_requests"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "suspended",
+              "rejected"
+            ]
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "plate_no": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "branch": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "active",
+                    "suspended"
+                  ],
+                  "description": "Listed for customers only when active"
+                },
+                "commission_pct": {
+                  "type": "number",
+                  "description": "Platform's share of the rental net of tax"
+                },
+                "blockouts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "start_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "end_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "reason": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency_code": {
+                  "type": "string"
+                },
+                "balance": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "available": {
+                  "type": "integer",
+                  "description": "Balance minus payout requests not yet paid or rejected"
+                }
+              }
+            }
+          },
+          "payout_requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutRequest"
+            },
+            "description": "Latest 20"
           }
         }
       }

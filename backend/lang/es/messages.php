@@ -24,4 +24,13 @@ return [
     'wallet_currency_required' => 'Elige una moneda para recargar tu monedero.',
     'push_booking_confirmed' => 'La reserva n.º :id está confirmada.',
     'push_booking_cancelled' => 'La reserva n.º :id se ha cancelado. Lo que pagaste ha vuelto a tu monedero.',
+    'ledger_insufficient' => 'Esto dejaría el saldo por debajo de cero.',
+    'partner_disabled' => 'El programa de socios no está disponible en tu país.',
+    'partner_already_applied' => 'Ya has solicitado ser socio.',
+    'partner_not_active' => 'Tu cuenta de socio aún no está activa.',
+    'partner_blockout_booked' => 'Este vehículo está reservado en ese periodo. Elige otras fechas.',
+    'payout_exceeds_available' => 'El importe debe ser mayor que cero y no superar tu saldo disponible.',
+    'payout_none_pending' => 'No hay solicitudes de pago pendientes en esta moneda.',
+    'payout_batch_not_pending' => 'Este lote de pagos ya se ha procesado.',
+    'payout_request_not_pending' => 'Solo se pueden rechazar solicitudes de pago pendientes.',
 ];

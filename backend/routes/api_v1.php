@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\Admin\PayoutBatchController;
 use App\Http\Controllers\Admin\PricingRuleController as AdminPricingRuleController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\VehicleController as AdminVehicleController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\GeographyController;
+use App\Http\Controllers\Api\V1\PartnerController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\VehicleController;
 use App\Http\Controllers\Api\V1\WalletController;
@@ -61,7 +63,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('wallet/topup', [WalletController::class, 'topup'])->middleware('throttle:10,1');
 });
 
+// Partner module (MD §4, Phase 9): only where the partner feature is on (global flag + the user's country pack).
+Route::middleware(['auth:sanctum', 'partner.module'])->prefix('partner')->controller(PartnerController::class)->group(function () {
+    Route::post('apply', 'apply')->middleware('throttle:5,1');
+    Route::get('dashboard', 'dashboard');
+    Route::get('earnings', 'earnings');
+    Route::post('vehicles', 'storeVehicle')->middleware('throttle:20,1');
+    Route::post('vehicles/{vehicle}/blockout', 'storeBlockout')->whereNumber('vehicle');
+    Route::delete('vehicles/{vehicle}/blockouts/{blockout}', 'destroyBlockout')->whereNumber(['vehicle', 'blockout']);
+    Route::post('payout-requests', 'requestPayout')->middleware('throttle:10,1');
+});
+
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::post('payout-batches', [PayoutBatchController::class, 'store'])->name('payout-batches.store');
     Route::apiResource('vehicles', AdminVehicleController::class);
     Route::apiResource('pricing-rules', AdminPricingRuleController::class)->only(['index', 'store']);
     Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');

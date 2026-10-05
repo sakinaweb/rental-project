@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Phase 9: Partner module (MD §7.9)
+
+- **Onboarding:** `POST /partner/apply` with bank details for payouts; the admin approves, rejects or suspends (Partners page). Partner access is the `partners` record, not the user's role, so a partner can still rent as a customer. A rejected applicant may apply again.
+- **Partner vehicles (owner decision):** `POST /partner/vehicles` at a branch in the partner's own country. Not listed until the admin approves it and sets the platform commission (default 20%, `partner.default_commission_pct` in Settings). Suspending a vehicle or its partner hides it from search and booking (`Vehicle::scopeListed`, used by search and the row-locked availability check).
+- **Blockouts:** `POST /partner/vehicles/{id}/blockout`, `DELETE …/blockouts/{id}` (new `vehicle_blockouts` table). Blocked periods are unavailable in search and booking; a blockout can't cover an existing booking.
+- **Earnings ledger (MD §5 `LedgerService::postBookingCompletion`):** posted in the same transaction as settlement. **Owner decision:** the base is the rental net of tax (total after discounts, add-ons included, minus tax; deposit excluded); the platform keeps the vehicle's commission (rounded to the minor unit), the partner gets the rest, so the shares always add up to the base. Company vehicles: all to the platform. **Interpretation (to confirm):** damage charges kept from the deposit go to the vehicle's owner, who pays the repair. Every entry stores the running balance under a row lock on the account; the platform's accounts use owner_id 0.
+- **Payouts (owner decision: manual batches, MD §5 `PayoutService`):** `POST /partner/payout-requests` up to the available balance (balance minus requests not yet paid or rejected). The admin batches all pending requests of a currency (Payout batches page or `POST /admin/payout-batches`), transfers the money by bank, then marks the batch paid, which posts a `payout` entry per request; cancelling returns the requests to pending; single requests can be rejected. All admin decisions are audited.
+- `GET /partner/dashboard` (status, vehicles with blockouts, balances with the available amount, recent payout requests) and `GET /partner/earnings` (own ledger entries).
+- **Feature toggle (MD §8):** every partner endpoint and page answers 403 unless `features.partner` is on in Settings and in the user's country pack; the nav link is shown only then.
+- **Website partner area (owner decision):** `/partner` (apply, status, balances, payout requests, earnings) and `/partner/vehicles` (add vehicles, block dates), in all five languages with Arabic right-to-left.
+- Admin panel: Partners, Partner vehicles (approve with commission, change commission, suspend), Payout requests, Payout batches, Earnings ledger (read-only).
+- Not in this phase: `revenue_share_agreements` documents and `statements` PDFs (tables exist), payouts through a gateway (Stripe Connect / RazorpayX), the partner section in the Flutter app.
+
 ### Phase 8: Country packs 2–4 (MD §7.8)
 
 - **Market defaults (owner decision):** India, UAE, US and Germany packs keep their age, licence, KYC and deposit values as defaults to confirm with a local advisor before selling; admins override them per country (`country_packs.config_json`).

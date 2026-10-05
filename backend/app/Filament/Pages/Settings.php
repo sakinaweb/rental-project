@@ -32,6 +32,7 @@ class Settings extends Page
         'booking.draft_ttl_minutes' => 'booking_draft_ttl_minutes',
         'booking.damage_hold_hours' => 'booking_damage_hold_hours',
         'payment.timeout_minutes' => 'payment_timeout_minutes',
+        'partner.default_commission_pct' => 'partner_default_commission_pct',
     ];
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
@@ -63,6 +64,11 @@ class Settings extends Page
                 $minutes('booking_draft_ttl_minutes', 'Draft expiry (minutes)', 'Unpaid drafts stop holding the vehicle after this.'),
                 $minutes('payment_timeout_minutes', 'Payment timeout (minutes)', 'Unpaid bookings awaiting payment are cancelled after this.'),
                 $minutes('booking_damage_hold_hours', 'Damage hold window (hours)', 'Completed bookings settle after this.'),
+            ]),
+            Section::make('Partners')->schema([
+                TextInput::make('partner_default_commission_pct')->label('Default platform commission (%)')
+                    ->helperText('Proposed for each new partner vehicle; you can change it when approving. Taken from the rental net of tax.')
+                    ->required()->integer()->minValue(0)->maxValue(100),
             ]),
         ]);
     }

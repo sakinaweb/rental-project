@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureActiveUser;
+use App\Http\Middleware\EnsurePartnerModule;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetWebLocale;
@@ -20,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(append: [SetLocale::class]);
         $middleware->web(append: [SetWebLocale::class, EnsureActiveUser::class]);
-        $middleware->alias(['role' => EnsureUserHasRole::class]);
+        $middleware->alias(['role' => EnsureUserHasRole::class, 'partner.module' => EnsurePartnerModule::class]);
         // API guests get a 401 JSON response, never a redirect; website guests go to the sign-in page.
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('api/*') ? null : route('login'));
         $middleware->redirectUsersTo(fn () => route('home'));

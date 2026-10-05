@@ -9,6 +9,8 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Checkout;
 use App\Livewire\Confirmation;
+use App\Livewire\Partner\Dashboard as PartnerDashboard;
+use App\Livewire\Partner\Vehicles as PartnerVehicles;
 use App\Livewire\Search;
 use App\Livewire\VehicleShow;
 use Illuminate\Http\Request;
@@ -50,5 +52,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->whereNumber('booking')->name('bookings.invoice');
         Route::get('/wallet', Wallet::class)->name('wallet');
         Route::get('/profile', Profile::class)->name('profile');
+    });
+
+    // Partner area (Phase 9): only where the partner feature is on (global flag + the user's country pack).
+    Route::middleware('partner.module')->prefix('partner')->name('partner.')->group(function () {
+        Route::get('/', PartnerDashboard::class)->name('dashboard');
+        Route::get('/vehicles', PartnerVehicles::class)->name('vehicles');
     });
 });

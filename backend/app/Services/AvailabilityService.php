@@ -17,9 +17,10 @@ class AvailabilityService
      */
     public function isAvailable(int $vehicleId, CarbonInterface $from, CarbonInterface $to, ?int $ignoreBookingId = null): bool
     {
-        $vehicle = Vehicle::whereKey($vehicleId)->lockForUpdate()->first();
+        // listed(): in service, active country, and for a partner's vehicle approved with the partner active (Phase 9).
+        $vehicle = Vehicle::listed()->whereKey($vehicleId)->lockForUpdate()->first();
 
-        if (! $vehicle || $vehicle->status !== Vehicle::STATUS_AVAILABLE) {
+        if (! $vehicle || $vehicle->blockouts()->overlapping($from, $to)->exists()) {
             return false;
         }
 

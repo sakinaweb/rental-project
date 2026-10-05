@@ -24,4 +24,13 @@ return [
     'wallet_currency_required' => 'اختر عملة لشحن محفظتك.',
     'push_booking_confirmed' => 'تم تأكيد الحجز رقم :id.',
     'push_booking_cancelled' => 'تم إلغاء الحجز رقم :id. أُعيد أي مبلغ مدفوع إلى محفظتك.',
+    'ledger_insufficient' => 'سيؤدي هذا إلى رصيد أقل من الصفر.',
+    'partner_disabled' => 'برنامج الشركاء غير متاح في بلدك.',
+    'partner_already_applied' => 'لقد تقدمت بالفعل لتصبح شريكًا.',
+    'partner_not_active' => 'حساب الشريك الخاص بك غير مفعّل بعد.',
+    'partner_blockout_booked' => 'هذه المركبة محجوزة خلال تلك الفترة. اختر تواريخ أخرى.',
+    'payout_exceeds_available' => 'يجب أن يكون المبلغ أكبر من صفر وألا يتجاوز رصيدك المتاح.',
+    'payout_none_pending' => 'لا توجد طلبات صرف معلّقة بهذه العملة.',
+    'payout_batch_not_pending' => 'تمت معالجة دفعة الصرف هذه بالفعل.',
+    'payout_request_not_pending' => 'يمكن رفض طلبات الصرف المعلّقة فقط.',
 ];

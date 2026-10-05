@@ -24,4 +24,13 @@ return [
     'wallet_currency_required' => 'Wählen Sie eine Währung für die Wallet-Aufladung.',
     'push_booking_confirmed' => 'Buchung Nr. :id ist bestätigt.',
     'push_booking_cancelled' => 'Buchung Nr. :id wurde storniert. Bezahltes Geld ist wieder in Ihrem Wallet.',
+    'ledger_insufficient' => 'Dadurch würde der Saldo unter null fallen.',
+    'partner_disabled' => 'Das Partnerprogramm ist in Ihrem Land nicht verfügbar.',
+    'partner_already_applied' => 'Sie haben sich bereits als Partner beworben.',
+    'partner_not_active' => 'Ihr Partnerkonto ist noch nicht aktiv.',
+    'partner_blockout_booked' => 'Dieses Fahrzeug ist in diesem Zeitraum gebucht. Wählen Sie andere Daten.',
+    'payout_exceeds_available' => 'Der Betrag muss größer als null sein und darf Ihr verfügbares Guthaben nicht übersteigen.',
+    'payout_none_pending' => 'Es gibt keine offenen Auszahlungsanfragen in dieser Währung.',
+    'payout_batch_not_pending' => 'Dieser Auszahlungsstapel wurde bereits bearbeitet.',
+    'payout_request_not_pending' => 'Nur offene Auszahlungsanfragen können abgelehnt werden.',
 ];

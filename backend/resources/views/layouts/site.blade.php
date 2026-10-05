@@ -16,6 +16,9 @@
                     <a href="{{ route('account.bookings') }}" class="hover:underline">{{ __('site.nav.my_bookings') }}</a>
                     <a href="{{ route('account.wallet') }}" class="hover:underline">{{ __('site.nav.wallet') }}</a>
                     <a href="{{ route('account.profile') }}" class="hover:underline">{{ __('site.nav.profile') }}</a>
+                    @if (app(\App\Services\PartnerService::class)->enabledFor(auth()->user()))
+                        <a href="{{ route('partner.dashboard') }}" class="hover:underline">{{ __('site.nav.partner') }}</a>
+                    @endif
                 @endauth
             </div>
             <div class="ms-auto flex items-center gap-3 text-sm">
