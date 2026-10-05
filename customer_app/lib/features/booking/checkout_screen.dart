@@ -59,7 +59,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         onRetry: () => ref.invalidate(bookingProvider(widget.id)),
         data: (b) {
           final balance = ref.watch(walletProvider).value?.balances[b.currency] ?? 0;
-          final gateways = ref.watch(gatewaysProvider).value ?? const [];
+          final gateways = cardGateways.where((ref.watch(gatewaysProvider(b.currency)).value ?? const []).contains).toList();
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -85,10 +85,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     child: Text(t.walletTooLow, style: Theme.of(context).textTheme.bodySmall),
                   ),
                 const SizedBox(height: 8),
-                if (gateways.contains('razorpay'))
-                  OutlinedButton(key: const Key('pay-razorpay'), onPressed: busy ? null : () => _pay('razorpay'), child: Text(t.checkoutPayRazorpay))
-                else
-                  Text(t.checkoutNoCard, style: Theme.of(context).textTheme.bodySmall),
+                for (final g in gateways)
+                  OutlinedButton(key: Key('pay-$g'), onPressed: busy ? null : () => _pay(g), child: Text(payWith(t, g))),
+                if (gateways.isEmpty) Text(t.checkoutNoCard, style: Theme.of(context).textTheme.bodySmall),
               ],
               if (error != null)
                 Padding(

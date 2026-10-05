@@ -32,7 +32,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     _ => type,
   };
 
-  Future<void> _topup(String currency) async {
+  Future<void> _topup(String currency, String gateway) async {
     final minor = toMinor(amount.text, currency);
     if (minor == null) return setState(() => error = context.t.walletAmountInvalid);
     setState(() {
@@ -41,9 +41,9 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       notice = null;
     });
     try {
-      final intent = await ref.read(apiProvider).topup(minor, currency, 'razorpay');
+      final intent = await ref.read(apiProvider).topup(minor, currency, gateway);
       if (!mounted) return;
-      final finished = await ref.read(cardCheckoutProvider)('razorpay', intent.client!, title: context.t.walletTopUp);
+      final finished = await ref.read(cardCheckoutProvider)(gateway, intent.client!, title: context.t.walletTopUp);
       if (mounted) setState(() => finished ? notice = context.t.walletProcessing : error = context.t.paymentNotCompleted);
     } on ApiException catch (e) {
       if (mounted) setState(() => error = errorText(context, e));
@@ -57,7 +57,8 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     final t = context.t;
     final countryId = ref.watch(sessionProvider).user?.countryId;
     final currency = ref.watch(countriesProvider).value?.where((c) => c.id == countryId).firstOrNull?.currency;
-    final canTopUp = (ref.watch(gatewaysProvider).value ?? const []).contains('razorpay') && currency != null;
+    final allowed = currency == null ? const <String>[] : ref.watch(gatewaysProvider(currency)).value ?? const [];
+    final gateways = cardGateways.where(allowed.contains).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text(t.navWallet)),
@@ -79,7 +80,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                 ),
               const SizedBox(height: 16),
               Text(t.walletTopUp, style: Theme.of(context).textTheme.titleMedium),
-              if (!canTopUp)
+              if (gateways.isEmpty || currency == null)
                 Text(t.checkoutNoCard, style: Theme.of(context).textTheme.bodySmall)
               else ...[
                 TextField(
@@ -88,8 +89,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(labelText: '${t.walletAmount} ($currency)'),
                 ),
-                const SizedBox(height: 8),
-                FilledButton(key: const Key('topup'), onPressed: busy ? null : () => _topup(currency), child: Text(t.checkoutPayRazorpay)),
+                for (final g in gateways) ...[
+                  const SizedBox(height: 8),
+                  FilledButton(key: Key('topup-$g'), onPressed: busy ? null : () => _topup(currency, g), child: Text(payWith(t, g))),
+                ],
               ],
               if (notice != null)
                 Padding(

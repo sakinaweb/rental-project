@@ -35,10 +35,17 @@ class PaymentController extends Controller
         ]], 201);
     }
 
-    /** GET /payments/gateways (Phase 7): card gateways the app may offer; the wallet is always available. */
-    public function gateways(): JsonResponse
+    /**
+     * GET /payments/gateways (Phase 7): card gateways the app may offer; the wallet is always available.
+     * ?currency= (Phase 8) narrows them to what that currency's country pack allows.
+     */
+    public function gateways(Request $request): JsonResponse
     {
-        return response()->json(['data' => $this->payments->configuredGateways()]);
+        $currency = $request->validate(['currency' => ['sometimes', 'string', 'size:3']])['currency'] ?? null;
+
+        return response()->json(['data' => $currency
+            ? $this->payments->gatewaysFor(strtoupper($currency))
+            : $this->payments->configuredGateways()]);
     }
 
     /** POST /payments/webhook/{gateway} (MD §4): signature verified by the driver; always 200 once accepted. */

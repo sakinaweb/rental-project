@@ -131,6 +131,50 @@ void main() {
     expect(find.text('Your booking is confirmed.'), findsOneWidget);
   });
 
+  testWidgets('a UAE booking (AED) pays by Stripe: only its pack\'s gateways are offered', (tester) async {
+    final backend = indiaBackend()
+      ..on(
+        'GET /payments/gateways',
+        (r) => {
+          'data': [if (r.queryParameters['currency'] == 'AED') 'stripe' else 'razorpay'],
+        },
+      )
+      ..on('GET /bookings/42', (_) => {'data': bookingJson(status: 'pending_payment', currency: 'AED')})
+      ..on(
+        'POST /payments/intent',
+        (_) => (
+          201,
+          {
+            'data': {
+              'payment': {'id': 1, 'status': 'pending'},
+              'client': {'client_secret': 'pi_1_secret', 'publishable_key': 'pk_test'},
+              'booking_status': 'pending_payment',
+            },
+          },
+        ),
+      );
+    (String, Map<String, dynamic>)? opened;
+    await pumpApp(
+      tester,
+      backend,
+      signedIn: true,
+      initial: '/checkout/42',
+      cardCheckout: (gateway, client, {required title}) async {
+        opened = (gateway, client);
+        return true;
+      },
+    );
+
+    expect(backend.sent('GET /payments/gateways').last.queryParameters, {'currency': 'AED'});
+    expect(find.byKey(const Key('pay-razorpay')), findsNothing);
+    await tester.tap(find.byKey(const Key('pay-stripe')));
+    await settle(tester);
+    expect(backend.sent('POST /payments/intent').single.data, {'booking_id': 42, 'gateway': 'stripe'});
+    expect(opened?.$1, 'stripe');
+    expect(opened?.$2, {'client_secret': 'pi_1_secret', 'publishable_key': 'pk_test'});
+    expect(find.text('Waiting for payment confirmation. This page updates automatically.'), findsOneWidget);
+  });
+
   testWidgets('confirmation polling waits for a slow server instead of restarting the request', (tester) async {
     var status = 'pending_payment';
     final backend = indiaBackend()..on('GET /bookings/42', (_) => {'data': bookingJson(status: status)});
@@ -267,7 +311,7 @@ void main() {
 
     expect(find.text('₹20,000.00'), findsOneWidget);
     await tester.enterText(find.byKey(const Key('amount')), '250.50');
-    await tester.tap(find.byKey(const Key('topup')));
+    await tester.tap(find.byKey(const Key('topup-razorpay')));
     await settle(tester);
 
     expect(backend.sent('POST /wallet/topup').single.data, {'amount': 25050, 'currency_code': 'INR', 'gateway': 'razorpay'});

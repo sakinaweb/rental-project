@@ -41,7 +41,7 @@ class Wallet extends Component
             'currency' => ['required', 'size:3', Rule::exists('countries', 'currency_code')->where('is_active', true)->whereNull('deleted_at')],
         ]);
         $minor = Money::toMinor($this->amount, $this->currency);
-        if ($minor < 1 || $minor > 100000000 || ! in_array($gateway, $payments->configuredGateways(), true)) {
+        if ($minor < 1 || $minor > 100000000 || ! in_array($gateway, $payments->gatewaysFor($this->currency), true)) {
             $this->topupError = $minor < 1 || $minor > 100000000 ? __('site.wallet.amount_invalid') : __('messages.payment_gateway_unavailable');
 
             return;
@@ -67,7 +67,8 @@ class Wallet extends Component
         return view('livewire.account.wallet', [
             'balances' => $wallet->balances($userId),
             'transactions' => WalletTransaction::where('user_id', $userId)->latest('id')->paginate(15),
-            'gateways' => $payments->configuredGateways(),
+            'cardsConfigured' => $payments->configuredGateways() !== [],
+            'gateways' => $this->currency ? $payments->gatewaysFor($this->currency) : [],
             'currencies' => Country::active()->orderBy('currency_code')->distinct()->pluck('currency_code'),
         ])->title(__('site.nav.wallet'));
     }

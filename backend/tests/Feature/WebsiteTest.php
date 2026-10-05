@@ -221,6 +221,7 @@ class WebsiteTest extends TestCase
     {
         $booking = $this->draft();
         $this->actingAs($this->customer);
+        Country::where('iso_code', 'IN')->sole()->pack->update(['config_json' => ['gateways' => ['stripe']]]); // the INR booking may use Stripe
 
         Livewire::test(Checkout::class, ['booking' => $booking])->assertDontSee(__('site.checkout.pay_stripe'))->assertDontSee(__('site.checkout.pay_razorpay'))
             ->call('payWithCard', 'stripe')->assertSee(__('messages.payment_gateway_unavailable'));

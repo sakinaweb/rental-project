@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api.dart';
 
 final bookingProvider = FutureProvider.autoDispose.family<Booking, int>((ref, id) => ref.watch(apiProvider).booking(id));
-final gatewaysProvider = FutureProvider.autoDispose((ref) => ref.watch(apiProvider).gateways());
+final gatewaysProvider = FutureProvider.autoDispose.family<List<String>, String>((ref, currency) => ref.watch(apiProvider).gateways(currency));
 final walletProvider = FutureProvider.autoDispose((ref) => ref.watch(apiProvider).wallet());
 
 final bookingsProvider = AsyncNotifierProvider.autoDispose<BookingsNotifier, Page<Booking>>(BookingsNotifier.new);

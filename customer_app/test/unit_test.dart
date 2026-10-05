@@ -17,6 +17,14 @@ void main() {
     expect(toMinor('abc', 'INR'), isNull);
   });
 
+  test('money per country pack in its main language (Phase 8)', () {
+    expect(formatMoney(312345, 'INR', 'hi'), '₹3,123.45');
+    expect(formatMoney(312345, 'AED', 'ar'), '‏3,123.45 dh'); // right-to-left mark first
+    expect(formatMoney(312345, 'USD', 'en'), r'$3,123.45');
+    expect(formatMoney(312345, 'EUR', 'de'), '3.123,45 €');
+    expect(toMinor('30,50', 'EUR'), 3050); // German decimal comma
+  });
+
   test('api client sends the token and language, and maps refusals', () async {
     final backend = FakeBackend()
       ..on('GET /me', (_) => {'data': userJson()})

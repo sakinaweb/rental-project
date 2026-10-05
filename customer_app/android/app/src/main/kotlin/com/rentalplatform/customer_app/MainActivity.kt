@@ -1,5 +1,6 @@
 package com.rentalplatform.customer_app
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+// FlutterFragmentActivity: Stripe's PaymentSheet (Phase 8) needs a FragmentActivity host.
+class MainActivity : FlutterFragmentActivity()

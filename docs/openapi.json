@@ -1361,6 +1361,19 @@
           "Payments"
         ],
         "summary": "Card gateways configured on this server (the wallet is always available)",
+        "description": "With `currency`, only the gateways that currency's country pack allows (e.g. Razorpay for INR, Stripe for AED/USD/EUR). Paying or topping up with any other gateway returns 422.",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",

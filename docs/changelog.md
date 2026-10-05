@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Phase 8: Country packs 2–4 (MD §7.8)
+
+- **Market defaults (owner decision):** India, UAE, US and Germany packs keep their age, licence, KYC and deposit values as defaults to confirm with a local advisor before selling; admins override them per country (`country_packs.config_json`).
+- **Default tax rules** (`php artisan db:seed --class=TaxRuleSeeder`, run once per install; kept out of `DatabaseSeeder` so tests choose their own rates): India GST 18% added on top, UAE VAT 5% included in prices, Germany MwSt 19% included, US sales tax 0% added on top. **Owner decision:** the US has one country-wide rate the admin sets for the main market (no per-state rates). Re-running never changes, duplicates or restores a rule the admin edited or deleted.
+- **Gateways per pack (owner decision):** new pack key `gateways` (India: Razorpay; UAE/US/Germany: Stripe). A booking or wallet top-up can use only a gateway that its currency's pack allows and the server has configured (422 otherwise); the website and app offer only those. `GET /payments/gateways?currency=` returns that list (without `currency`, every configured gateway as before).
+- Admin overrides of list values (gateways, KYC document types) now replace the default list instead of merging into it by position.
+- **App (owner decision):** Stripe card payments through the native PaymentSheet (`flutter_stripe`; Android host is now `FlutterFragmentActivity` with AppCompat themes). Checkout and wallet top-up show one button per allowed gateway.
+- Website wallet: the top-up form stays visible when the chosen currency has no gateway, and the gateway buttons follow the currency picker.
+- Tests per pack: currency, inclusive/exclusive tax, deposits, gateway restriction, Arabic right-to-left checkout in AED, and money formatting in each pack's main language (app).
+
 ### Phase 7: Customer Flutter app (MD §7.7)
 
 - **API documentation first (MD §4):** `docs/openapi.json` (OpenAPI 3.1, every `/api/v1` route; importable into Postman/Swagger) and `docs/api-reference.md`. `OpenApiDocTest` fails if a route is added, removed or renamed without updating it.

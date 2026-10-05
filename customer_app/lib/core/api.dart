@@ -255,7 +255,9 @@ class Api {
   );
 
   // Payments & wallet
-  Future<List<String>> gateways() => _call(() => _dio.get('/payments/gateways'), (d) => List<String>.from(d['data']));
+  /// Card gateways the currency's country pack allows (Phase 8).
+  Future<List<String>> gateways(String currency) =>
+      _call(() => _dio.get('/payments/gateways', queryParameters: {'currency': currency}), (d) => List<String>.from(d['data']));
   Future<Intent> payBooking(int bookingId, String gateway) =>
       _call(() => _dio.post('/payments/intent', data: {'booking_id': bookingId, 'gateway': gateway}), (d) => Intent(d['data']));
   Future<Wallet> wallet() => _call(

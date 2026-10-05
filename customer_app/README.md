@@ -1,8 +1,8 @@
 # Customer app (Flutter)
 
-The customer app from MD §7.7: it mirrors the website flow — search → vehicle → availability → quote → sign in / register / phone OTP → checkout (wallet or Razorpay) → confirmation → my bookings → cancel / extend / invoice, plus wallet top-up and profile. It talks only to the REST API documented in [`../docs/openapi.json`](../docs/openapi.json).
+The customer app from MD §7.7: it mirrors the website flow — search → vehicle → availability → quote → sign in / register / phone OTP → checkout (wallet, Razorpay or Stripe) → confirmation → my bookings → cancel / extend / invoice, plus wallet top-up and profile. It talks only to the REST API documented in [`../docs/openapi.json`](../docs/openapi.json).
 
-Stack (MD §1): Flutter 3.x, Riverpod, dio, go_router, intl, flutter_localizations + ARB (en, ar, hi, es, de; Arabic right-to-left), firebase_messaging, google_maps_flutter, razorpay_flutter.
+Stack (MD §1): Flutter 3.x, Riverpod, dio, go_router, intl, flutter_localizations + ARB (en, ar, hi, es, de; Arabic right-to-left), firebase_messaging, google_maps_flutter, razorpay_flutter, flutter_stripe.
 
 ```
 lib/
@@ -25,9 +25,9 @@ flutter run --dart-define=API_BASE_URL=https://api.example.com/api/v1
 |---|---|
 | Push notifications (booking confirmed/cancelled) | `--dart-define=FIREBASE_API_KEY=… --dart-define=FIREBASE_APP_ID=… --dart-define=FIREBASE_SENDER_ID=… --dart-define=FIREBASE_PROJECT_ID=…`, and `FCM_CREDENTIALS` on the backend |
 | Branch map on the vehicle page | `--dart-define=MAPS_API_KEY=…` (also written into the Android manifest) |
-| Card payments | Razorpay keys on the backend (`RAZORPAY_*`); the app shows it only when `GET /payments/gateways` lists it |
+| Card payments | Razorpay (`RAZORPAY_*`) and/or Stripe (`STRIPE_*`) keys on the backend; checkout and top-up show the gateways `GET /payments/gateways?currency=` lists for that currency's country pack |
 
-The India country pack is the one wired end to end (INR, Razorpay). Stripe for the other packs comes with Phase 8.
+Country packs (Phase 8): India pays by Razorpay; UAE, US and Germany by Stripe (native PaymentSheet). The admin can change a pack's `gateways` list.
 
 ## Checks
 

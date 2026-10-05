@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\User;
@@ -21,7 +22,7 @@ class PaymentService
 {
     public const GATEWAYS = ['stripe', 'razorpay'];
 
-    public function __construct(private BookingService $bookings, private WalletService $wallet) {}
+    public function __construct(private BookingService $bookings, private WalletService $wallet, private CountryPackService $packs) {}
 
     /** @return list<string> gateways with keys and webhook secret configured (what the website may offer) */
     public function configuredGateways(): array
@@ -33,6 +34,20 @@ class PaymentService
                 return false;
             }
         }));
+    }
+
+    /**
+     * Configured gateways that the country pack of a currency allows (Phase 8; e.g. Razorpay for INR, Stripe for
+     * AED/USD/EUR). Countries sharing a currency offer the union of their packs' gateways.
+     *
+     * @return list<string>
+     */
+    public function gatewaysFor(string $currency): array
+    {
+        $allowed = Country::where('currency_code', $currency)->pluck('id')
+            ->flatMap(fn (int $id) => $this->packs->rulesFor($id)['gateways'] ?? self::GATEWAYS);
+
+        return array_values(array_intersect($this->configuredGateways(), $allowed->all()));
     }
 
     public function gateway(string $name): PaymentGateway
@@ -59,7 +74,7 @@ class PaymentService
      */
     public function createBookingIntent(Booking $booking, string $gatewayName): array
     {
-        $gateway = $gatewayName === Payment::WALLET ? null : $this->gateway($gatewayName);
+        $gateway = $gatewayName === Payment::WALLET ? null : $this->allowedGateway($gatewayName, $booking->currency_code);
 
         $payment = DB::transaction(function () use ($booking, $gateway, $gatewayName) {
             $booking = Booking::whereKey($booking->id)->lockForUpdate()->firstOrFail();
@@ -109,13 +124,23 @@ class PaymentService
      */
     public function createTopup(User $user, int $amount, string $currency, string $gatewayName): array
     {
-        $gateway = $this->gateway($gatewayName);
+        $gateway = $this->allowedGateway($gatewayName, $currency);
         $payment = Payment::create([
             'user_id' => $user->id, 'gateway' => $gatewayName, 'amount' => $amount,
             'currency_code' => $currency, 'status' => Payment::PENDING,
         ]);
 
         return ['payment' => $payment, 'client' => $this->openIntent($gateway, $payment)];
+    }
+
+    private function allowedGateway(string $name, string $currency): PaymentGateway
+    {
+        $gateway = $this->gateway($name);
+        if (! in_array($name, $this->gatewaysFor($currency), true)) {
+            throw new DomainException(__('messages.payment_gateway_unavailable'));
+        }
+
+        return $gateway;
     }
 
     /**

@@ -48,7 +48,7 @@ class Checkout extends Component
 
     public function payWithCard(PaymentService $payments, string $gateway)
     {
-        if (! in_array($gateway, $payments->configuredGateways(), true)) {
+        if (! in_array($gateway, $payments->gatewaysFor($this->booking->currency_code), true)) {
             $this->payError = __('messages.payment_gateway_unavailable');
 
             return null;
@@ -88,7 +88,7 @@ class Checkout extends Component
             'b' => $booking,
             'due' => $this->due(),
             'walletBalance' => $wallet->balance(auth()->id(), $booking->currency_code),
-            'gateways' => $payments->configuredGateways(),
+            'gateways' => $payments->gatewaysFor($booking->currency_code),
             'expired' => $booking->isExpiredDraft(),
             'payable' => in_array($booking->status, [BookingStatus::Draft, BookingStatus::PendingPayment, BookingStatus::Confirmed, BookingStatus::PickedUp], true),
         ])->title(__('site.checkout.title'));

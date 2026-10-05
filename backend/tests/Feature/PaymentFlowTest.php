@@ -44,6 +44,8 @@ class PaymentFlowTest extends TestCase
             'api.stripe.com/v1/payment_intents' => fn () => Http::response(['id' => 'pi_'.Str::random(10), 'client_secret' => 'secret']),
             'api.razorpay.com/v1/orders' => fn () => Http::response(['id' => 'order_'.Str::random(10)]),
         ]);
+        // These tests cover payment mechanics with both drivers on INR; per-pack gateway choice is in CountryPackGatewaysTest.
+        Country::where('iso_code', 'IN')->sole()->pack->update(['config_json' => ['gateways' => ['stripe', 'razorpay']]]);
         $this->vehicle = Vehicle::factory()->create();
         PricingRule::create(['scope_type' => 'global', 'unit' => 'day', 'base_rate' => 1000]);
         $this->customer = User::factory()->create(['country_id' => Country::where('iso_code', 'IN')->value('id')]);

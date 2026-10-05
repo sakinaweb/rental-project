@@ -36,7 +36,7 @@
 
     <aside class="card h-fit space-y-3" x-data="cardPayment" x-on:start-card-payment.window="start($event.detail)">
         <h2 class="font-semibold">{{ __('site.wallet.top_up') }}</h2>
-        @if (empty($gateways))
+        @unless ($cardsConfigured)
             <p class="text-sm text-zinc-500">{{ __('site.checkout.no_card') }}</p>
         @else
             <div class="grid grid-cols-3 gap-2">
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <label class="label" for="currency">{{ __('site.wallet.currency') }}</label>
-                    <select id="currency" wire:model="currency" class="field">
+                    <select id="currency" wire:model.live="currency" class="field">
                         <option value="">—</option>
                         @foreach ($currencies as $c)<option value="{{ $c }}">{{ $c }}</option>@endforeach
                     </select>
@@ -56,14 +56,16 @@
             @error('currency')<p class="error">{{ $message }}</p>@enderror
             @if ($topupError)<p class="error">{{ $topupError }}</p>@endif
             @if ($processing)<p class="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{{ __('site.wallet.processing') }}</p>@endif
-            @foreach ($gateways as $gateway)
+            @forelse ($gateways as $gateway)
                 <button wire:click="topup('{{ $gateway }}')" wire:loading.attr="disabled" class="btn w-full">{{ __('site.checkout.pay_'.$gateway) }}</button>
-            @endforeach
+            @empty
+                @if ($currency)<p class="text-sm text-zinc-500">{{ __('site.checkout.no_card') }}</p>@endif
+            @endforelse
             <div x-show="gateway === 'stripe'" x-cloak class="space-y-3">
                 <div x-ref="stripeElement"></div>
                 <button type="button" class="btn w-full" x-on:click="confirmStripe" x-bind:disabled="busy">{{ __('site.checkout.pay') }}</button>
             </div>
             <p x-show="error" x-text="error" class="error"></p>
-        @endif
+        @endunless
     </aside>
 </div>
