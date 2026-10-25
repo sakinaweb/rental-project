@@ -47,6 +47,10 @@
     },
     {
       "name": "Admin"
+    },
+    {
+      "name": "Investor",
+      "description": "Investor module (Phase 11): behind the global flag and the country pack. KYC approval and the current risk disclosure are required before investing; money comes in by bank transfer, confirmed by the admin."
     }
   ],
   "paths": {
@@ -3374,6 +3378,555 @@
           }
         }
       }
+    },
+    "/investment-plans": {
+      "get": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Plans open in the user's country",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/InvestmentPlan"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investments": {
+      "post": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Invest in a plan: pending until the admin confirms the bank transfer (reference INV-{id})",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "plan_id",
+                  "amount"
+                ],
+                "properties": {
+                  "plan_id": {
+                    "type": "integer"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Minor units of the plan's currency, at least its min_amount"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Investment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/investor/apply": {
+      "post": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Apply as an investor with bank details for payouts; the admin approves KYC",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "payout_details"
+                ],
+                "properties": {
+                  "payout_details": {
+                    "type": "object",
+                    "required": [
+                      "account_holder",
+                      "bank_name",
+                      "account_number"
+                    ],
+                    "properties": {
+                      "account_holder": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "bank_name": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "account_number": {
+                        "type": "string",
+                        "maxLength": 50
+                      },
+                      "routing_code": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 50,
+                        "description": "IFSC, IBAN/SWIFT, ABA…"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "kyc_status": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/investor/disclosure": {
+      "get": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "The current risk disclosure, in the session language",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Accept the current risk disclosure (stored with the time)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "version"
+                ],
+                "properties": {
+                  "version": {
+                    "type": "string",
+                    "description": "Must be the current version from GET"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          }
+        }
+      }
+    },
+    "/investor/dashboard": {
+      "get": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "KYC and disclosure status, investments with their vehicles, balances, recent payout requests",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InvestorDashboard"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/investor/statements/{period}": {
+      "get": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Monthly statement per currency: opening and closing balance, earned, paid out, entries",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}$",
+              "example": "2026-10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InvestorStatement"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/investor/payout-requests": {
+      "post": {
+        "tags": [
+          "Investor"
+        ],
+        "summary": "Request a payout (up to the available balance in that currency); paid in the next manual batch",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "currency_code",
+                  "amount"
+                ],
+                "properties": {
+                  "currency_code": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 3
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Minor units"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayoutRequest"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "Investor module off (global flag or the user's country pack)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4386,6 +4939,201 @@
             }
           }
         ]
+      },
+      "InvestmentPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "min_amount": {
+            "type": "integer",
+            "description": "Minor units"
+          },
+          "term_months": {
+            "type": "integer"
+          },
+          "revenue_share_pct": {
+            "type": "number",
+            "description": "Share of each settled rental (net of tax) of the funded vehicles, split between a vehicle's investors by allocated amount"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Investment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Bank transfer reference: INV-{id}"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "closed",
+              "cancelled"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Minor units"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "plan": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revenue_share_pct": {
+                "type": "number"
+              },
+              "term_months": {
+                "type": "integer"
+              }
+            }
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "ends_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "plate_no": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "allocated_amount": {
+                  "type": "integer",
+                  "description": "Minor units"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvestorDashboard": {
+        "type": "object",
+        "properties": {
+          "kyc_status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          },
+          "disclosure_accepted": {
+            "type": "boolean",
+            "description": "The current disclosure version is accepted"
+          },
+          "investments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Investment"
+            }
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency_code": {
+                  "type": "string"
+                },
+                "balance": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "available": {
+                  "type": "integer",
+                  "description": "Minor units"
+                }
+              }
+            }
+          },
+          "payout_requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutRequest"
+            }
+          }
+        }
+      },
+      "InvestorStatement": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "example": "2026-10"
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currency_code": {
+                  "type": "string"
+                },
+                "opening_balance": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "earned": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "paid_out": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "closing_balance": {
+                  "type": "integer",
+                  "description": "Minor units"
+                },
+                "entries": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LedgerEntry"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "requestBodies": {

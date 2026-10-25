@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Investor;
 use App\Models\LedgerAccount;
 use App\Models\LedgerEntry;
 use App\Models\Partner;
@@ -29,8 +30,23 @@ class PayoutService
     {
         $this->partners->ensureActive($partner);
 
-        return DB::transaction(function () use ($partner, $currency, $amount) {
-            $account = $this->ledger->account(LedgerAccount::PARTNER, $partner->id, $currency); // locked: one request at a time
+        return $this->request(LedgerAccount::PARTNER, $partner->id, $currency, $amount);
+    }
+
+    /** Investors are paid from the same manual batches as partners (Phase 11). */
+    public function requestInvestorPayout(Investor $investor, string $currency, int $amount): PayoutRequest
+    {
+        if (! $investor->isApproved()) {
+            throw new DomainException(__('messages.investor_kyc_required'));
+        }
+
+        return $this->request(LedgerAccount::INVESTOR, $investor->id, $currency, $amount);
+    }
+
+    private function request(string $ownerType, int $ownerId, string $currency, int $amount): PayoutRequest
+    {
+        return DB::transaction(function () use ($ownerType, $ownerId, $currency, $amount) {
+            $account = $this->ledger->account($ownerType, $ownerId, $currency); // locked: one request at a time
             if ($amount < 1 || $amount > $this->available($account)) {
                 throw new DomainException(__('messages.payout_exceeds_available'));
             }

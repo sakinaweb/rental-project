@@ -13,9 +13,23 @@ class LedgerAccount extends Model
 
     public const PARTNER = 'partner';
 
+    public const INVESTOR = 'investor';
+
     protected $fillable = ['owner_type', 'owner_id', 'currency_code', 'balance'];
 
     protected $casts = ['owner_id' => 'integer', 'balance' => 'integer'];
+
+    /** "Platform", or the partner's / investor's name, for admin lists. */
+    public function ownerLabel(): string
+    {
+        $owner = match ($this->owner_type) {
+            self::PARTNER => Partner::withTrashed()->with('user')->find($this->owner_id),
+            self::INVESTOR => Investor::withTrashed()->with('user')->find($this->owner_id),
+            default => null,
+        };
+
+        return $this->owner_type === self::PLATFORM ? 'Platform' : ucfirst($this->owner_type).' '.($owner?->user->name ?? "#{$this->owner_id}");
+    }
 
     /** @return HasMany<LedgerEntry, $this> */
     public function entries(): HasMany

@@ -2,7 +2,7 @@
 
 // Customer website strings (Phase 6). Business-rule messages come from messages.php, shared with the API.
 return [
-    'nav' => ['search' => 'Search', 'my_bookings' => 'My bookings', 'wallet' => 'Wallet', 'profile' => 'Profile', 'login' => 'Sign in', 'register' => 'Create account', 'logout' => 'Sign out', 'language' => 'Language', 'partner' => 'Partner'],
+    'nav' => ['search' => 'Search', 'my_bookings' => 'My bookings', 'wallet' => 'Wallet', 'profile' => 'Profile', 'login' => 'Sign in', 'register' => 'Create account', 'logout' => 'Sign out', 'language' => 'Language', 'partner' => 'Partner', 'investor' => 'Invest'],
     'common' => ['loading' => 'Loading…', 'back' => 'Back', 'optional' => 'optional', 'times_note' => 'All times are shown in :tz.'],
     'search' => [
         'title' => 'Find a bike or car', 'country' => 'Country', 'city' => 'City', 'any' => 'Any', 'pick_up' => 'Pick-up', 'return' => 'Return',
@@ -103,5 +103,33 @@ return [
         'vehicle_status_pending' => 'Awaiting approval',
         'vehicle_status_active' => 'Listed',
         'vehicle_status_suspended' => 'Suspended',
+    ],
+    'investor' => [
+        'title' => 'Investor dashboard',
+        'apply_title' => 'Become an investor',
+        'apply_intro' => 'Fund company bikes and cars and earn a share of what they make. Give the bank account for your earnings; we then check your identity (KYC) before you can invest.',
+        'kyc_pending' => 'Thanks! We are checking your identity (KYC). You can invest once it is approved.',
+        'kyc_rejected' => 'Your identity check was not approved. You can apply again with updated details.',
+        'disclosure_title' => 'Risk disclosure',
+        'disclosure' => 'Investing in rental vehicles carries risk. Your earnings depend on how often the vehicles you fund are rented: they are not guaranteed and can be low or zero. Your money funds company vehicles; it is not a bank deposit, is not covered by any deposit protection scheme, and cannot be withdrawn before the end of the term. Vehicles can be damaged, stolen or out of service, which lowers earnings. Your principal is paid back at the end of the term and depends on the company being able to pay. Only invest money you can keep in for the whole term. This is not investment advice; check the rules that apply to you in your country.',
+        'accept_label' => 'I have read and understood this risk disclosure.',
+        'accept' => 'Accept and continue',
+        'plans' => 'Investment plans',
+        'no_plans' => 'No plans are open in your country right now.',
+        'minimum' => 'Minimum :amount',
+        'term' => ':n month term|:n months term',
+        'share' => ':pct% of each rental (after tax) of your vehicles',
+        'all_vehicles' => 'Any vehicle type',
+        'amount' => 'Amount (:currency)',
+        'invest' => 'Invest',
+        'invested' => 'Investment requested. Transfer :amount to our bank account with reference INV-:id; we start your term when it arrives.',
+        'investments' => 'My investments',
+        'no_investments' => 'You have no investments yet.',
+        'status_pending' => 'Awaiting your transfer',
+        'status_active' => 'Active',
+        'status_closed' => 'Closed',
+        'status_cancelled' => 'Cancelled',
+        'period' => ':from – :to',
+        'vehicles' => 'Funded vehicles',
     ],
 ];

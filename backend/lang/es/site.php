@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'nav' => ['search' => 'Buscar', 'my_bookings' => 'Mis reservas', 'wallet' => 'Monedero', 'profile' => 'Perfil', 'login' => 'Iniciar sesión', 'register' => 'Crear cuenta', 'logout' => 'Cerrar sesión', 'language' => 'Idioma', 'partner' => 'Socios'],
+    'nav' => ['search' => 'Buscar', 'my_bookings' => 'Mis reservas', 'wallet' => 'Monedero', 'profile' => 'Perfil', 'login' => 'Iniciar sesión', 'register' => 'Crear cuenta', 'logout' => 'Cerrar sesión', 'language' => 'Idioma', 'partner' => 'Socios', 'investor' => 'Invertir'],
     'common' => ['loading' => 'Cargando…', 'back' => 'Volver', 'optional' => 'opcional', 'times_note' => 'Todas las horas se muestran en :tz.'],
     'search' => [
         'title' => 'Encuentra una moto o un coche', 'country' => 'País', 'city' => 'Ciudad', 'any' => 'Cualquiera', 'pick_up' => 'Recogida', 'return' => 'Devolución',
@@ -102,5 +102,33 @@ return [
         'vehicle_status_pending' => 'Pendiente de aprobación',
         'vehicle_status_active' => 'Publicado',
         'vehicle_status_suspended' => 'Suspendido',
+    ],
+    'investor' => [
+        'title' => 'Panel de inversor',
+        'apply_title' => 'Hazte inversor',
+        'apply_intro' => 'Financia motos y coches de la empresa y gana una parte de lo que generan. Indica la cuenta bancaria para tus ganancias; después verificamos tu identidad (KYC) antes de que puedas invertir.',
+        'kyc_pending' => '¡Gracias! Estamos verificando tu identidad (KYC). Podrás invertir cuando se apruebe.',
+        'kyc_rejected' => 'Tu verificación de identidad no fue aprobada. Puedes volver a solicitarlo con datos actualizados.',
+        'disclosure_title' => 'Declaración de riesgos',
+        'disclosure' => 'Invertir en vehículos de alquiler conlleva riesgos. Tus ganancias dependen de la frecuencia con que se alquilen los vehículos que financias: no están garantizadas y pueden ser bajas o nulas. Tu dinero financia vehículos de la empresa; no es un depósito bancario, no está cubierto por ningún fondo de garantía de depósitos y no puede retirarse antes del final del plazo. Los vehículos pueden sufrir daños, robos o quedar fuera de servicio, lo que reduce las ganancias. El capital se devuelve al final del plazo y depende de que la empresa pueda pagarlo. Invierte solo dinero que puedas mantener durante todo el plazo. Esto no es asesoramiento de inversión; consulta las normas que te aplican en tu país.',
+        'accept_label' => 'He leído y entendido esta declaración de riesgos.',
+        'accept' => 'Aceptar y continuar',
+        'plans' => 'Planes de inversión',
+        'no_plans' => 'Ahora mismo no hay planes abiertos en tu país.',
+        'minimum' => 'Mínimo :amount',
+        'term' => 'Plazo de :n mes|Plazo de :n meses',
+        'share' => ':pct% de cada alquiler (tras impuestos) de tus vehículos',
+        'all_vehicles' => 'Cualquier tipo de vehículo',
+        'amount' => 'Importe (:currency)',
+        'invest' => 'Invertir',
+        'invested' => 'Inversión solicitada. Transfiere :amount a nuestra cuenta bancaria con la referencia INV-:id; empezamos tu plazo cuando llegue.',
+        'investments' => 'Mis inversiones',
+        'no_investments' => 'Aún no tienes inversiones.',
+        'status_pending' => 'Esperando tu transferencia',
+        'status_active' => 'Activa',
+        'status_closed' => 'Cerrada',
+        'status_cancelled' => 'Cancelada',
+        'period' => ':from – :to',
+        'vehicles' => 'Vehículos financiados',
     ],
 ];

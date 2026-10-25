@@ -6,7 +6,6 @@ use App\Filament\Resources\PayoutRequests\Pages\ManagePayoutRequests;
 use App\Filament\Support\MoneyColumn;
 use App\Filament\Support\ReadOnlyResource;
 use App\Models\AuditLog;
-use App\Models\Partner;
 use App\Models\PayoutRequest;
 use App\Services\PayoutService;
 use BackedEnum;
@@ -20,7 +19,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use UnitEnum;
 
-// Partners' payout requests. Pending ones go into a batch (Payout batches) or are rejected here.
+// Partners' and investors' payout requests. Pending ones go into a batch (Payout batches) or are rejected here.
 class PayoutRequestResource extends Resource
 {
     use ReadOnlyResource;
@@ -40,8 +39,8 @@ class PayoutRequestResource extends Resource
             ->modifyQueryUsing(fn ($query) => $query->with('account'))
             ->columns([
                 TextColumn::make('id')->label('#')->sortable(),
-                TextColumn::make('account.owner_id')->label('Partner')
-                    ->formatStateUsing(fn (PayoutRequest $record) => Partner::with('user')->find($record->account->owner_id)?->user->name ?? "#{$record->account->owner_id}"),
+                TextColumn::make('account.owner_id')->label('Payee')
+                    ->formatStateUsing(fn (PayoutRequest $record) => $record->account->ownerLabel()),
                 MoneyColumn::make('amount'),
                 TextColumn::make('status')->badge(),
                 TextColumn::make('payout_batch_id')->label('Batch'),

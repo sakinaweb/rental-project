@@ -44,3 +44,15 @@ Only where the partner feature is on (Settings and the user's country pack); oth
 4. `POST /partner/vehicles/{id}/blockout` / `DELETE /partner/vehicles/{id}/blockouts/{blockout}` → dates customers can't book
 5. Earnings arrive when a booking of the vehicle settles: `GET /partner/earnings` (rental net of tax minus the platform commission)
 6. `POST /partner/payout-requests` up to `available` → the admin pays it by bank transfer in a batch (`POST /admin/payout-batches`)
+
+## Investor flow (Phase 11)
+
+Only where the investor feature is on (Settings and the user's country pack; off in every pack by default); otherwise every investor call is `403`.
+
+1. `POST /investor/apply` with `payout_details` (bank details) → `kyc_status: pending` until the admin approves KYC
+2. `GET /investor/disclosure` → `POST /investor/disclosure` with that `version` (asked again when the version changes)
+3. `GET /investment-plans` (the user's country) → `POST /investments` with `plan_id` and `amount` (at least `min_amount`) → `pending`
+4. The investor transfers the amount with reference `INV-{id}`; the admin marks it received and places it on company vehicles → `active`, the term starts
+5. Each settled booking of those vehicles that starts within the term pays the plan's `revenue_share_pct` of its rental net of tax, split between the vehicle's investors by allocated amount, out of the platform's share
+6. `GET /investor/dashboard`, `GET /investor/statements/{YYYY-MM}`, `POST /investor/payout-requests` (same batches as partners)
+7. At the end of the term the admin pays the principal back by bank transfer and closes the investment

@@ -30,6 +30,9 @@
                     @if (app(\App\Services\PartnerService::class)->enabledFor(auth()->user()))
                         <a href="{{ route('partner.dashboard') }}" class="{{ $link('partner.*') }}">{{ __('site.nav.partner') }}</a>
                     @endif
+                    @if (app(\App\Services\InvestorService::class)->enabledFor(auth()->user()))
+                        <a href="{{ route('investor.dashboard') }}" class="{{ $link('investor.*') }}">{{ __('site.nav.investor') }}</a>
+                    @endif
                 @endauth
                 <div class="mt-2 flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-3 md:ms-auto md:mt-0 md:border-0 md:pt-0">
                     <form method="POST" action="{{ route('language') }}">

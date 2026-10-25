@@ -9,6 +9,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Checkout;
 use App\Livewire\Confirmation;
+use App\Livewire\Investor\Dashboard as InvestorDashboard;
 use App\Livewire\Partner\Dashboard as PartnerDashboard;
 use App\Livewire\Partner\Vehicles as PartnerVehicles;
 use App\Livewire\Search;
@@ -59,4 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', PartnerDashboard::class)->name('dashboard');
         Route::get('/vehicles', PartnerVehicles::class)->name('vehicles');
     });
+
+    // Investor area (Phase 11): only where the investor feature is on (global flag + the user's country pack).
+    Route::get('/investor', InvestorDashboard::class)->middleware('investor.module')->name('investor.dashboard');
 });

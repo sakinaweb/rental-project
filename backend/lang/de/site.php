@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'nav' => ['search' => 'Suche', 'my_bookings' => 'Meine Buchungen', 'wallet' => 'Wallet', 'profile' => 'Profil', 'login' => 'Anmelden', 'register' => 'Konto erstellen', 'logout' => 'Abmelden', 'language' => 'Sprache', 'partner' => 'Partner'],
+    'nav' => ['search' => 'Suche', 'my_bookings' => 'Meine Buchungen', 'wallet' => 'Wallet', 'profile' => 'Profil', 'login' => 'Anmelden', 'register' => 'Konto erstellen', 'logout' => 'Abmelden', 'language' => 'Sprache', 'partner' => 'Partner', 'investor' => 'Investieren'],
     'common' => ['loading' => 'Wird geladen…', 'back' => 'Zurück', 'optional' => 'optional', 'times_note' => 'Alle Zeiten werden in :tz angezeigt.'],
     'search' => [
         'title' => 'Motorrad oder Auto finden', 'country' => 'Land', 'city' => 'Stadt', 'any' => 'Alle', 'pick_up' => 'Abholung', 'return' => 'Rückgabe',
@@ -102,5 +102,33 @@ return [
         'vehicle_status_pending' => 'Wartet auf Freigabe',
         'vehicle_status_active' => 'Angezeigt',
         'vehicle_status_suspended' => 'Gesperrt',
+    ],
+    'investor' => [
+        'title' => 'Investoren-Dashboard',
+        'apply_title' => 'Investor werden',
+        'apply_intro' => 'Finanzieren Sie Firmen-Motorräder und -Autos und erhalten Sie einen Anteil an ihren Einnahmen. Geben Sie das Bankkonto für Ihre Erträge an; danach prüfen wir Ihre Identität (KYC), bevor Sie investieren können.',
+        'kyc_pending' => 'Danke! Wir prüfen Ihre Identität (KYC). Sie können investieren, sobald sie genehmigt ist.',
+        'kyc_rejected' => 'Ihre Identitätsprüfung wurde nicht genehmigt. Sie können sich mit aktualisierten Angaben erneut bewerben.',
+        'disclosure_title' => 'Risikoaufklärung',
+        'disclosure' => 'Investitionen in Mietfahrzeuge sind mit Risiken verbunden. Ihre Erträge hängen davon ab, wie oft die von Ihnen finanzierten Fahrzeuge vermietet werden: Sie sind nicht garantiert und können niedrig oder null sein. Ihr Geld finanziert Firmenfahrzeuge; es ist keine Bankeinlage, fällt unter keine Einlagensicherung und kann vor Ende der Laufzeit nicht abgezogen werden. Fahrzeuge können beschädigt, gestohlen oder außer Betrieb sein, was die Erträge mindert. Ihr Kapital wird am Ende der Laufzeit zurückgezahlt und hängt von der Zahlungsfähigkeit des Unternehmens ab. Investieren Sie nur Geld, das Sie die gesamte Laufzeit entbehren können. Dies ist keine Anlageberatung; prüfen Sie die in Ihrem Land für Sie geltenden Regeln.',
+        'accept_label' => 'Ich habe diese Risikoaufklärung gelesen und verstanden.',
+        'accept' => 'Akzeptieren und weiter',
+        'plans' => 'Investitionspläne',
+        'no_plans' => 'In Ihrem Land sind derzeit keine Pläne offen.',
+        'minimum' => 'Mindestens :amount',
+        'term' => ':n Monat Laufzeit|:n Monate Laufzeit',
+        'share' => ':pct % jeder Vermietung (nach Steuern) Ihrer Fahrzeuge',
+        'all_vehicles' => 'Jeder Fahrzeugtyp',
+        'amount' => 'Betrag (:currency)',
+        'invest' => 'Investieren',
+        'invested' => 'Investition angefragt. Überweisen Sie :amount mit dem Verwendungszweck INV-:id auf unser Bankkonto; Ihre Laufzeit beginnt mit dem Eingang.',
+        'investments' => 'Meine Investitionen',
+        'no_investments' => 'Sie haben noch keine Investitionen.',
+        'status_pending' => 'Wartet auf Ihre Überweisung',
+        'status_active' => 'Aktiv',
+        'status_closed' => 'Abgeschlossen',
+        'status_cancelled' => 'Storniert',
+        'period' => ':from – :to',
+        'vehicles' => 'Finanzierte Fahrzeuge',
     ],
 ];

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Phase 11: Investor module (MD §7.11)
+
+- **Behind the flag:** global "Investor module" setting and the country pack's `investor` toggle (still off in every pack); off → `403` on the API and the website page, no nav link.
+- **Onboarding (owner decision):** apply with bank details → the admin approves KYC (Investors page) → accept the current risk disclosure (`compliance_disclosures`, versioned in `InvestorService::DISCLOSURE_VERSION`; a new version asks again). Both are needed before investing.
+- **Plans:** admin creates them per country (currency = the country's) with optional vehicle category, minimum, term and investors' share (%). New `investment_plans.country_id` and `investors.payout_details_json` (additive migration).
+- **Money in (owner decision):** an investment is `pending` until the investor's bank transfer (reference `INV-{id}`) arrives; the admin then places the whole amount on company vehicles of the plan's country/category (Investments → "Transfer received") and the term starts. "Principal repaid" closes it; a pending one can be cancelled. All audited.
+- **Returns (owner decision):** company vehicles only. When a booking settles, each active investment on the vehicle whose term covers the booking's start gets its plan's % of the rental net of tax (the partners' base) × its share of the vehicle's allocations, rounded down, out of the platform's share. Damages still go to the platform. Entries always add up to the base.
+- **Payouts:** same manual batches as partners; the admin Payout requests and Ledger pages now name the investor or partner.
+- API: `GET /investment-plans`, `POST /investments`, `POST /investor/apply`, `GET|POST /investor/disclosure`, `GET /investor/dashboard`, `GET /investor/statements/{YYYY-MM}`, `POST /investor/payout-requests`. Website: `/investor`. Strings in all five languages.
+- Not yet in the customer Flutter app (website and API only).
+
 ### Polish: look, speed and operations
 
 - **Vehicle photos:** new `vehicle_models.image_path` (additive migration), uploaded on the admin Vehicle models page (same disk as checklist photos). `model.image_url` in the vehicle API (null when none). Website and customer app show the photo, or a drawn bike/car when there is none.

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\GeographyController;
+use App\Http\Controllers\Api\V1\InvestorController;
 use App\Http\Controllers\Api\V1\PartnerController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\StaffController;
@@ -73,6 +74,20 @@ Route::middleware(['auth:sanctum', 'partner.module'])->prefix('partner')->contro
     Route::post('vehicles/{vehicle}/blockout', 'storeBlockout')->whereNumber('vehicle');
     Route::delete('vehicles/{vehicle}/blockouts/{blockout}', 'destroyBlockout')->whereNumber(['vehicle', 'blockout']);
     Route::post('payout-requests', 'requestPayout')->middleware('throttle:10,1');
+});
+
+// Investor module (MD §4, Phase 11): only where the investor feature is on (global flag + the user's country pack).
+Route::middleware(['auth:sanctum', 'investor.module'])->controller(InvestorController::class)->group(function () {
+    Route::get('investment-plans', 'plans');
+    Route::post('investments', 'invest')->middleware('throttle:10,1');
+    Route::prefix('investor')->group(function () {
+        Route::post('apply', 'apply')->middleware('throttle:5,1');
+        Route::get('disclosure', 'disclosure');
+        Route::post('disclosure', 'acknowledge');
+        Route::get('dashboard', 'dashboard');
+        Route::get('statements/{period}', 'statement')->where('period', '\d{4}-\d{2}');
+        Route::post('payout-requests', 'requestPayout')->middleware('throttle:10,1');
+    });
 });
 
 // Staff app (MD §7.10, Phase 10): the staff member's branch only.

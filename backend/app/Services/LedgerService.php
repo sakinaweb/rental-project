@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
  */
 class LedgerService
 {
+    public function __construct(private InvestorService $investors) {}
+
     /**
      * MD §5 revenue waterfall, posted once when a booking settles (inside settle()'s transaction).
      *
@@ -35,13 +37,22 @@ class LedgerService
                 ? PartnerVehicle::withTrashed()->where('vehicle_id', $booking->vehicle_id)->first()
                 : null;
 
-            // Platform first, then partner: one lock order everywhere, so concurrent settlements can't deadlock.
+            // Phase 11: on a company vehicle its investors' shares come out of the platform's (never on partner vehicles).
+            $investorShares = $terms ? [] : $this->investors->sharesFor($booking, $base);
+
+            // Platform, then partner, then investors by id: one lock order everywhere, so concurrent settlements can't deadlock.
             $platform = $this->account(LedgerAccount::PLATFORM, 0, $booking->currency_code);
             $partner = $terms ? $this->account(LedgerAccount::PARTNER, $terms->partner_id, $booking->currency_code) : null;
 
-            $commission = $terms ? (int) round($base * $terms->commission_pct / 100) : $base;
-            $this->post($platform, $commission, LedgerEntry::CREDIT_SHARE, $booking->id);
-            $this->post($partner ?? $platform, $base - $commission, LedgerEntry::CREDIT_SHARE, $booking->id);
+            $platformShare = $terms ? (int) round($base * $terms->commission_pct / 100) : $base - array_sum($investorShares);
+            $this->post($platform, $platformShare, LedgerEntry::CREDIT_SHARE, $booking->id);
+            if ($partner) {
+                $this->post($partner, $base - $platformShare, LedgerEntry::CREDIT_SHARE, $booking->id);
+            }
+            foreach ($investorShares as $investorId => $share) {
+                $this->post($this->account(LedgerAccount::INVESTOR, $investorId, $booking->currency_code), $share, LedgerEntry::CREDIT_SHARE, $booking->id);
+            }
+            // Damages pay for repairs, so they go to the vehicle's owner: the partner, or the platform (not investors).
             $this->post($partner ?? $platform, $damagesCollected, LedgerEntry::CREDIT_SHARE, $booking->id);
         });
     }
