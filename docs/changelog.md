@@ -8,7 +8,8 @@
 - **One look everywhere:** brand indigo on the website, admin panel (`Color::Indigo`), customer app and staff app. Website: full-width hero with the search card, type chips, photo cards with the price, a photo header on the vehicle page, sticky header with a phone menu, spinner on Search and Book.
 - **Quicker booking:** "Quick dates" (1 day / 3 days / 1 week, from tomorrow 10:00) fills pick-up and return in one tap, so every card shows its real total right away.
 - **Admin dashboard:** new "Overdue returns" and "Damages to review" numbers; booking numbers open the bookings list filtered by that status; new "Today's handovers and returns" table (pickups due, returns due and overdue, late ones in red, one click to the booking). Both refresh every minute.
-- **Staff app:** booking cards, late ones edged in orange.
+- **Staff app:** booking cards, late ones edged in orange. Now in all five languages (ar, hi, es, de added): the account's language once signed in (as the server's messages), the phone's before; Arabic is right-to-left.
+- **Website on phones:** checked at 390 px wide (home, vehicle, sign-in): no sideways scrolling, menu folds into a button, Quick dates buttons are full tap size.
 - **Fixes:** checklist and damage photos were not served (`public/storage` was an empty file, not the `storage:link` symlink). In the apps, photo URLs from a dev server's `localhost` now go to the API host, so they load on the emulator.
 - **Dev speed (Docker on Windows):** `docker/php/dev.ini` (mounted by `docker-compose.yml`) sizes OPcache for the ~15k vendor files and re-checks files every 60 s instead of 2 s. Pages went from 17–19 s to about 1–2 s. PHP edits show up within a minute, or at once after `docker compose restart app`.
 

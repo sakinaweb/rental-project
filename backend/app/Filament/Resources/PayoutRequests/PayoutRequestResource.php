@@ -41,7 +41,7 @@ class PayoutRequestResource extends Resource
             ->columns([
                 TextColumn::make('id')->label('#')->sortable(),
                 TextColumn::make('account.owner_id')->label('Partner')
-                    ->formatStateUsing(fn (PayoutRequest $record) => Partner::with('user')->find($record->account->owner_id)?->user?->name ?? "#{$record->account->owner_id}"),
+                    ->formatStateUsing(fn (PayoutRequest $record) => Partner::with('user')->find($record->account->owner_id)?->user->name ?? "#{$record->account->owner_id}"),
                 MoneyColumn::make('amount'),
                 TextColumn::make('status')->badge(),
                 TextColumn::make('payout_batch_id')->label('Batch'),

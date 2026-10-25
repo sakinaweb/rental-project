@@ -79,7 +79,7 @@ void main() {
     expect(Booking(bookingJson(status: 'pending_payment')).waitingForPayment, isTrue);
   });
 
-  test('vehicle photo: a dev server''s localhost URL goes to the API host, real hosts are kept', () {
+  test("vehicle photo: a dev server's localhost URL goes to the API host, real hosts are kept", () {
     final api = Uri.parse(Config.apiBaseUrl);
     expect(mediaUrl('http://localhost:8000/storage/vehicle-models/a.jpg'), '${api.scheme}://${api.host}:${api.port}/storage/vehicle-models/a.jpg');
     expect(mediaUrl('https://cdn.example.com/a.jpg'), 'https://cdn.example.com/a.jpg');

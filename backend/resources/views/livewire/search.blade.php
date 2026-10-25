@@ -47,7 +47,7 @@
         <div class="flex flex-wrap items-center gap-2 text-sm">
             <span class="me-1 text-xs font-semibold tracking-wide text-zinc-500 uppercase">{{ __('site.search.quick') }}</span>
             @foreach ([1, 3, 7] as $days)
-                <button type="button" wire:click="preset({{ $days }})" class="chip py-1">{{ $days === 7 ? __('site.search.week') : trans_choice('site.search.days', $days, ['n' => $days]) }}</button>
+                <button type="button" wire:click="preset({{ $days }})" class="chip">{{ $days === 7 ? __('site.search.week') : trans_choice('site.search.days', $days, ['n' => $days]) }}</button>
             @endforeach
         </div>
         <div class="grid grid-cols-1 gap-4 border-t border-zinc-100 pt-5 sm:grid-cols-3">

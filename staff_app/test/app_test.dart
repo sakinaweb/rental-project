@@ -131,4 +131,18 @@ void main() {
     expect(find.byKey(const Key('sign-in')), findsOneWidget);
     expect(backend.sent('GET /staff/bookings'), isEmpty);
   });
+
+  testWidgets("the app speaks the staff account's language: Arabic is translated and right-to-left", (tester) async {
+    final backend = branchBackend()..on('POST /auth/login', (_) => {'token': 'staff-token', 'user': userJson(locale: 'ar')});
+    await pumpApp(tester, backend);
+
+    await tester.enterText(find.byKey(const Key('email')), 'ravi@example.com');
+    await tester.enterText(find.byKey(const Key('password')), 'secret123');
+    await tester.tap(find.byKey(const Key('sign-in')));
+    await settle(tester);
+
+    expect(find.text('الاستلامات (1)'), findsOneWidget);
+    expect(find.text('الإرجاعات (1)'), findsOneWidget);
+    expect(Directionality.of(tester.element(find.text('الاستلامات (1)'))), TextDirection.rtl);
+  });
 }

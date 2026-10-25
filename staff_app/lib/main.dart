@@ -44,6 +44,11 @@ class _StaffAppState extends ConsumerState<StaffApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: L10n.supportedLocales,
+      // The account's language (set by the admin) once signed in, like the server's messages; the phone's before.
+      locale: switch (ref.watch(sessionProvider.select((s) => s.user?.locale))) {
+        final String code when L10n.supportedLocales.any((l) => l.languageCode == code) => Locale(code),
+        _ => null,
+      },
     );
   }
 }

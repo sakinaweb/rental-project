@@ -46,7 +46,7 @@ class MemoryTokenStore extends TokenStore {
   Future<void> write(String? value) async => token = value;
 }
 
-Map<String, dynamic> userJson({String role = 'staff'}) => {'id': 5, 'name': 'Ravi', 'email': 'ravi@example.com', 'role': role};
+Map<String, dynamic> userJson({String role = 'staff', String? locale}) => {'id': 5, 'name': 'Ravi', 'email': 'ravi@example.com', 'role': role, 'locale': locale};
 
 Map<String, dynamic> bookingJson({
   int id = 42,

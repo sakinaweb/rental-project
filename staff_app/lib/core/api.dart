@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,6 +27,7 @@ class User {
   final Map<String, dynamic> j;
   String get name => j['name'] ?? '';
   String? get role => j['role'];
+  String? get locale => j['locale'];
 }
 
 class StaffBooking {
@@ -86,6 +89,8 @@ Dio createDio(Ref ref) {
       onRequest: (options, handler) {
         final token = ref.read(sessionProvider).token;
         if (token != null) options.headers['Authorization'] = 'Bearer $token';
+        // Messages before sign-in follow the phone; once signed in the server uses the account's language.
+        options.headers['Accept-Language'] = PlatformDispatcher.instance.locale.languageCode;
         handler.next(options);
       },
     ),
