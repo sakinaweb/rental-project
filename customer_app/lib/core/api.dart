@@ -71,6 +71,7 @@ class Vehicle {
   int? get seats => j['model']?['seats'];
   String? get transmission => j['model']?['transmission'];
   String? get fuel => j['model']?['fuel_type'];
+  String? get imageUrl => mediaUrl(j['model']?['image_url']);
   String get branch => j['branch']?['name'] ?? '';
   String get locationName => j['branch']?['location']?['name'] ?? '';
   double? get lat => double.tryParse('${j['branch']?['location']?['lat']}');

@@ -8,6 +8,7 @@ return [
         'category' => 'Kategorie', 'type' => 'Typ', 'bike' => 'Motorrad', 'car' => 'Auto', 'seats' => 'Min. Sitze', 'button' => 'Suchen',
         'no_results' => 'Keine Fahrzeuge passen zu Ihrer Suche. Versuchen Sie andere Daten oder Filter.', 'dates_invalid' => 'Die Rückgabe muss nach der Abholung liegen.',
         'total_for_dates' => 'gesamt für Ihre Daten', 'pick_dates_for_price' => 'Wählen Sie Abholung und Rückgabe, um den Preis zu sehen.',
+        'subtitle' => 'Motorräder und Autos von geprüften Filialen. Daten wählen, Gesamtpreis sehen, in einer Minute buchen.', 'quick' => 'Schnellauswahl', 'days' => ':n Tag|:n Tage', 'week' => '1 Woche', 'from_price' => 'Details ansehen',
     ],
     'vehicle' => [
         'seats' => ':n Sitz|:n Sitze', 'seats_label' => 'Sitze', 'transmission' => 'Getriebe', 'fuel' => 'Kraftstoff', 'branch' => 'Filiale',

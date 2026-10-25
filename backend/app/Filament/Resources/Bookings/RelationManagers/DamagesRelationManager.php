@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Models\AuditLog;
 use App\Models\Booking;
 use App\Models\Damage;
+use App\Models\Inspection;
 use App\Support\Money;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -58,6 +60,7 @@ class DamagesRelationManager extends RelationManager
                 TextColumn::make('description')->wrap(),
                 TextColumn::make('cost')->formatStateUsing(fn ($state) => Money::format((int) $state, $this->booking()->currency_code)),
                 TextColumn::make('status')->badge(),
+                ImageColumn::make('evidence_json.photos')->label('Photos')->disk(Inspection::disk())->stacked()->limit(4), // from the staff app
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->headerActions([

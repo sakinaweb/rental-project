@@ -39,6 +39,8 @@ class UserResource extends Resource
             TextInput::make('phone')->maxLength(20)->regex('/^\+[1-9]\d{6,14}$/')->unique(ignoreRecord: true),
             Select::make('role_id')->label('Role')->relationship('role', 'name')->required(),
             Select::make('country_id')->label('Country')->relationship('country', 'name'),
+            Select::make('branch_id')->label('Branch (staff)')->relationship('branch', 'name')->searchable()->preload()
+                ->helperText('Staff see and handle the pickups and returns of this branch in the staff app.'),
             Select::make('locale')->options(fn () => array_combine(config('app.supported_locales'), config('app.supported_locales')))->required(),
             Select::make('status')->options(self::STATUSES)->required()
                 ->helperText('Suspending also signs the user out of the apps (API tokens revoked).'),

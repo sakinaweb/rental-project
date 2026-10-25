@@ -33,4 +33,6 @@ return [
     'payout_none_pending' => 'No hay solicitudes de pago pendientes en esta moneda.',
     'payout_batch_not_pending' => 'Este lote de pagos ya se ha procesado.',
     'payout_request_not_pending' => 'Solo se pueden rechazar solicitudes de pago pendientes.',
+    'staff_no_branch' => 'Aún no tienes una sucursal asignada. Pide a un administrador que la configure.',
+    'inspection_odometer_lower' => 'El cuentakilómetros a la devolución no puede ser menor que en la entrega (:km).',
 ];

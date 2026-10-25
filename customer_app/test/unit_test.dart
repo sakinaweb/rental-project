@@ -1,4 +1,5 @@
 import 'package:customer_app/core/api.dart';
+import 'package:customer_app/core/config.dart';
 import 'package:customer_app/core/money.dart';
 import 'package:customer_app/core/session.dart';
 import 'package:dio/dio.dart';
@@ -76,5 +77,13 @@ void main() {
     expect(Booking(bookingJson(status: 'pending_payment')).canExtend, isFalse);
     expect(Booking(bookingJson(status: 'confirmed', paid: 854000)).canPay, isFalse);
     expect(Booking(bookingJson(status: 'pending_payment')).waitingForPayment, isTrue);
+  });
+
+  test('vehicle photo: a dev server''s localhost URL goes to the API host, real hosts are kept', () {
+    final api = Uri.parse(Config.apiBaseUrl);
+    expect(mediaUrl('http://localhost:8000/storage/vehicle-models/a.jpg'), '${api.scheme}://${api.host}:${api.port}/storage/vehicle-models/a.jpg');
+    expect(mediaUrl('https://cdn.example.com/a.jpg'), 'https://cdn.example.com/a.jpg');
+    expect(mediaUrl(null), isNull);
+    expect(Vehicle({'model': {'image_url': null}}).imageUrl, isNull);
   });
 }

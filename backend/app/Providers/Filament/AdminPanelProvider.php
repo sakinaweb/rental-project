@@ -29,8 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName(fn () => config('app.name').' Admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo, // same brand colour as the website and both apps
+                'warning' => Color::Amber,
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->navigationGroups(['Bookings & money', 'Fleet', 'Pricing', 'Geography', 'System'])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

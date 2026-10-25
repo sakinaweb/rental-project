@@ -126,8 +126,10 @@ class _VehicleScreenState extends ConsumerState<VehicleScreen> {
         data: (v) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text('${v.category} · ${v.type == 'bike' ? t.searchBike : t.searchCar}', style: Theme.of(context).textTheme.labelMedium),
-            Text(v.title, style: Theme.of(context).textTheme.headlineSmall),
+            ClipRRect(borderRadius: BorderRadius.circular(20), child: VehicleImage(v, height: 210)),
+            const SizedBox(height: 16),
+            Text('${v.category} · ${v.type == 'bike' ? t.searchBike : t.searchCar}', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: brand)),
+            Text(v.title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 16,

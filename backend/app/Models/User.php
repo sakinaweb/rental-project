@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'country_id', 'locale'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'role_id', 'country_id', 'branch_id', 'locale'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -51,6 +51,12 @@ class User extends Authenticatable implements FilamentUser
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    /** @return BelongsTo<Branch, $this> staff only: the branch whose handovers and returns they do (Phase 10) */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     /** @return HasMany<Booking, $this> */

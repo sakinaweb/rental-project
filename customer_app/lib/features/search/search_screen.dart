@@ -128,8 +128,7 @@ class SearchScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch, // full-width cards
                       children: [
                         for (final v in page.items) _VehicleCard(v, f.period),
-                        if (page.hasMore)
-                          TextButton(onPressed: ref.read(resultsProvider.notifier).loadMore, child: const Icon(Icons.expand_more)),
+                        if (page.hasMore) TextButton(onPressed: ref.read(resultsProvider.notifier).loadMore, child: const Icon(Icons.expand_more)),
                       ],
                     ),
             ),
@@ -186,44 +185,50 @@ class _VehicleCard extends ConsumerWidget {
         onTap: () => context.push(
           Uri(
             path: '/vehicles/${vehicle.id}',
-            queryParameters: {
-              if (period != null) 'from': period!.from.toIso8601String(),
-              if (period != null) 'to': period!.to.toIso8601String(),
-            },
+            queryParameters: {if (period != null) 'from': period!.from.toIso8601String(), if (period != null) 'to': period!.to.toIso8601String()},
           ).toString(),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${vehicle.category} · ${vehicle.type == 'bike' ? context.t.searchBike : context.t.searchCar}', style: small),
-              Text(vehicle.title, style: Theme.of(context).textTheme.titleMedium),
-              Text(specs),
-              Text(vehicle.branch),
-              const SizedBox(height: 8),
-              if (price == null)
-                Text(context.t.searchPickDatesForPrice, style: small)
-              else
-                price.when(
-                  data: (q) => q == null
-                      ? Text(context.t.vehiclePriceUnavailable, style: small)
-                      : Text.rich(
-                          TextSpan(
-                            children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            VehicleImage(vehicle),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${vehicle.category} · ${vehicle.type == 'bike' ? context.t.searchBike : context.t.searchCar}'.toUpperCase(),
+                    style: small?.copyWith(color: brand, fontWeight: FontWeight.w600, letterSpacing: .5),
+                  ),
+                  Text(vehicle.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+                  Text(specs),
+                  Row(children: [const Icon(Icons.place_outlined, size: 16), const SizedBox(width: 4), Text(vehicle.branch)]),
+                  const SizedBox(height: 8),
+                  if (price == null)
+                    Text(context.t.searchPickDatesForPrice, style: small)
+                  else
+                    price.when(
+                      data: (q) => q == null
+                          ? Text(context.t.vehiclePriceUnavailable, style: small)
+                          : Text.rich(
                               TextSpan(
-                                text: money(ref, q.total, q.currency),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                children: [
+                                  TextSpan(
+                                    text: money(ref, q.total, q.currency),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                  ),
+                                  TextSpan(text: '  ${context.t.searchTotalForDates}', style: small),
+                                ],
                               ),
-                              TextSpan(text: '  ${context.t.searchTotalForDates}', style: small),
-                            ],
-                          ),
-                        ),
-                  loading: () => const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-                  error: (_, _) => const Icon(Icons.error_outline),
-                ),
-            ],
-          ),
+                            ),
+                      loading: () => const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                      error: (_, _) => const Icon(Icons.error_outline),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

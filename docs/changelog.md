@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Polish: look, speed and operations
+
+- **Vehicle photos:** new `vehicle_models.image_path` (additive migration), uploaded on the admin Vehicle models page (same disk as checklist photos). `model.image_url` in the vehicle API (null when none). Website and customer app show the photo, or a drawn bike/car when there is none.
+- **One look everywhere:** brand indigo on the website, admin panel (`Color::Indigo`), customer app and staff app. Website: full-width hero with the search card, type chips, photo cards with the price, a photo header on the vehicle page, sticky header with a phone menu, spinner on Search and Book.
+- **Quicker booking:** "Quick dates" (1 day / 3 days / 1 week, from tomorrow 10:00) fills pick-up and return in one tap, so every card shows its real total right away.
+- **Admin dashboard:** new "Overdue returns" and "Damages to review" numbers; booking numbers open the bookings list filtered by that status; new "Today's handovers and returns" table (pickups due, returns due and overdue, late ones in red, one click to the booking). Both refresh every minute.
+- **Staff app:** booking cards, late ones edged in orange.
+- **Fixes:** checklist and damage photos were not served (`public/storage` was an empty file, not the `storage:link` symlink). In the apps, photo URLs from a dev server's `localhost` now go to the API host, so they load on the emulator.
+- **Dev speed (Docker on Windows):** `docker/php/dev.ini` (mounted by `docker-compose.yml`) sizes OPcache for the ~15k vendor files and re-checks files every 60 s instead of 2 s. Pages went from 17–19 s to about 1–2 s. PHP edits show up within a minute, or at once after `docker compose restart app`.
+
+### Phase 10: Staff app (MD §7.10)
+
+- **Staff app `staff_app/` (owner decision: Flutter, as MD §2):** staff-only sign-in (other accounts are refused, a stored non-staff token is dropped) → today's pickups (late ones flagged) and every vehicle out at the staff member's branch → booking (customer contact, vehicle, checklists so far, damages) → handover or return checklist. English strings in ARB (other locales can follow).
+- **Branch scope (owner decision):** new `users.branch_id`, set by the admin on the Users page. Staff see and handle only their branch's bookings (another branch's booking is a 404; no branch → 422).
+- **Checklists (owner decision):** handover and return each need at least 4 photos (up to 12, 8 MB each), the odometer and the fuel level; notes optional. Stored as `inspections` (MD §3) with who did it; the vehicle's odometer is updated; the return odometer can't be lower than at handover. Handover moves the booking confirmed → picked_up, return picked_up → returned, through `BookingService::advance` (MD §6 guards, row lock) in the same transaction. Photos are stored first and deleted again if the step is refused.
+- **Damages (owner decision):** found at return with an estimated cost and photos, recorded as `reported`; the admin approves or waives them as before (settlement already waits for reported damages).
+- API: `GET /staff/bookings?date=`, `GET /staff/bookings/{id}`, `POST /staff/bookings/{id}/pickup`, `POST /staff/bookings/{id}/return` (multipart), staff role only.
+- Photos on `INSPECTIONS_DISK` (default `public`, run `php artisan storage:link` once; S3 works too).
+- Admin panel: branch on staff users; the booking page shows both checklists with photos; damages show their photos.
+- Completing a returned booking stays an admin step (unchanged).
+
 ### Phase 9: Partner module (MD §7.9)
 
 - **Onboarding:** `POST /partner/apply` with bank details for payouts; the admin approves, rejects or suspends (Partners page). Partner access is the `partners` record, not the user's role, so a partner can still rent as a customer. A rejected applicant may apply again.

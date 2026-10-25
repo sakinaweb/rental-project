@@ -1,15 +1,18 @@
 @php($m = $vehicle->vehicleModel)
 @php($money = fn (int $minor) => \App\Support\Money::format($minor, $quote['currency_code'] ?? 'USD'))
 <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-    <section class="card lg:col-span-2">
-        <a href="{{ route('home', ['from' => $from, 'to' => $to]) }}" class="text-sm text-zinc-500 hover:underline">← {{ __('site.common.back') }}</a>
-        <div class="mt-3 text-xs uppercase tracking-wide text-zinc-500">{{ $m->category->name }} · {{ __('site.search.'.$m->category->type) }}</div>
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">{{ $m->brand->name }} {{ $m->name }}</h1>
-        <dl class="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-            <div><dt class="text-zinc-500">{{ __('site.vehicle.seats_label') }}</dt><dd class="font-medium">{{ $m->seats ?? '—' }}</dd></div>
-            <div><dt class="text-zinc-500">{{ __('site.vehicle.transmission') }}</dt><dd class="font-medium">{{ $m->transmission ?? '—' }}</dd></div>
-            <div><dt class="text-zinc-500">{{ __('site.vehicle.fuel') }}</dt><dd class="font-medium">{{ $m->fuel_type ?? '—' }}</dd></div>
-            <div><dt class="text-zinc-500">{{ __('site.vehicle.branch') }}</dt><dd class="font-medium">{{ $vehicle->branch->name }}</dd></div>
+    <section class="card overflow-hidden p-0 sm:p-0 lg:col-span-2">
+        <x-vehicle-image :model="$m" class="aspect-[16/9] sm:aspect-[21/9]">
+            <a href="{{ route('home', ['from' => $from, 'to' => $to]) }}" class="badge absolute start-4 top-4 bg-white/90 px-3 py-1.5 text-sm text-zinc-700 shadow-sm backdrop-blur hover:bg-white"><span class="rtl:rotate-180">←</span> {{ __('site.common.back') }}</a>
+        </x-vehicle-image>
+        <div class="p-5 sm:p-6">
+        <div class="text-xs font-semibold uppercase tracking-wide text-brand-600">{{ $m->category->name }} · {{ __('site.search.'.$m->category->type) }}</div>
+        <h1 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{{ $m->brand->name }} {{ $m->name }}</h1>
+        <dl class="mt-5 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div class="rounded-xl bg-zinc-50 p-3"><dt class="text-xs text-zinc-500">{{ __('site.vehicle.seats_label') }}</dt><dd class="mt-0.5 font-semibold">{{ $m->seats ?? '—' }}</dd></div>
+            <div class="rounded-xl bg-zinc-50 p-3"><dt class="text-xs text-zinc-500">{{ __('site.vehicle.transmission') }}</dt><dd class="mt-0.5 font-semibold">{{ $m->transmission ?? '—' }}</dd></div>
+            <div class="rounded-xl bg-zinc-50 p-3"><dt class="text-xs text-zinc-500">{{ __('site.vehicle.fuel') }}</dt><dd class="mt-0.5 font-semibold">{{ $m->fuel_type ?? '—' }}</dd></div>
+            <div class="rounded-xl bg-zinc-50 p-3"><dt class="text-xs text-zinc-500">{{ __('site.vehicle.branch') }}</dt><dd class="mt-0.5 font-semibold">{{ $vehicle->branch->name }}</dd></div>
         </dl>
 
         <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -50,10 +53,11 @@
             <label class="label" for="coupon">{{ __('site.vehicle.coupon') }}</label>
             <input id="coupon" type="text" wire:model.live.debounce.600ms="coupon" class="field" autocomplete="off">
         </div>
+        </div>
     </section>
 
-    <aside class="card h-fit lg:sticky lg:top-6">
-        <h2 class="font-semibold">{{ __('site.vehicle.quote') }}</h2>
+    <aside class="card h-fit border-brand-100 lg:sticky lg:top-24">
+        <h2 class="text-lg font-semibold">{{ __('site.vehicle.quote') }}</h2>
         <div wire:loading class="mt-2 text-sm text-zinc-500">{{ __('site.common.loading') }}</div>
         @if ($quoteError)
             <p class="error">{{ $quoteError }}</p>
@@ -62,16 +66,17 @@
                 <div class="flex justify-between"><dt>{{ __('site.vehicle.subtotal') }}</dt><dd>{{ $money($quote['subtotal']) }}</dd></div>
                 @if ($quote['discount_total'] > 0)<div class="flex justify-between text-emerald-700"><dt>{{ __('site.vehicle.discounts') }}</dt><dd>−{{ $money($quote['discount_total']) }}</dd></div>@endif
                 <div class="flex justify-between"><dt>{{ __('site.vehicle.tax') }}</dt><dd>{{ $money($quote['tax_total']) }}</dd></div>
-                <div class="flex justify-between border-t border-zinc-200 pt-2 font-semibold"><dt>{{ __('site.vehicle.total') }}</dt><dd>{{ $money($quote['grand_total']) }}</dd></div>
+                <div class="flex items-baseline justify-between border-t border-zinc-200 pt-3 text-base font-bold"><dt>{{ __('site.vehicle.total') }}</dt><dd>{{ $money($quote['grand_total']) }}</dd></div>
                 <div class="flex justify-between text-zinc-600"><dt>{{ __('site.vehicle.deposit') }}</dt><dd>{{ $money($quote['deposit_amount']) }}</dd></div>
-                <div class="flex justify-between font-semibold"><dt>{{ __('site.vehicle.due_now') }}</dt><dd>{{ $money($quote['grand_total'] + $quote['deposit_amount']) }}</dd></div>
+                <div class="-mx-2 mt-2 flex items-baseline justify-between rounded-xl bg-brand-50 px-2 py-2 font-bold text-brand-900"><dt>{{ __('site.vehicle.due_now') }}</dt><dd class="text-xl">{{ $money($quote['grand_total'] + $quote['deposit_amount']) }}</dd></div>
             </dl>
         @else
             <p class="mt-2 text-sm text-zinc-500">{{ __('site.search.pick_dates_for_price') }}</p>
         @endif
 
         @if ($bookingError)<p class="error">{{ $bookingError }}</p>@endif
-        <button wire:click="book" wire:loading.attr="disabled" class="btn mt-4 w-full" @disabled(! $quote || $available === false)>
+        <button wire:click="book" wire:loading.attr="disabled" class="btn mt-5 w-full py-3 text-base" @disabled(! $quote || $available === false)>
+            <svg wire:loading wire:target="book" viewBox="0 0 24 24" class="h-4 w-4 animate-spin" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round"/></svg>
             {{ auth()->check() ? __('site.vehicle.book_now') : __('site.vehicle.login_to_book') }}
         </button>
     </aside>

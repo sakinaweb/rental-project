@@ -51,6 +51,15 @@ class Search extends Component
         $this->resetPage();
     }
 
+    /** Quick dates: pick-up tomorrow 10:00, return $days later, so prices show in one click. */
+    public function preset(int $days): void
+    {
+        $from = now()->addDay()->setTime(10, 0);
+        $this->from = $from->format('Y-m-d\TH:i');
+        $this->to = $from->addDays(max(1, min($days, 30)))->format('Y-m-d\TH:i');
+        $this->resetPage();
+    }
+
     public function render(BookingService $bookings, VehicleSearch $search): View
     {
         $filters = array_filter([

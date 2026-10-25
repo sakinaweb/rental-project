@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Branch;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Damage;
 use App\Models\Location;
 use App\Models\Role;
 use App\Models\User;
@@ -103,18 +104,22 @@ class AdminReportsTest extends TestCase
         Booking::factory()->create(['status' => BookingStatus::PickedUp, 'start_at' => '2026-10-14 10:00', 'end_at' => '2026-10-15 18:00']);
         Booking::factory()->create(['status' => BookingStatus::Confirmed, 'start_at' => '2026-10-15 16:00', 'end_at' => '2026-10-16 16:00']);
         Booking::factory()->create(['status' => BookingStatus::PendingPayment]);
+        $late = Booking::factory()->create(['status' => BookingStatus::PickedUp, 'start_at' => '2026-10-13 10:00', 'end_at' => '2026-10-15 09:00']);
+        Damage::create(['booking_id' => $late->id, 'description' => 'Scratch', 'cost' => 500, 'status' => Damage::REPORTED]);
         Vehicle::factory()->create(['status' => 'maintenance']);
         $this->completed('2026-10-02 10:00', 11800, 1800);
 
         $stats = app(DashboardStats::class)->summary();
 
-        $this->assertSame(1, $stats['active_rentals']);
+        $this->assertSame(2, $stats['active_rentals']);
         $this->assertSame(1, $stats['pickups_today']);
-        $this->assertSame(1, $stats['returns_today']);
+        $this->assertSame(2, $stats['returns_today']);
+        $this->assertSame(1, $stats['overdue_returns']); // due 09:00, now 12:00
+        $this->assertSame(1, $stats['damages_to_review']);
         $this->assertSame(1, $stats['awaiting_payment']);
         $this->assertSame(['INR' => 10000], $stats['revenue_this_month']);
         $this->assertSame(1, $stats['in_maintenance']);
-        $this->assertSame(25, $stats['utilization_pct']); // 1 of 4 in-service vehicles on rent
+        $this->assertSame(40, $stats['utilization_pct']); // 2 of 5 in-service vehicles on rent
     }
 
     public function test_invoice_pdf(): void

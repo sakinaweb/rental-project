@@ -9,6 +9,7 @@ return [
         'category' => 'Category', 'type' => 'Type', 'bike' => 'Bike', 'car' => 'Car', 'seats' => 'Min. seats', 'button' => 'Search',
         'no_results' => 'No vehicles match your search. Try other dates or filters.', 'dates_invalid' => 'Return must be after pick-up.',
         'total_for_dates' => 'total for your dates', 'pick_dates_for_price' => 'Choose pick-up and return to see the price.',
+        'subtitle' => 'Bikes and cars from trusted branches. Pick your dates, see the full price, book in a minute.', 'quick' => 'Quick dates', 'days' => ':n day|:n days', 'week' => '1 week', 'from_price' => 'View details',
     ],
     'vehicle' => [
         'seats' => ':n seat|:n seats', 'seats_label' => 'Seats', 'transmission' => 'Transmission', 'fuel' => 'Fuel', 'branch' => 'Branch',

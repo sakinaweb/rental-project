@@ -42,6 +42,10 @@
       "description": "Vehicle owners (MD §7.9). Only where the partner feature is on: the global `features.partner` setting and the user's country pack. The platform keeps each vehicle's commission on the rental net of tax; the rest is the partner's, posted when a booking settles. Payouts are paid manually by the admin in batches."
     },
     {
+      "name": "Staff",
+      "description": "Staff app (MD §7.10). Staff role only, scoped to the staff member's branch (set by the admin; without one every call is 422). Handover and return need at least 4 photos, the odometer and the fuel level; damages found at return are reported for the admin to approve or waive."
+    },
+    {
       "name": "Admin"
     }
   ],
@@ -2254,6 +2258,362 @@
         }
       }
     },
+    "/staff/bookings": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "The branch's pickups due by the day (late ones included) and every rental that is out",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Default today"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "branch": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "pickups": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/StaffBookingSummary"
+                          }
+                        },
+                        "returns": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/StaffBookingSummary"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          }
+        }
+      }
+    },
+    "/staff/bookings/{booking}": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Booking with customer contact, checklists and damages",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "booking",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/StaffBooking"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          }
+        }
+      }
+    },
+    "/staff/bookings/{booking}/pickup": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Handover checklist; the booking becomes picked_up",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "booking",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "photos",
+                  "odometer",
+                  "fuel_level"
+                ],
+                "properties": {
+                  "photos": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 12,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Front, back, left, right… (images, max 8 MB each)"
+                  },
+                  "odometer": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "fuel_level": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "notes": {
+                    "type": "string",
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/StaffBooking"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/staff/bookings/{booking}/return": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Return checklist and damages found; the booking becomes returned",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "booking",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "photos",
+                  "odometer",
+                  "fuel_level"
+                ],
+                "properties": {
+                  "photos": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 12,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Front, back, left, right… (images, max 8 MB each)"
+                  },
+                  "odometer": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "fuel_level": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "notes": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "damages": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "description",
+                        "cost"
+                      ],
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 500
+                        },
+                        "cost": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Estimate, minor units"
+                        },
+                        "photos": {
+                          "type": "array",
+                          "maxItems": 6,
+                          "items": {
+                            "type": "string",
+                            "format": "binary"
+                          }
+                        }
+                      }
+                    },
+                    "description": "Sent as damages[0][description], damages[0][cost], damages[0][photos][]… Recorded as reported; the admin approves or waives. The odometer may not be lower than at pickup."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/StaffBooking"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
     "/admin/vehicles": {
       "get": {
         "tags": [
@@ -3264,6 +3624,14 @@
                   "string",
                   "null"
                 ]
+              },
+              "image_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri",
+                "description": "Model photo uploaded in the admin panel; null when none (clients draw a bike/car instead)."
               }
             }
           },
@@ -3871,6 +4239,153 @@
             "description": "Latest 20"
           }
         }
+      },
+      "StaffBookingSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "start_at",
+          "end_at",
+          "customer",
+          "vehicle"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "customer": {
+            "type": "string"
+          },
+          "vehicle": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "plate_no": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "StaffBooking": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/StaffBookingSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "customer_phone": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "odometer": {
+                "type": "integer",
+                "description": "Vehicle odometer now"
+              },
+              "currency_code": {
+                "type": "string"
+              },
+              "inspections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stage": {
+                      "type": "string",
+                      "enum": [
+                        "pickup",
+                        "return"
+                      ]
+                    },
+                    "odometer": {
+                      "type": "integer"
+                    },
+                    "fuel_level": {
+                      "type": "integer",
+                      "description": "Percent"
+                    },
+                    "notes": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "photos": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "inspected_by": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "inspected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              },
+              "damages": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "cost": {
+                      "type": "integer",
+                      "description": "Minor units"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "reported",
+                        "approved",
+                        "waived"
+                      ]
+                    },
+                    "photos": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "requestBodies": {

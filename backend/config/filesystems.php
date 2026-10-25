@@ -15,6 +15,9 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
+    // Handover/return checklist and damage photos (Phase 10). "public" needs `php artisan storage:link`; "s3" works too.
+    'inspections_disk' => env('INSPECTIONS_DISK', 'public'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks

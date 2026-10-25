@@ -27,6 +27,7 @@ class VehicleResource extends JsonResource
                 'seats' => $model->seats,
                 'transmission' => $model->transmission,
                 'fuel_type' => $model->fuel_type,
+                'image_url' => $model->imageUrl(),
             ] : null,
             'brand' => $model?->brand ? ['id' => $model->brand->id, 'name' => $model->brand->name] : null,
             'category' => $model?->category ? new VehicleCategoryResource($model->category) : null,

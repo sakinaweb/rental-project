@@ -33,4 +33,6 @@ return [
     'payout_none_pending' => 'There are no pending payout requests in this currency.',
     'payout_batch_not_pending' => 'This payout batch has already been processed.',
     'payout_request_not_pending' => 'Only pending payout requests can be rejected.',
+    'staff_no_branch' => 'You are not assigned to a branch yet. Ask an admin to set your branch.',
+    'inspection_odometer_lower' => 'The return odometer can\'t be lower than at pickup (:km).',
 ];

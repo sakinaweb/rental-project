@@ -7,11 +7,67 @@ import 'api.dart';
 import 'money.dart';
 import 'session.dart';
 
+/// Brand indigo, shared with the website, the admin panel and the staff app.
+const brand = Color(0xFF4F46E5);
+
 final theme = ThemeData(
-  colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF18181B)),
+  colorScheme: ColorScheme.fromSeed(seedColor: brand, primary: brand, surface: const Color(0xFFFAFAFA)),
   useMaterial3: true,
-  inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(), isDense: true),
+  appBarTheme: const AppBarTheme(centerTitle: false, scrolledUnderElevation: 0.5),
+  cardTheme: CardThemeData(
+    elevation: 0,
+    clipBehavior: Clip.antiAlias,
+    margin: const EdgeInsets.only(bottom: 16),
+    color: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: const BorderSide(color: Color(0xFFE4E4E7)),
+    ),
+  ),
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      minimumSize: const Size(0, 52),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    isDense: true,
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFFE4E4E7)),
+    ),
+  ),
+  chipTheme: ChipThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
 );
+
+/// The model's photo, or a bike/car icon on the brand gradient when there is none (or it fails to load).
+class VehicleImage extends StatelessWidget {
+  const VehicleImage(this.vehicle, {super.key, this.height = 170});
+  final Vehicle vehicle;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(colors: [Color(0xFFEEF2FF), Colors.white, Color(0xFFFFFBEB)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+      ),
+      child: Center(
+        child: Icon(vehicle.type == 'bike' ? Icons.two_wheeler_rounded : Icons.directions_car_filled_rounded, size: height * 0.5, color: brand),
+      ),
+    );
+    final url = vehicle.imageUrl;
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: url == null ? fallback : Image.network(url, fit: BoxFit.cover, errorBuilder: (_, _, _) => fallback),
+    );
+  }
+}
 
 extension Ctx on BuildContext {
   L10n get t => L10n.of(this);

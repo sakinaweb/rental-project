@@ -8,6 +8,7 @@ return [
         'category' => 'Categoría', 'type' => 'Tipo', 'bike' => 'Moto', 'car' => 'Coche', 'seats' => 'Plazas mín.', 'button' => 'Buscar',
         'no_results' => 'Ningún vehículo coincide con tu búsqueda. Prueba otras fechas o filtros.', 'dates_invalid' => 'La devolución debe ser posterior a la recogida.',
         'total_for_dates' => 'total para tus fechas', 'pick_dates_for_price' => 'Elige recogida y devolución para ver el precio.',
+        'subtitle' => 'Motos y coches de sucursales de confianza. Elige fechas, mira el precio total y reserva en un minuto.', 'quick' => 'Fechas rápidas', 'days' => ':n día|:n días', 'week' => '1 semana', 'from_price' => 'Ver detalles',
     ],
     'vehicle' => [
         'seats' => ':n plaza|:n plazas', 'seats_label' => 'Plazas', 'transmission' => 'Transmisión', 'fuel' => 'Combustible', 'branch' => 'Sucursal',

@@ -33,4 +33,6 @@ return [
     'payout_none_pending' => 'Es gibt keine offenen Auszahlungsanfragen in dieser Währung.',
     'payout_batch_not_pending' => 'Dieser Auszahlungsstapel wurde bereits bearbeitet.',
     'payout_request_not_pending' => 'Nur offene Auszahlungsanfragen können abgelehnt werden.',
+    'staff_no_branch' => 'Ihnen ist noch keine Filiale zugewiesen. Bitten Sie einen Admin, Ihre Filiale festzulegen.',
+    'inspection_odometer_lower' => 'Der Kilometerstand bei Rückgabe darf nicht niedriger sein als bei Übergabe (:km).',
 ];

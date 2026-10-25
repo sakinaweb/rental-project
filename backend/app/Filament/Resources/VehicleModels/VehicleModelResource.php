@@ -11,11 +11,13 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -43,6 +45,7 @@ class VehicleModelResource extends Resource
                 TextInput::make('seats')->integer()->minValue(1)->maxValue(255),
                 TextInput::make('transmission')->maxLength(20),
                 TextInput::make('fuel_type')->maxLength(20),
+                FileUpload::make('image_path')->label('Photo')->image()->imageEditor()->disk(VehicleModel::imageDisk())->directory('vehicle-models')->maxSize(4096)->columnSpanFull(),
             ]);
     }
 
@@ -51,6 +54,7 @@ class VehicleModelResource extends Resource
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                ImageColumn::make('image_path')->label('Photo')->disk(VehicleModel::imageDisk())->square(),
                 TextColumn::make('brand.name')
                     ->searchable(),
                 TextColumn::make('name')

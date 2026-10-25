@@ -120,6 +120,12 @@ class Booking extends Model
         return $this->hasOne(Deposit::class);
     }
 
+    /** @return HasMany<Inspection, $this> */
+    public function inspections(): HasMany
+    {
+        return $this->hasMany(Inspection::class);
+    }
+
     /** @return HasMany<Damage, $this> */
     public function damages(): HasMany
     {

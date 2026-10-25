@@ -16,6 +16,8 @@ use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Resources\Vehicles\Pages\ManageVehicles;
 use App\Filament\Resources\WalletTransactions\WalletTransactionResource;
+use App\Filament\Widgets\OperationsOverview;
+use App\Filament\Widgets\TodaysOperations;
 use App\Models\AuditLog;
 use App\Models\Booking;
 use App\Models\Damage;
@@ -231,5 +233,24 @@ class AdminPanelTest extends TestCase
         Livewire::test(RevenueReport::class)
             ->assertSee('2026-10-05')->assertSee('₹100.00') // net revenue 10000 minor units
             ->callAction('export')->assertFileDownloaded();
+    }
+
+    public function test_dashboard_lists_what_is_due_today_and_links_numbers_to_bookings(): void
+    {
+        Carbon::setTestNow('2026-10-15 12:00:00');
+        $pickup = Booking::factory()->create(['status' => S::Confirmed, 'start_at' => '2026-10-15 16:00', 'end_at' => '2026-10-16 16:00']);
+        $overdue = Booking::factory()->create(['status' => S::PickedUp, 'start_at' => '2026-10-12 10:00', 'end_at' => '2026-10-14 10:00']);
+        $later = Booking::factory()->create(['status' => S::Confirmed, 'start_at' => '2026-10-20 10:00', 'end_at' => '2026-10-21 10:00']);
+        $done = Booking::factory()->create(['status' => S::Returned, 'start_at' => '2026-10-14 10:00', 'end_at' => '2026-10-15 10:00']);
+        $this->asAdmin();
+
+        Livewire::test(TodaysOperations::class)
+            ->assertCanSeeTableRecords([$overdue, $pickup], inOrder: true)
+            ->assertCanNotSeeTableRecords([$later, $done])
+            ->assertSee('Late');
+
+        Livewire::test(OperationsOverview::class)
+            ->assertSee('Overdue returns')
+            ->assertSee(BookingResource::getUrl('index', ['filters' => ['status' => ['value' => 'picked_up']]]), escape: false);
     }
 }

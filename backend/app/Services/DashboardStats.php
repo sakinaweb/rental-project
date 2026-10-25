@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Models\Damage;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +24,9 @@ class DashboardStats
             'active_rentals' => Booking::where('status', BookingStatus::PickedUp->value)->count(),
             'pickups_today' => Booking::where('status', BookingStatus::Confirmed->value)->whereBetween('start_at', $today)->count(),
             'returns_today' => Booking::where('status', BookingStatus::PickedUp->value)->whereBetween('end_at', $today)->count(),
+            // Out past their return time: chase the customer.
+            'overdue_returns' => Booking::where('status', BookingStatus::PickedUp->value)->where('end_at', '<', now())->count(),
+            'damages_to_review' => Damage::where('status', Damage::REPORTED)->count(),
             'awaiting_payment' => Booking::where('status', BookingStatus::PendingPayment->value)->count(),
             'revenue_this_month' => $this->revenue->rows(now()->startOfMonth(), now(), 'month')
                 ->mapWithKeys(fn (array $row) => [$row['currency_code'] => $row['net_revenue']])->all(),

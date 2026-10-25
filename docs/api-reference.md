@@ -15,7 +15,7 @@ The full, machine-readable contract is **[`openapi.json`](openapi.json)** (OpenA
 ## Customer flow (website and app)
 
 1. `GET /countries`, `/cities?country_id=`, `/vehicle-categories`, `/addons`
-2. `GET /vehicles?city_id=&category=&type=&from=&to=…` → `GET /vehicles/{id}` → `GET /vehicles/{id}/availability?from=&to=`
+2. `GET /vehicles?city_id=&category=&type=&from=&to=…` → `GET /vehicles/{id}` → `GET /vehicles/{id}/availability?from=&to=` (`model.image_url` is the model's photo, or null)
 3. `POST /bookings/quote` (no account needed) → price breakdown + deposit
 4. Sign in: `POST /auth/login`, or `POST /auth/otp/request` + `/auth/otp/verify`, or `POST /auth/register`
 5. `POST /bookings` → draft that holds the vehicle for 15 minutes
@@ -23,6 +23,16 @@ The full, machine-readable contract is **[`openapi.json`](openapi.json)** (OpenA
 7. Poll `GET /bookings/{id}` until `confirmed` (set by the webhook), or `cancelled` after the 30-minute payment timeout
 8. `GET /bookings`, `POST /bookings/{id}/cancel|extend`, `GET /bookings/{id}/invoice`, `GET /wallet`, `POST /wallet/topup`, `PATCH /me`
 9. Push: `POST /devices` after sign-in with the FCM token; `DELETE /devices/{token}` on sign-out
+
+## Staff flow (Phase 10, `staff_app/`)
+
+Staff role only; the admin assigns each staff user to a branch, and every call is limited to that branch.
+
+1. `POST /auth/login` → check `user.role === "staff"`
+2. `GET /staff/bookings?date=` → `pickups` (confirmed, due by that day) and `returns` (every rental out)
+3. `GET /staff/bookings/{id}` → customer contact, vehicle, checklists so far, damages
+4. `POST /staff/bookings/{id}/pickup` (multipart: `photos[]` ≥ 4, `odometer`, `fuel_level`, `notes`) → `picked_up`
+5. `POST /staff/bookings/{id}/return` (same + `damages[i][description|cost|photos][]`) → `returned`; damages are `reported` for the admin
 
 ## Partner flow (Phase 9)
 

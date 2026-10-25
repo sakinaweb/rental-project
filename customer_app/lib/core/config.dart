@@ -17,3 +17,12 @@ class Config {
   static const supportedLocales = ['en', 'ar', 'hi', 'es', 'de'];
   static const localeNames = {'en': 'English', 'ar': 'العربية', 'hi': 'हिन्दी', 'es': 'Español', 'de': 'Deutsch'};
 }
+
+/// Upload URLs are built from the server's APP_URL; a dev server's "localhost" means this device to the app,
+/// so loopback media URLs are pointed at the API host instead. Real hosts (and S3) are left alone.
+String? mediaUrl(String? url) {
+  final u = url == null ? null : Uri.tryParse(url);
+  if (u == null || !const {'localhost', '127.0.0.1'}.contains(u.host)) return url;
+  final api = Uri.parse(Config.apiBaseUrl);
+  return u.replace(scheme: api.scheme, host: api.host, port: api.port).toString();
+}

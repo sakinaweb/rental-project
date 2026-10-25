@@ -4,7 +4,10 @@ namespace App\Filament\Resources\Bookings\Schemas;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Models\Inspection;
 use App\Support\Money;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -36,6 +39,18 @@ class BookingInfolist
                 TextEntry::make('paid')->label('Paid (net of refunds)')
                     ->state(fn (Booking $record) => Money::format($record->amountPaid(), $record->currency_code)),
                 TextEntry::make('deposit.status')->label('Deposit status')->placeholder('not held'),
+            ]),
+            // Phase 10: the staff app's handover and return checklists.
+            Section::make('Handover and return')->columnSpanFull()->schema([
+                RepeatableEntry::make('inspections')->hiddenLabel()->placeholder('No checklist yet.')->columns(4)->schema([
+                    TextEntry::make('stage')->badge(),
+                    TextEntry::make('odometer')->numeric(),
+                    TextEntry::make('fuel_level')->suffix(' %'),
+                    TextEntry::make('inspector.name')->label('By')->placeholder('—'),
+                    TextEntry::make('created_at')->label('At')->dateTime(),
+                    TextEntry::make('notes')->placeholder('—')->columnSpan(3),
+                    ImageEntry::make('photos_json')->label('Photos')->disk(Inspection::disk())->height(96)->columnSpanFull(),
+                ]),
             ]),
         ]);
     }

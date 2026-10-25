@@ -11,6 +11,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use App\Models\VehicleModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VehicleApiTest extends TestCase
@@ -102,6 +103,18 @@ class VehicleApiTest extends TestCase
 
         $vehicle->update(['status' => 'retired']);
         $this->getJson("/api/v1/vehicles/{$vehicle->id}")->assertNotFound();
+    }
+
+    public function test_model_photo_is_served_to_the_api_and_website_with_a_drawn_fallback(): void
+    {
+        $vehicle = $this->vehicleIn('Mumbai');
+        $this->getJson("/api/v1/vehicles/{$vehicle->id}")->assertJsonPath('data.model.image_url', null);
+        $this->get('/')->assertDontSee('vehicle-models/')->assertSee('<svg viewBox="0 0 220 120"', false); // drawn car
+
+        $vehicle->vehicleModel->update(['image_path' => 'vehicle-models/swift.jpg']);
+        $url = Storage::disk(VehicleModel::imageDisk())->url('vehicle-models/swift.jpg');
+        $this->getJson("/api/v1/vehicles/{$vehicle->id}")->assertJsonPath('data.model.image_url', $url);
+        $this->get('/')->assertSee($url);
     }
 
     public function test_availability_endpoint(): void

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\PartnerController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\StaffController;
 use App\Http\Controllers\Api\V1\VehicleController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Services\PaymentService;
@@ -72,6 +73,14 @@ Route::middleware(['auth:sanctum', 'partner.module'])->prefix('partner')->contro
     Route::post('vehicles/{vehicle}/blockout', 'storeBlockout')->whereNumber('vehicle');
     Route::delete('vehicles/{vehicle}/blockouts/{blockout}', 'destroyBlockout')->whereNumber(['vehicle', 'blockout']);
     Route::post('payout-requests', 'requestPayout')->middleware('throttle:10,1');
+});
+
+// Staff app (MD §7.10, Phase 10): the staff member's branch only.
+Route::middleware(['auth:sanctum', 'role:staff'])->prefix('staff')->controller(StaffController::class)->group(function () {
+    Route::get('bookings', 'index');
+    Route::get('bookings/{booking}', 'show')->whereNumber('booking');
+    Route::post('bookings/{booking}/pickup', 'pickup')->whereNumber('booking')->middleware('throttle:20,1');
+    Route::post('bookings/{booking}/return', 'return')->whereNumber('booking')->middleware('throttle:20,1');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'role:admin'])->group(function () {
