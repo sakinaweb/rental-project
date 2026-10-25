@@ -73,7 +73,7 @@ class PartnerService
             }
 
             return $vehicle->blockouts()->create(['start_at' => $from, 'end_at' => $to, 'reason' => $reason]);
-        });
+        }, BookingService::DEADLOCK_ATTEMPTS);
     }
 
     public function ensureActive(Partner $partner): void

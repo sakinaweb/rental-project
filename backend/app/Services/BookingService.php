@@ -22,6 +22,13 @@ class BookingService
 {
     private const TOTALS = ['subtotal', 'tax_total', 'discount_total', 'grand_total'];
 
+    /**
+     * Transactions that claim a vehicle's time take gap locks on the bookings index, so simultaneous bookings (even of
+     * different vehicles) can deadlock in MySQL. Each deadlock lets one through; the others are re-run (Phase 12,
+     * BookingRaceTest) instead of failing the customer's request.
+     */
+    public const DEADLOCK_ATTEMPTS = 5;
+
     public function __construct(
         private AvailabilityService $availability,
         private PricingService $pricing,
@@ -54,11 +61,13 @@ class BookingService
     public function create(User $user, Vehicle $vehicle, CarbonInterface $from, CarbonInterface $to, array $addons = [], ?Coupon $coupon = null, ?int $pickupLocationId = null, ?int $dropoffLocationId = null): Booking
     {
         return DB::transaction(function () use ($user, $vehicle, $from, $to, $addons, $coupon, $pickupLocationId, $dropoffLocationId) {
-            if (! $this->availability->isAvailable($vehicle->id, $from, $to)) {
-                throw new DomainException(__('messages.vehicle_unavailable'));
-            }
+            // Coupon first: bookings sharing a coupon queue on its row before taking any bookings-index locks, and the
+            // usage count is read only after that lock is held (a fresh snapshot).
             if ($coupon) {
                 $this->ensureCouponUsable($coupon);
+            }
+            if (! $this->availability->isAvailable($vehicle->id, $from, $to)) {
+                throw new DomainException(__('messages.vehicle_unavailable'));
             }
 
             $quote = $this->quote($vehicle, $from, $to, $addons, $coupon);
@@ -85,7 +94,7 @@ class BookingService
             }
 
             return $booking;
-        });
+        }, self::DEADLOCK_ATTEMPTS);
     }
 
     /** MD §4 "confirm after payment": succeeded payments must cover the total plus the deposit. */
@@ -162,7 +171,7 @@ class BookingService
             $booking->save();
 
             return $booking;
-        });
+        }, self::DEADLOCK_ATTEMPTS);
     }
 
     /**
@@ -196,7 +205,7 @@ class BookingService
             $this->ledger->postBookingCompletion($booking, $kept);
 
             return $booking;
-        });
+        }, self::DEADLOCK_ATTEMPTS); // ledger accounts are created on first use (insertOrIgnore): same gap-lock risk
     }
 
     /**
@@ -237,7 +246,7 @@ class BookingService
             $booking->update(['vehicle_id' => $vehicle->id]);
 
             return $booking;
-        });
+        }, self::DEADLOCK_ATTEMPTS);
     }
 
     // Push to the customer app once the change is committed (Phase 7); a rolled-back change sends nothing.

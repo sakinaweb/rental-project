@@ -7,6 +7,8 @@ use App\Models\Country;
 use App\Services\AccountService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -35,6 +37,13 @@ class Register extends Component
 
     public function register(AccountService $accounts)
     {
+        // Same limit as POST /auth/register (throttle:10,1), so the website isn't the easier way to mass-create accounts.
+        $key = 'register:'.request()->ip();
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            throw ValidationException::withMessages(['email' => __('site.auth.too_many')]);
+        }
+        RateLimiter::hit($key, 60);
+
         $data = $this->validate((new RegisterRequest)->rules());
         $data['phone'] = $data['phone'] ?: null;
         unset($data['password_confirmation']);

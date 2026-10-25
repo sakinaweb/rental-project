@@ -158,6 +158,17 @@ class WebsiteTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_website_registration_is_rate_limited_like_the_api(): void
+    {
+        for ($i = 0; $i < 10; $i++) { // invalid attempts still count
+            Livewire::test(Register::class)->call('register')->assertHasErrors(['name']);
+        }
+        Livewire::test(Register::class)->set('name', 'Asha')->set('email', 'asha@example.com')
+            ->set('password', 'secret-pass')->set('password_confirmation', 'secret-pass')->call('register')
+            ->assertHasErrors(['email' => __('site.auth.too_many')]);
+        $this->assertDatabaseMissing('users', ['email' => 'asha@example.com']);
+    }
+
     public function test_phone_otp_sign_in(): void
     {
         $this->app->instance(SmsDriver::class, $sms = new class implements SmsDriver

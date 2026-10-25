@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Phase 12: Hardening (MD §7.12, §8)
+
+- **Real booking race test** (`BookingRaceTest`): 8 processes, each with its own MySQL connection, book at the same instant through `BookingService` (test database only). Same vehicle: exactly one booking, the rest "unavailable". Overlapping windows: whatever wins is at least the buffer apart. A coupon with one use left: used once.
+- **Fixed: simultaneous bookings failed with a server error.** Two customers booking *different* vehicles at the same moment could deadlock in MySQL (gap locks on the bookings index), and 7 of 8 got an error (shown by the new test). Transactions that claim vehicle time (create, extend, reassign, partner blockout) and settlement now re-run on a deadlock (`BookingService::DEADLOCK_ATTEMPTS`), as MySQL advises. The coupon is now locked first, so coupon bookings queue instead of deadlocking.
+- **Security pass:** no mass assignment from requests (registration forces the customer role; profile updates write validated fields only); every booking, payment and invoice endpoint goes through the booking policy; partner, staff and investor data is scoped to its owner; Livewire actions re-check access; uploads are images only (no SVG) with size and count caps; one raw query, with a bound value; no unescaped output in views; OTP codes hashed, 5 tries per code, send limits per phone.
+- **Fixed:** website registration had no rate limit (the API had 10 per minute); it now has the same.
+- Not changed, for the owner to decide: API tokens don't expire (`sanctum.expiration`; revoked on suspension); there is no password reset by email yet (phone users can sign in by SMS code).
+
 ### Phase 11: Investor module (MD §7.11)
 
 - **Behind the flag:** global "Investor module" setting and the country pack's `investor` toggle (still off in every pack); off → `403` on the API and the website page, no nav link.
