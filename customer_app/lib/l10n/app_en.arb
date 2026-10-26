@@ -65,6 +65,7 @@
   "vehicleLoginToBook": "Sign in to book",
   "vehiclePriceUnavailable": "No price for these dates",
   "authSignIn": "Sign in",
+  "authForgotPassword": "Forgot password?",
   "authWithPassword": "Password",
   "authWithOtp": "Phone code",
   "authEmail": "Email",

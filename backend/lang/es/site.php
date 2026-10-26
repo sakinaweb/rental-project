@@ -22,6 +22,10 @@ return [
         'password_confirmation' => 'Confirmar contraseña', 'name' => 'Nombre completo', 'phone' => 'Teléfono', 'phone_hint' => 'Formato internacional, p. ej. +34600000000',
         'code' => 'Código de 6 dígitos', 'send_code' => 'Enviar código', 'verify' => 'Verificar e iniciar sesión', 'no_account' => '¿Eres nuevo?',
         'have_account' => '¿Ya tienes cuenta?', 'create_account' => 'Crear cuenta', 'too_many' => 'Demasiados intentos. Espera un minuto e inténtalo de nuevo.',
+        'forgot_link' => '¿Olvidaste tu contraseña?', 'forgot_title' => 'Restablecer contraseña', 'forgot_intro' => 'Escribe el correo con el que te registraste y te enviaremos un enlace para elegir una contraseña nueva.', 'send_link' => 'Enviar enlace', 'back_to_sign_in' => 'Volver a iniciar sesión', 'reset_title' => 'Elige una contraseña nueva', 'new_password' => 'Contraseña nueva', 'save_password' => 'Guardar contraseña nueva',
+    ],
+    'reset_mail' => [
+        'subject' => 'Restablece tu contraseña', 'intro' => 'Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.', 'action' => 'Elegir una contraseña nueva', 'expiry' => 'Este enlace caduca en :minutes minutos.', 'ignore' => 'Si no lo has pedido tú, puedes ignorar este correo. Tu contraseña no cambia.',
     ],
     'checkout' => [
         'title' => 'Pago', 'pay' => 'Pagar', 'pay_wallet' => 'Pagar con el monedero', 'pay_stripe' => 'Pagar con tarjeta (Stripe)', 'pay_razorpay' => 'Pagar con Razorpay',

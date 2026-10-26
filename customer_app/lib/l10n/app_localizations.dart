@@ -409,6 +409,12 @@ abstract class L10n {
   /// **'Sign in'**
   String get authSignIn;
 
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get authForgotPassword;
+
   /// No description provided for @authWithPassword.
   ///
   /// In en, this message translates to:

@@ -20,6 +20,7 @@
                     <label class="label" for="password">{{ __('site.auth.password') }}</label>
                     <input id="password" type="password" wire:model="password" class="field" autocomplete="current-password" required>
                     @error('password')<p class="error">{{ $message }}</p>@enderror
+                    <p class="mt-1 text-end text-sm"><a href="{{ route('password.request') }}" class="font-medium text-zinc-600 underline">{{ __('site.auth.forgot_link') }}</a></p>
                 </div>
                 <button class="btn w-full" wire:loading.attr="disabled">{{ __('site.auth.sign_in') }}</button>
             </form>

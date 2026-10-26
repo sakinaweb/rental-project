@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Services\Notifications\FcmPushDriver;
 use App\Services\Notifications\LogPushDriver;
 use App\Services\Notifications\PushDriver;
 use App\Services\Sms\LogSmsDriver;
 use App\Services\Sms\SmsDriver;
 use App\Support\DatabaseTranslationLoader;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\FileLoader;
 
@@ -38,6 +41,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Password reset email in our own wording (site.reset_mail.*); it is sent in the user's locale (User::preferredLocale).
+        ResetPassword::toMailUsing(fn (User $user, string $token) => (new MailMessage)
+            ->subject(__('site.reset_mail.subject'))
+            ->line(__('site.reset_mail.intro'))
+            ->action(__('site.reset_mail.action'), route('password.reset', ['token' => $token, 'email' => $user->email]))
+            ->line(__('site.reset_mail.expiry', ['minutes' => config('auth.passwords.users.expire')]))
+            ->line(__('site.reset_mail.ignore')));
     }
 }

@@ -83,6 +83,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               obscureText: true,
               decoration: InputDecoration(labelText: t.authPassword),
             ),
+            // The emailed link opens the website's reset page; the server answers the same for unknown emails.
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                key: const Key('forgot'),
+                onPressed: busy
+                    ? null
+                    : () => _run(() async {
+                        final message = await api.forgotPassword(email.text.trim());
+                        setState(() => notice = message);
+                      }),
+                child: Text(t.authForgotPassword),
+              ),
+            ),
           ] else ...[
             TextField(
               key: const Key('phone'),

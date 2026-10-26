@@ -5,8 +5,10 @@ use App\Livewire\Account\Bookings;
 use App\Livewire\Account\BookingShow;
 use App\Livewire\Account\Profile;
 use App\Livewire\Account\Wallet;
+use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Checkout;
 use App\Livewire\Confirmation;
 use App\Livewire\Investor\Dashboard as InvestorDashboard;
@@ -33,6 +35,8 @@ Route::post('/language', function (Request $request) {
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
 Route::middleware('auth')->group(function () {

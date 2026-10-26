@@ -176,6 +176,9 @@ class L10nEs extends L10n {
   String get authSignIn => 'Iniciar sesión';
 
   @override
+  String get authForgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
   String get authWithPassword => 'Contraseña';
 
   @override

@@ -26,6 +26,8 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('login', 'login')->middleware('throttle:10,1');
     Route::post('otp/request', 'requestOtp')->middleware('throttle:5,1');
     Route::post('otp/verify', 'verifyOtp')->middleware('throttle:10,1');
+    Route::post('password/forgot', 'forgotPassword')->middleware('throttle:5,1');
+    Route::post('password/reset', 'resetPassword')->middleware('throttle:10,1');
 });
 
 Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');

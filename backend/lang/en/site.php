@@ -23,6 +23,10 @@ return [
         'password_confirmation' => 'Confirm password', 'name' => 'Full name', 'phone' => 'Phone', 'phone_hint' => 'International format, e.g. +919900000000',
         'code' => '6-digit code', 'send_code' => 'Send code', 'verify' => 'Verify and sign in', 'no_account' => 'New here?',
         'have_account' => 'Already have an account?', 'create_account' => 'Create account', 'too_many' => 'Too many attempts. Please wait a minute and try again.',
+        'forgot_link' => 'Forgot password?', 'forgot_title' => 'Reset your password', 'forgot_intro' => 'Enter the email you signed up with and we will send you a link to choose a new password.', 'send_link' => 'Send reset link', 'back_to_sign_in' => 'Back to sign in', 'reset_title' => 'Choose a new password', 'new_password' => 'New password', 'save_password' => 'Save new password',
+    ],
+    'reset_mail' => [
+        'subject' => 'Reset your password', 'intro' => 'We received a request to reset the password for your account.', 'action' => 'Choose a new password', 'expiry' => 'This link expires in :minutes minutes.', 'ignore' => 'If you did not ask for this, you can ignore this email. Your password stays the same.',
     ],
     'checkout' => [
         'title' => 'Checkout', 'pay' => 'Pay', 'pay_wallet' => 'Pay with wallet', 'pay_stripe' => 'Pay by card (Stripe)', 'pay_razorpay' => 'Pay with Razorpay',

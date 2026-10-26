@@ -51,6 +51,7 @@
   "vehicleLoginToBook": "बुक करने के लिए साइन इन करें",
   "vehiclePriceUnavailable": "इन तारीखों के लिए कोई कीमत नहीं",
   "authSignIn": "साइन इन",
+  "authForgotPassword": "पासवर्ड भूल गए?",
   "authWithPassword": "पासवर्ड",
   "authWithOtp": "फ़ोन कोड",
   "authEmail": "ईमेल",

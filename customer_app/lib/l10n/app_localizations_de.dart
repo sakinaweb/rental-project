@@ -176,6 +176,9 @@ class L10nDe extends L10n {
   String get authSignIn => 'Anmelden';
 
   @override
+  String get authForgotPassword => 'Passwort vergessen?';
+
+  @override
   String get authWithPassword => 'Passwort';
 
   @override

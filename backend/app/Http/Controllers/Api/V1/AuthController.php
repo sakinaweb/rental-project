@@ -38,6 +38,23 @@ class AuthController extends Controller
         return new UserResource($user->load('role'));
     }
 
+    public function forgotPassword(Request $request, AccountService $accounts): JsonResponse
+    {
+        $accounts->sendResetLink($request->validate(['email' => ['required', 'email']])['email']);
+
+        // Same answer whether or not the address is registered, so emails can't be enumerated.
+        return response()->json(['message' => __('messages.password_reset_sent')]);
+    }
+
+    /** The token comes from the emailed link; every token of the account is revoked. */
+    public function resetPassword(Request $request, AccountService $accounts): JsonResponse
+    {
+        $data = $request->validate(AccountService::resetRules());
+        $accounts->resetPassword($data['email'], $data['token'], $data['password']);
+
+        return response()->json(['message' => __('messages.password_reset_done')]);
+    }
+
     public function requestOtp(Request $request, OtpService $otp): JsonResponse
     {
         $data = $request->validate(['phone' => ['required', 'string', 'max:20']]);

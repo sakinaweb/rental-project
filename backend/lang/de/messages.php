@@ -46,4 +46,7 @@ return [
     'investment_allocation_total' => 'Die Beträge pro Fahrzeug müssen den Investitionsbetrag ergeben.',
     'investment_allocation_vehicles' => 'Wählen Sie Firmenfahrzeuge im Land des Plans (und ggf. seiner Kategorie).',
     'investment_wrong_status' => 'Diese Investition kann in ihrem aktuellen Status nicht geändert werden.',
+    'password_reset_sent' => 'Wenn diese E-Mail-Adresse registriert ist, haben wir einen Link zum Zurücksetzen des Passworts gesendet.',
+    'password_reset_done' => 'Ihr Passwort wurde geändert. Bitte melden Sie sich mit dem neuen Passwort an.',
+    'password_reset_invalid' => 'Dieser Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.',
 ];

@@ -175,6 +175,9 @@ class L10nEn extends L10n {
   String get authSignIn => 'Sign in';
 
   @override
+  String get authForgotPassword => 'Forgot password?';
+
+  @override
   String get authWithPassword => 'Password';
 
   @override

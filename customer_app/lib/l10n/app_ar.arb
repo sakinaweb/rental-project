@@ -51,6 +51,7 @@
   "vehicleLoginToBook": "سجّل الدخول للحجز",
   "vehiclePriceUnavailable": "لا يوجد سعر لهذه التواريخ",
   "authSignIn": "تسجيل الدخول",
+  "authForgotPassword": "نسيت كلمة المرور؟",
   "authWithPassword": "كلمة المرور",
   "authWithOtp": "رمز الهاتف",
   "authEmail": "البريد الإلكتروني",

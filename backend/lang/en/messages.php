@@ -46,4 +46,7 @@ return [
     'investment_allocation_total' => 'The vehicle amounts must add up to the investment amount.',
     'investment_allocation_vehicles' => 'Choose company vehicles in the plan\'s country (and category, if it has one).',
     'investment_wrong_status' => 'This investment can\'t be changed in its current status.',
+    'password_reset_sent' => 'If this email is registered, we have sent a link to reset the password.',
+    'password_reset_done' => 'Your password has been changed. Please sign in with the new password.',
+    'password_reset_invalid' => 'This reset link is invalid or has expired. Please request a new one.',
 ];

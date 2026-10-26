@@ -2,13 +2,26 @@
 
 ## Unreleased
 
+### Demo fleet (Phase 13, part)
+
+- `php artisan db:seed --class=DemoSeeder` (after `DatabaseSeeder`): a Mumbai branch, 14 models (7 bikes, 7 cars) with a daily price and a real photo each, two company vehicles per model (28). Idempotent: re-running adds nothing.
+- Photos are the lead images of each model's Wikipedia article, from Wikimedia Commons (CC BY, CC BY-SA or public domain; commercial use allowed with attribution). Author, licence and source per photo in `database/seeders/images/CREDITS.tsv`; buyers' docs must carry these credits.
+- Test: `DemoSeederTest` (models, listed vehicles, stored photos, no duplicates on a second run).
+
+### Password reset by email
+
+- **Forgot password** on the website sign-in page (`/forgot-password`) and in the customer app, plus `POST /auth/password/forgot`. Same answer whether or not the email is registered; 5 requests a minute per IP, one email per address a minute.
+- The email (in the account's language, all five) links to `/reset-password/{token}`; the link lasts 60 minutes and works once. Laravel's password broker and the existing `password_reset_tokens` table; no new tables.
+- `POST /auth/password/reset` (and the page) use the registration password rules, and sign the account out of every app (API tokens revoked).
+- Tests: `PasswordResetTest` (API, website, email language), customer app widget test.
+
 ### Phase 12: Hardening (MD §7.12, §8)
 
 - **Real booking race test** (`BookingRaceTest`): 8 processes, each with its own MySQL connection, book at the same instant through `BookingService` (test database only). Same vehicle: exactly one booking, the rest "unavailable". Overlapping windows: whatever wins is at least the buffer apart. A coupon with one use left: used once.
 - **Fixed: simultaneous bookings failed with a server error.** Two customers booking *different* vehicles at the same moment could deadlock in MySQL (gap locks on the bookings index), and 7 of 8 got an error (shown by the new test). Transactions that claim vehicle time (create, extend, reassign, partner blockout) and settlement now re-run on a deadlock (`BookingService::DEADLOCK_ATTEMPTS`), as MySQL advises. The coupon is now locked first, so coupon bookings queue instead of deadlocking.
 - **Security pass:** no mass assignment from requests (registration forces the customer role; profile updates write validated fields only); every booking, payment and invoice endpoint goes through the booking policy; partner, staff and investor data is scoped to its owner; Livewire actions re-check access; uploads are images only (no SVG) with size and count caps; one raw query, with a bound value; no unescaped output in views; OTP codes hashed, 5 tries per code, send limits per phone.
 - **Fixed:** website registration had no rate limit (the API had 10 per minute); it now has the same.
-- Not changed, for the owner to decide: API tokens don't expire (`sanctum.expiration`; revoked on suspension); there is no password reset by email yet (phone users can sign in by SMS code).
+- Not changed, for the owner to decide: API tokens don't expire (`sanctum.expiration`; revoked on suspension); password reset by email has since been added (above).
 
 ### Phase 11: Investor module (MD §7.11)
 

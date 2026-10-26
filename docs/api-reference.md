@@ -17,7 +17,7 @@ The full, machine-readable contract is **[`openapi.json`](openapi.json)** (OpenA
 1. `GET /countries`, `/cities?country_id=`, `/vehicle-categories`, `/addons`
 2. `GET /vehicles?city_id=&category=&type=&from=&to=…` → `GET /vehicles/{id}` → `GET /vehicles/{id}/availability?from=&to=` (`model.image_url` is the model's photo, or null)
 3. `POST /bookings/quote` (no account needed) → price breakdown + deposit
-4. Sign in: `POST /auth/login`, or `POST /auth/otp/request` + `/auth/otp/verify`, or `POST /auth/register`
+4. Sign in: `POST /auth/login`, or `POST /auth/otp/request` + `/auth/otp/verify`, or `POST /auth/register`. Forgot password: `POST /auth/password/forgot` emails a link to the website reset page (`POST /auth/password/reset` with its token sets the new password and revokes every token of the account)
 5. `POST /bookings` → draft that holds the vehicle for 15 minutes
 6. `GET /payments/gateways?currency={booking currency}` → `POST /payments/intent` with `wallet` (paid at once) or a gateway from that list (open its checkout with `client`; Stripe returns `client_secret` + `publishable_key`, Razorpay `order_id` + `key_id`)
 7. Poll `GET /bookings/{id}` until `confirmed` (set by the webhook), or `cancelled` after the 30-minute payment timeout

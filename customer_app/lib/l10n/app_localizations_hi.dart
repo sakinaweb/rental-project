@@ -169,6 +169,9 @@ class L10nHi extends L10n {
   String get authSignIn => 'साइन इन';
 
   @override
+  String get authForgotPassword => 'पासवर्ड भूल गए?';
+
+  @override
   String get authWithPassword => 'पासवर्ड';
 
   @override

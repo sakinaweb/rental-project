@@ -210,6 +210,7 @@ class Api {
   Future<(String, User)> login(String email, String password) => _call(() => _dio.post('/auth/login', data: {'email': email, 'password': password}), _token);
   Future<(String, User)> register(Map<String, dynamic> body) => _call(() => _dio.post('/auth/register', data: body), _token);
   Future<String> requestOtp(String phone) => _call(() => _dio.post('/auth/otp/request', data: {'phone': phone}), (d) => d['message'] as String);
+  Future<String> forgotPassword(String email) => _call(() => _dio.post('/auth/password/forgot', data: {'email': email}), (d) => d['message'] as String);
   Future<(String, User)> verifyOtp(String phone, String code) => _call(() => _dio.post('/auth/otp/verify', data: {'phone': phone, 'code': code}), _token);
   Future<User> me() => _call(() => _dio.get('/me'), (d) => User(d['data']));
   Future<User> updateMe(Map<String, dynamic> body) => _call(() => _dio.patch('/me', data: body), (d) => User(d['data']));

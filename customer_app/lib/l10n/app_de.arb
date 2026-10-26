@@ -51,6 +51,7 @@
   "vehicleLoginToBook": "Zum Buchen anmelden",
   "vehiclePriceUnavailable": "Kein Preis für diesen Zeitraum",
   "authSignIn": "Anmelden",
+  "authForgotPassword": "Passwort vergessen?",
   "authWithPassword": "Passwort",
   "authWithOtp": "SMS-Code",
   "authEmail": "E-Mail",

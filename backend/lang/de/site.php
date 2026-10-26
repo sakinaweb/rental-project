@@ -22,6 +22,10 @@ return [
         'password_confirmation' => 'Passwort bestätigen', 'name' => 'Vollständiger Name', 'phone' => 'Telefon', 'phone_hint' => 'Internationales Format, z. B. +4915100000000',
         'code' => '6-stelliger Code', 'send_code' => 'Code senden', 'verify' => 'Bestätigen und anmelden', 'no_account' => 'Neu hier?',
         'have_account' => 'Sie haben bereits ein Konto?', 'create_account' => 'Konto erstellen', 'too_many' => 'Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.',
+        'forgot_link' => 'Passwort vergessen?', 'forgot_title' => 'Passwort zurücksetzen', 'forgot_intro' => 'Geben Sie die E-Mail-Adresse Ihres Kontos ein. Wir senden Ihnen einen Link, mit dem Sie ein neues Passwort wählen können.', 'send_link' => 'Link senden', 'back_to_sign_in' => 'Zurück zur Anmeldung', 'reset_title' => 'Neues Passwort wählen', 'new_password' => 'Neues Passwort', 'save_password' => 'Neues Passwort speichern',
+    ],
+    'reset_mail' => [
+        'subject' => 'Passwort zurücksetzen', 'intro' => 'Wir haben eine Anfrage erhalten, das Passwort Ihres Kontos zurückzusetzen.', 'action' => 'Neues Passwort wählen', 'expiry' => 'Dieser Link ist :minutes Minuten gültig.', 'ignore' => 'Wenn Sie das nicht angefordert haben, können Sie diese E-Mail ignorieren. Ihr Passwort bleibt unverändert.',
     ],
     'checkout' => [
         'title' => 'Bezahlung', 'pay' => 'Bezahlen', 'pay_wallet' => 'Mit Wallet bezahlen', 'pay_stripe' => 'Mit Karte bezahlen (Stripe)', 'pay_razorpay' => 'Mit Razorpay bezahlen',

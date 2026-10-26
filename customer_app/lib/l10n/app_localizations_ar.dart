@@ -169,6 +169,9 @@ class L10nAr extends L10n {
   String get authSignIn => 'تسجيل الدخول';
 
   @override
+  String get authForgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
   String get authWithPassword => 'كلمة المرور';
 
   @override

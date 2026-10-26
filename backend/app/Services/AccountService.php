@@ -6,6 +6,8 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -33,6 +35,35 @@ class AccountService
         $this->ensureActive($user);
 
         return $user;
+    }
+
+    /** Emails a reset link if the address is registered. Callers answer the same way either way (no enumeration). */
+    public function sendResetLink(string $email): void
+    {
+        Password::sendResetLink(['email' => $email]); // the broker also limits each address to one email a minute
+    }
+
+    /** @return array<string, mixed> same password rules as registration */
+    public static function resetRules(): array
+    {
+        return [
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => (new RegisterRequest)->rules()['password'],
+        ];
+    }
+
+    /** Sets the new password and signs the account out of every app, so a stolen token stops working too. */
+    public function resetPassword(string $email, string $token, string $password): void
+    {
+        $status = Password::reset(['email' => $email, 'token' => $token, 'password' => $password], function (User $user, string $password) {
+            $user->forceFill(['password' => $password, 'remember_token' => Str::random(60)])->save();
+            $user->tokens()->delete();
+        });
+
+        if ($status !== Password::PASSWORD_RESET) {
+            throw ValidationException::withMessages(['email' => __('messages.password_reset_invalid')]);
+        }
     }
 
     public function ensureActive(User $user, string $field = 'email'): void

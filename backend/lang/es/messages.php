@@ -46,4 +46,7 @@ return [
     'investment_allocation_total' => 'Los importes por vehículo deben sumar el importe de la inversión.',
     'investment_allocation_vehicles' => 'Elige vehículos de la empresa del país del plan (y de su categoría, si la tiene).',
     'investment_wrong_status' => 'Esta inversión no se puede cambiar en su estado actual.',
+    'password_reset_sent' => 'Si este correo está registrado, hemos enviado un enlace para restablecer la contraseña.',
+    'password_reset_done' => 'Tu contraseña se ha cambiado. Inicia sesión con la contraseña nueva.',
+    'password_reset_invalid' => 'Este enlace no es válido o ha caducado. Solicita uno nuevo.',
 ];

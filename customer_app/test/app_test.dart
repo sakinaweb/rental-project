@@ -326,6 +326,25 @@ void main() {
     expect(find.textContaining('#42'), findsOneWidget); // my bookings
   });
 
+  testWidgets('forgot password sends the typed email and shows the server answer', (tester) async {
+    String? sentTo;
+    final backend = indiaBackend()
+      ..on('POST /auth/password/forgot', (r) {
+        sentTo = r.data['email'] as String;
+        return {'message': 'If this email is registered, we have sent a link to reset the password.'};
+      });
+    await pumpApp(tester, backend);
+
+    await tester.tap(find.text('My bookings'));
+    await settle(tester);
+    await tester.enterText(find.byKey(const Key('email')), ' asha@example.com ');
+    await tester.tap(find.byKey(const Key('forgot')));
+    await settle(tester);
+
+    expect(sentTo, 'asha@example.com');
+    expect(find.text('If this email is registered, we have sent a link to reset the password.'), findsOneWidget);
+  });
+
   testWidgets('booking detail: cancel after confirming, refund notice', (tester) async {
     var status = 'confirmed';
     final backend = indiaBackend()
