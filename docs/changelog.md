@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### OTP by SMS through Twilio Verify
+
+- With `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and `TWILIO_VERIFY_SID` set, OTP codes are created, sent and checked by Twilio Verify (`App\Services\Sms\TwilioVerify`), in the account's language. Any of them empty: codes go to the log as before.
+- Our limits still apply in front of Twilio: 3 sends per phone per 10 minutes, lock after 5 wrong codes, 5-minute window, single use. Same answer for unknown numbers.
+- A refusal from Twilio (e.g. a trial account's unverified number) is logged (`Twilio Verify send failed`, with Twilio's error code), not shown to the user.
+- The Verify service must use 6-digit codes (the apps and API ask for 6). `phpunit.xml` blanks `TWILIO_VERIFY_SID`, so tests never reach Twilio.
+- Tests: two new cases in `OtpTest` (send and check through Twilio, refusal logged).
+
 ### Demo fleet (Phase 13, part)
 
 - `php artisan db:seed --class=DemoSeeder` (after `DatabaseSeeder`): a Mumbai branch, 14 models (7 bikes, 7 cars) with a daily price and a real photo each, two company vehicles per model (28). Idempotent: re-running adds nothing.

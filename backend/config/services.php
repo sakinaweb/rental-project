@@ -46,6 +46,13 @@ return [
         'credentials' => env('FCM_CREDENTIALS'),
     ],
 
+    // OTP by SMS through Twilio Verify; empty = codes are written to the log (LogSmsDriver).
+    'twilio' => [
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'verify_sid' => env('TWILIO_VERIFY_SID'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

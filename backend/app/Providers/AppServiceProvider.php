@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // ponytail: only the log driver exists; add an SMS_DRIVER config switch with the first real provider.
+        // Generic SMS goes to the log; OTP uses Twilio Verify instead when TWILIO_* is set (OtpService).
         $this->app->bind(SmsDriver::class, LogSmsDriver::class);
 
         $this->app->extend('translation.loader', fn (FileLoader $loader) => DatabaseTranslationLoader::from($loader));

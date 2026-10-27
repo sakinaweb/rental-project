@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Services\Sms\SmsDriver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class OtpTest extends TestCase
@@ -90,6 +92,38 @@ class OtpTest extends TestCase
         }
 
         $this->assertCount(3, $this->sms->sent);
+    }
+
+    public function test_twilio_verify_sends_and_checks_the_code_behind_our_limits(): void
+    {
+        config(['services.twilio' => ['account_sid' => 'ACtest', 'auth_token' => 'secret', 'verify_sid' => 'VAtest']]);
+        Http::fake([
+            'verify.twilio.com/v2/Services/VAtest/Verifications' => Http::response(['status' => 'pending']),
+            'verify.twilio.com/v2/Services/VAtest/VerificationCheck' => fn ($request) => Http::response(['status' => $request['Code'] === '123456' ? 'approved' : 'pending']),
+        ]);
+        User::factory()->create(['phone' => '+919900000007', 'locale' => 'hi']);
+
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000007'])->assertOk();
+        Http::assertSent(fn ($r) => str_ends_with($r->url(), '/Verifications') && $r['To'] === '+919900000007' && $r['Channel'] === 'sms' && $r['Locale'] === 'hi');
+        $this->assertCount(0, $this->sms->sent); // nothing through the generic SMS driver
+
+        $this->postJson('/api/v1/auth/otp/verify', ['phone' => '+919900000007', 'code' => '000000'])->assertUnprocessable();
+        $this->postJson('/api/v1/auth/otp/verify', ['phone' => '+919900000007', 'code' => '123456'])->assertOk()->assertJsonStructure(['token']);
+        // single use: our record is gone, Twilio is not asked again
+        $this->postJson('/api/v1/auth/otp/verify', ['phone' => '+919900000007', 'code' => '123456'])->assertUnprocessable();
+        Http::assertSentCount(3);
+    }
+
+    public function test_twilio_refusal_is_logged_and_answer_stays_the_same(): void
+    {
+        config(['services.twilio' => ['account_sid' => 'ACtest', 'auth_token' => 'secret', 'verify_sid' => 'VAtest']]);
+        Http::fake(['verify.twilio.com/*' => Http::response(['code' => 21608, 'message' => 'unverified number'], 400)]);
+        Log::spy();
+        User::factory()->create(['phone' => '+919900000008']);
+
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000008'])
+            ->assertOk()->assertJsonPath('message', __('messages.otp_sent'));
+        Log::shouldHaveReceived('warning')->withArgs(fn ($msg, $ctx) => $msg === 'Twilio Verify send failed' && $ctx['code'] === 21608);
     }
 
     public function test_sms_is_in_the_users_locale(): void
