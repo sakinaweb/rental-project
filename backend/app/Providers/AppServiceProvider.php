@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\Notifications\FcmPushDriver;
 use App\Services\Notifications\LogPushDriver;
 use App\Services\Notifications\PushDriver;
+use App\Services\Sms\AndroidSmsGateway;
 use App\Services\Sms\LogSmsDriver;
 use App\Services\Sms\SmsDriver;
 use App\Support\DatabaseTranslationLoader;
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Generic SMS goes to the log; OTP uses Twilio Verify instead when TWILIO_* is set (OtpService).
-        $this->app->bind(SmsDriver::class, LogSmsDriver::class);
+        $this->app->bind(SmsDriver::class, fn () => filled(config('services.sms_gateway.url')) ? new AndroidSmsGateway : new LogSmsDriver);
 
         $this->app->extend('translation.loader', fn (FileLoader $loader) => DatabaseTranslationLoader::from($loader));
 

@@ -46,6 +46,13 @@ return [
         'credentials' => env('FCM_CREDENTIALS'),
     ],
 
+    // OTP by SMS from your own Android phone ("SMS Gateway for Android"); used when Twilio Verify is not configured.
+    'sms_gateway' => [
+        'url' => env('SMS_GATEWAY_URL'),
+        'username' => env('SMS_GATEWAY_USERNAME'),
+        'password' => env('SMS_GATEWAY_PASSWORD'),
+    ],
+
     // OTP by SMS through Twilio Verify; empty = codes are written to the log (LogSmsDriver).
     'twilio' => [
         'account_sid' => env('TWILIO_ACCOUNT_SID'),

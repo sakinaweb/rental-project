@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\Sms\AndroidSmsGateway;
 use App\Services\Sms\SmsDriver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -133,5 +135,28 @@ class OtpTest extends TestCase
         $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000006']);
 
         $this->assertStringStartsWith('Ihr Bestätigungscode lautet', $this->sms->sent[0]['message']);
+    }
+
+    public function test_android_phone_gateway_sends_the_code_and_survives_an_unreachable_phone(): void
+    {
+        config(['services.sms_gateway' => ['url' => 'http://192.168.1.50:8080/message', 'username' => 'sms', 'password' => 'gate-pass']]);
+        $this->app->forgetInstance(SmsDriver::class); // back to the real binding instead of setUp()'s recorder
+        $this->assertInstanceOf(AndroidSmsGateway::class, app(SmsDriver::class));
+
+        Http::fake(['192.168.1.50:8080/*' => Http::response(['id' => 'msg1'], 202)]);
+        User::factory()->create(['phone' => '+919900000007']);
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000007'])->assertOk();
+
+        Http::assertSent(fn ($request) => $request->url() === 'http://192.168.1.50:8080/message'
+            && $request->hasHeader('Authorization', 'Basic '.base64_encode('sms:gate-pass'))
+            && $request['phoneNumbers'] === ['+919900000007']
+            && preg_match('/\d{6}/', $request['textMessage']['text']) === 1);
+
+        // Phone off or out of the network: logged, and the user still gets the usual answer.
+        Http::fake(fn () => throw new ConnectionException('timeout'));
+        Log::spy();
+        User::factory()->create(['phone' => '+919900000008']);
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000008'])->assertOk();
+        Log::shouldHaveReceived('warning')->withArgs(fn (string $message) => $message === 'SMS gateway unreachable');
     }
 }
