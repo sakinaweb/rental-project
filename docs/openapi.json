@@ -4308,6 +4308,21 @@
                 ],
                 "format": "uri",
                 "description": "Model photo uploaded in the admin panel; null when none (clients draw a bike/car instead)."
+              },
+              "engine_cc": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Engine size in cc, when set in the admin panel."
+              },
+              "photo_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Main photo first, then the gallery; empty when there are none."
               }
             }
           },

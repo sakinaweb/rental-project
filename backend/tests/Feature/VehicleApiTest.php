@@ -115,6 +115,12 @@ class VehicleApiTest extends TestCase
         $url = Storage::disk(VehicleModel::imageDisk())->url('vehicle-models/swift.jpg');
         $this->getJson("/api/v1/vehicles/{$vehicle->id}")->assertJsonPath('data.model.image_url', $url);
         $this->get('/')->assertSee($url);
+
+        // Gallery and engine size: API lists the main photo first; the vehicle page shows every photo and the cc.
+        $vehicle->vehicleModel->update(['gallery' => ['vehicle-models/swift-2.jpg'], 'engine_cc' => 1197]);
+        $second = Storage::disk(VehicleModel::imageDisk())->url('vehicle-models/swift-2.jpg');
+        $this->getJson("/api/v1/vehicles/{$vehicle->id}")->assertJsonPath('data.model.photo_urls', [$url, $second])->assertJsonPath('data.model.engine_cc', 1197);
+        $this->get("/vehicles/{$vehicle->id}")->assertSee($second)->assertSee('1197 cc');
     }
 
     public function test_availability_endpoint(): void

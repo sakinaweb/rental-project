@@ -45,7 +45,10 @@ class VehicleModelResource extends Resource
                 TextInput::make('seats')->integer()->minValue(1)->maxValue(255),
                 TextInput::make('transmission')->maxLength(20),
                 TextInput::make('fuel_type')->maxLength(20),
+                TextInput::make('engine_cc')->label('Engine (cc)')->integer()->minValue(1)->maxValue(65535),
                 FileUpload::make('image_path')->label('Photo')->image()->imageEditor()->disk(VehicleModel::imageDisk())->directory('vehicle-models')->maxSize(4096)->columnSpanFull(),
+                FileUpload::make('gallery')->label('More photos')->helperText('Shown in the gallery on the vehicle page, after the main photo.')
+                    ->image()->multiple()->reorderable()->maxFiles(8)->disk(VehicleModel::imageDisk())->directory('vehicle-models')->maxSize(4096)->columnSpanFull(),
             ]);
     }
 

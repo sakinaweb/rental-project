@@ -49,6 +49,15 @@ class DemoSeeder extends Seeder
             ['mercedes-e-class', 'Mercedes-Benz', 'E-Class', 'Luxury', 'car', 5, 'automatic', 'diesel', 1200000],
         ];
 
+        // Engine size in cc, from each maker's published specifications.
+        $cc = [
+            're-classic-350' => 349, 'honda-activa' => 110, 'bajaj-pulsar' => 373, 'ktm-duke-390' => 399, 'yamaha-r15' => 155,
+            'tvs-apache' => 312, 'hero-splendor' => 113, 'maruti-swift' => 1197, 'tata-nexon' => 1497, 'hyundai-creta' => 1497,
+            'honda-city' => 1498, 'toyota-innova' => 1987, 'mahindra-thar' => 2184, 'toyota-fortuner' => 2755, 'suzuki-access' => 124,
+            're-himalayan' => 452, 'triumph-speed-400' => 398, 'hyundai-i20' => 1197, 'skoda-slavia' => 1498, 'kia-carens' => 1493,
+            'bmw-3-series' => 1998, 'mercedes-e-class' => 1993,
+        ];
+
         $disk = Storage::disk(VehicleModel::imageDisk());
         foreach ($fleet as $i => [$slug, $brand, $name, $category, $type, $seats, $transmission, $fuel, $rate]) {
             $file = glob(__DIR__."/images/$slug.*")[0] ?? null;
@@ -62,7 +71,7 @@ class DemoSeeder extends Seeder
                 ['brand_id' => Brand::firstOrCreate(['name' => $brand])->id, 'name' => $name],
                 [
                     'category_id' => VehicleCategory::firstOrCreate(['name' => $category, 'type' => $type])->id,
-                    'seats' => $seats, 'transmission' => $transmission, 'fuel_type' => $fuel, 'image_path' => $image,
+                    'seats' => $seats, 'transmission' => $transmission, 'fuel_type' => $fuel, 'engine_cc' => $cc[$slug], 'image_path' => $image,
                 ],
             );
             PricingRule::firstOrCreate(['scope_type' => 'model', 'scope_id' => $model->id, 'unit' => 'day'], ['base_rate' => $rate]);

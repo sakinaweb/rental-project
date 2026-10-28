@@ -36,6 +36,7 @@
         <env name="RAZORPAY_WEBHOOK_SECRET" value=""/>
         <env name="STRIPE_SECRET" value=""/>
         <env name="FCM_CREDENTIALS" value=""/>
+        <env name="SMS_GATEWAY_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

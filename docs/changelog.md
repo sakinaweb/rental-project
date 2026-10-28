@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Vehicle gallery and engine size
+
+- `vehicle_models.engine_cc` and `vehicle_models.gallery` (migration `2026_10_28_100000`). Admin → Vehicle models: "Engine (cc)" and "More photos" (up to 8, reorderable).
+- API: `model.engine_cc` and `model.photo_urls` (main photo first, then the gallery) on `GET /vehicles` and `GET /vehicles/{id}`.
+- Website: bike cards show the engine size instead of seats; the vehicle page shows the engine size and, with more than one photo, a gallery with thumbnails. The demo fleet has each model's engine size.
+
+### OTP by SMS from your own Android phone
+
+- New SMS driver `App\Services\Sms\AndroidSmsGateway` for the free "SMS Gateway for Android" app (sms-gate.app): set `SMS_GATEWAY_URL` (the app's local address or its cloud relay), `SMS_GATEWAY_USERNAME` and `SMS_GATEWAY_PASSWORD`, and each OTP goes out as a normal SMS from the phone's SIM. Twilio Verify still takes priority when configured; with neither, codes go to the log as before.
+- A refused send or an unreachable phone is logged (without the code) and the customer gets the usual answer. Steps in the buyer guide ("SMS from your own phone").
+
 ### Premium look (both apps and the admin panel)
 
 - One typeface everywhere: Plus Jakarta Sans (SIL OFL 1.1, bundled in `assets/fonts/` of both apps; Arabic and Devanagari fall back to the system font). The admin panel loads it too.

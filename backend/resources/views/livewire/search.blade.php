@@ -128,8 +128,13 @@
                                 <span class="capitalize">{{ $m->fuel_type ?? '—' }}</span>
                             </li>
                             <li class="flex flex-col items-center gap-1 rounded-xl bg-zinc-50 px-2 py-2">
-                                <svg viewBox="0 0 24 24" class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
-                                <span>{{ trans_choice('site.vehicle.seats', (int) $m->seats, ['n' => (int) $m->seats]) }}</span>
+                                @if ($m->category->type === 'bike' && $m->engine_cc)
+                                    <svg viewBox="0 0 24 24" class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M9 3h6"/></svg>
+                                    <span>{{ $m->engine_cc }} cc</span>
+                                @else
+                                    <svg viewBox="0 0 24 24" class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+                                    <span>{{ trans_choice('site.vehicle.seats', (int) $m->seats, ['n' => (int) $m->seats]) }}</span>
+                                @endif
                             </li>
                         </ul>
                         <div class="mt-3 flex items-center gap-1 text-sm text-zinc-500">

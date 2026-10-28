@@ -18,7 +18,7 @@ return [
         'addon_per_day' => 'per day', 'addon_per_booking' => 'per booking', 'qty' => 'Quantity', 'coupon' => 'Coupon code', 'quote' => 'Your price',
         'subtotal' => 'Subtotal', 'discounts' => 'Discounts', 'tax' => 'Tax', 'total' => 'Total', 'deposit' => 'Refundable deposit', 'due_now' => 'To pay now',
         'book_now' => 'Book now', 'login_to_book' => 'Sign in to book', 'price_unavailable' => 'No price for these dates',
-        'hours' => ':n hour|:n hours', 'extras' => 'Add-ons and coupon', 'pickup_return' => 'Pick-up and return', 'deposit_note' => 'Refunded after you return the vehicle.', 'specs' => 'Specifications', 'type' => 'Type',
+        'engine' => 'Engine', 'photo_n' => 'Photo :n', 'hours' => ':n hour|:n hours', 'extras' => 'Add-ons and coupon', 'pickup_return' => 'Pick-up and return', 'deposit_note' => 'Refunded after you return the vehicle.', 'specs' => 'Specifications', 'type' => 'Type',
     ],
     'auth' => [
         'sign_in' => 'Sign in', 'with_password' => 'Password', 'with_otp' => 'Phone code', 'email' => 'Email', 'password' => 'Password',

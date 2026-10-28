@@ -66,11 +66,28 @@ Every key is explained in `.env`. You can turn each service on separately; while
 | Card payments (Stripe) | `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET` | Webhook: `{APP_URL}/api/v1/payments/webhook/stripe`, events `payment_intent.succeeded`, `payment_intent.payment_failed` |
 | Card payments (Razorpay) | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Webhook: `{APP_URL}/api/v1/payments/webhook/razorpay`, events `payment.captured`, `order.paid`, `payment.failed` |
 | OTP sign-in by SMS (Twilio Verify) | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SID` | The Verify service must use 6-digit codes. Trial accounts only send to verified numbers. |
+| OTP sign-in by SMS from your own Android phone | `SMS_GATEWAY_URL`, `SMS_GATEWAY_USERNAME`, `SMS_GATEWAY_PASSWORD` | Used when Twilio is not set. See "SMS from your own phone" below. |
 | Push notifications (Firebase) | `FCM_CREDENTIALS` | Absolute path to the service-account JSON file |
 | Email | `MAIL_*` | Password reset links |
 | File storage on S3 | `FILESYSTEM_DISK=s3`, `AWS_*` | Optional; the local disk is the default |
 
 A payment is marked paid only after the provider's webhook confirms it, so set up the webhooks before taking real payments.
+
+### SMS from your own phone
+
+Any Android phone with a SIM can send the sign-in codes, so you don't need an SMS provider account. Each code is a normal SMS from that SIM, charged at your mobile plan's rate.
+
+1. Install **SMS Gateway for Android** (free, open source: sms-gate.app, on Google Play or GitHub) and allow it to send SMS.
+2. Choose how the server reaches the phone:
+   - **Local server**: the phone and the server are on the same network (for example your office Wi-Fi). Turn it on in the app; it shows an address like `http://192.168.1.50:8080`, a username and a password. Give the phone a fixed IP address in your router.
+   - **Cloud server**: works from anywhere with internet, which is what a hosted website needs. Turn it on in the app; it shows a username and password.
+3. Put the values in `.env`:
+   - Local: `SMS_GATEWAY_URL=http://192.168.1.50:8080/message`
+   - Cloud: `SMS_GATEWAY_URL=https://api.sms-gate.app/3rdparty/v1/message`
+   - `SMS_GATEWAY_USERNAME=` and `SMS_GATEWAY_PASSWORD=` as shown in the app.
+4. Sign in with "Phone code" on the website or the app and check that the SMS arrives.
+
+Keep the phone charged and the app allowed to run in the background (turn off battery optimisation for it). If the phone can't be reached, the error goes to `storage/logs/laravel.log` and the customer can ask for a new code. Twilio Verify, when set, takes priority over the phone.
 
 ### Countries, taxes and features
 

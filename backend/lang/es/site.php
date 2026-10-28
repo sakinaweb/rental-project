@@ -17,7 +17,7 @@ return [
         'addon_per_day' => 'por día', 'addon_per_booking' => 'por reserva', 'qty' => 'Cantidad', 'coupon' => 'Código de cupón', 'quote' => 'Tu precio',
         'subtotal' => 'Subtotal', 'discounts' => 'Descuentos', 'tax' => 'Impuestos', 'total' => 'Total', 'deposit' => 'Depósito reembolsable', 'due_now' => 'A pagar ahora',
         'book_now' => 'Reservar ahora', 'login_to_book' => 'Inicia sesión para reservar', 'price_unavailable' => 'Sin precio para estas fechas',
-        'hours' => ':n hora|:n horas', 'extras' => 'Extras y cupón', 'pickup_return' => 'Recogida y devolución', 'deposit_note' => 'Se devuelve cuando entregas el vehículo.', 'specs' => 'Especificaciones', 'type' => 'Tipo',
+        'engine' => 'Motor', 'photo_n' => 'Foto :n', 'hours' => ':n hora|:n horas', 'extras' => 'Extras y cupón', 'pickup_return' => 'Recogida y devolución', 'deposit_note' => 'Se devuelve cuando entregas el vehículo.', 'specs' => 'Especificaciones', 'type' => 'Tipo',
     ],
     'auth' => [
         'sign_in' => 'Iniciar sesión', 'with_password' => 'Contraseña', 'with_otp' => 'Código por SMS', 'email' => 'Correo electrónico', 'password' => 'Contraseña',

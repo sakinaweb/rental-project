@@ -7,7 +7,27 @@
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_380px]">
         <div class="space-y-6">
             <section class="overflow-hidden rounded-3xl bg-white shadow-[0_12px_32px_-16px_rgb(15_23_42/.18)] ring-1 ring-zinc-200/70">
-                <x-vehicle-image :model="$m" class="aspect-[16/10]" />
+                @php($photos = $m->photoUrls())
+                @if (count($photos) > 1)
+                    <div x-data="{ i: 0 }">
+                        <div class="relative aspect-[16/10] bg-zinc-100">
+                            @foreach ($photos as $k => $photo)
+                                <img src="{{ $photo }}" alt="{{ $m->brand->name }} {{ $m->name }}" @if ($k > 0) loading="lazy" @endif decoding="async"
+                                     x-show="i === {{ $k }}" @if ($k > 0) x-cloak @endif class="absolute inset-0 h-full w-full object-cover">
+                            @endforeach
+                        </div>
+                        <div class="flex gap-2 overflow-x-auto px-4 pt-4 sm:px-7">
+                            @foreach ($photos as $k => $photo)
+                                <button type="button" @click="i = {{ $k }}" :class="i === {{ $k }} ? 'ring-brand-600' : 'ring-transparent opacity-70 hover:opacity-100'"
+                                        class="aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-xl ring-2 transition sm:w-24" aria-label="{{ __('site.vehicle.photo_n', ['n' => $k + 1]) }}">
+                                    <img src="{{ $photo }}" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover">
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <x-vehicle-image :model="$m" class="aspect-[16/10]" />
+                @endif
                 <div class="p-5 sm:p-7">
                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-wide uppercase">
                         <span class="text-brand-600">{{ $m->category->name }}</span><span class="text-zinc-300">•</span><span class="text-zinc-500">{{ __('site.search.'.$m->category->type) }}</span>
@@ -20,7 +40,9 @@
                             [__('site.vehicle.seats_label'), $m->seats, '<circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/>'],
                             [__('site.vehicle.transmission'), $m->transmission, '<circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M18 8v2a2 2 0 0 1-2 2H6"/>'],
                             [__('site.vehicle.fuel'), $m->fuel_type, '<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3M7 8h4"/>'],
-                            [__('site.vehicle.type'), $m->category->name, '<rect x="3" y="7" width="18" height="10" rx="3"/><path d="M7 17v2M17 17v2"/>'],
+                            $m->engine_cc
+                                ? [__('site.vehicle.engine'), $m->engine_cc.' cc', '<circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M9 3h6"/>']
+                                : [__('site.vehicle.type'), $m->category->name, '<rect x="3" y="7" width="18" height="10" rx="3"/><path d="M7 17v2M17 17v2"/>'],
                         ] as [$label, $value, $icon])
                             <div class="rounded-2xl bg-zinc-50 p-3.5">
                                 <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $icon !!}</svg>

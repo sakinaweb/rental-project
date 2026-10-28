@@ -17,7 +17,7 @@ return [
         'addon_per_day' => 'pro Tag', 'addon_per_booking' => 'pro Buchung', 'qty' => 'Menge', 'coupon' => 'Gutscheincode', 'quote' => 'Ihr Preis',
         'subtotal' => 'Zwischensumme', 'discounts' => 'Rabatte', 'tax' => 'Steuer', 'total' => 'Gesamt', 'deposit' => 'Erstattbare Kaution', 'due_now' => 'Jetzt zu zahlen',
         'book_now' => 'Jetzt buchen', 'login_to_book' => 'Zum Buchen anmelden', 'price_unavailable' => 'Kein Preis für diesen Zeitraum',
-        'hours' => ':n Stunde|:n Stunden', 'extras' => 'Extras und Gutschein', 'pickup_return' => 'Abholung und Rückgabe', 'deposit_note' => 'Wird nach der Rückgabe des Fahrzeugs erstattet.', 'specs' => 'Ausstattung', 'type' => 'Typ',
+        'engine' => 'Motor', 'photo_n' => 'Foto :n', 'hours' => ':n Stunde|:n Stunden', 'extras' => 'Extras und Gutschein', 'pickup_return' => 'Abholung und Rückgabe', 'deposit_note' => 'Wird nach der Rückgabe des Fahrzeugs erstattet.', 'specs' => 'Ausstattung', 'type' => 'Typ',
     ],
     'auth' => [
         'sign_in' => 'Anmelden', 'with_password' => 'Passwort', 'with_otp' => 'SMS-Code', 'email' => 'E-Mail', 'password' => 'Passwort',

@@ -17,7 +17,7 @@ return [
         'addon_per_day' => 'प्रति दिन', 'addon_per_booking' => 'प्रति बुकिंग', 'qty' => 'मात्रा', 'coupon' => 'कूपन कोड', 'quote' => 'आपकी कीमत',
         'subtotal' => 'उप-योग', 'discounts' => 'छूट', 'tax' => 'कर', 'total' => 'कुल', 'deposit' => 'वापसी योग्य जमा राशि', 'due_now' => 'अभी भुगतान करें',
         'book_now' => 'अभी बुक करें', 'login_to_book' => 'बुक करने के लिए साइन इन करें', 'price_unavailable' => 'इन तारीखों के लिए कोई कीमत नहीं',
-        'hours' => ':n घंटा|:n घंटे', 'extras' => 'ऐड-ऑन और कूपन', 'pickup_return' => 'पिक-अप और वापसी', 'deposit_note' => 'वाहन लौटाने के बाद वापस किया जाता है।', 'specs' => 'विवरण', 'type' => 'प्रकार',
+        'engine' => 'इंजन', 'photo_n' => 'फ़ोटो :n', 'hours' => ':n घंटा|:n घंटे', 'extras' => 'ऐड-ऑन और कूपन', 'pickup_return' => 'पिक-अप और वापसी', 'deposit_note' => 'वाहन लौटाने के बाद वापस किया जाता है।', 'specs' => 'विवरण', 'type' => 'प्रकार',
     ],
     'auth' => [
         'sign_in' => 'साइन इन', 'with_password' => 'पासवर्ड', 'with_otp' => 'फ़ोन कोड', 'email' => 'ईमेल', 'password' => 'पासवर्ड',
