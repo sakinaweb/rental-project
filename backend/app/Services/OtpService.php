@@ -25,10 +25,16 @@ class OtpService
             $expiresAt = now()->addMinutes(self::TTL_MINUTES);
 
             if ($this->twilio->enabled()) { // Twilio holds the code; we keep only the attempt count and expiry
-                Cache::put($this->key($user->phone), ['twilio' => true, 'attempts' => 0, 'expires_at' => $expiresAt], $expiresAt);
-                $this->twilio->start($user->phone, $user->locale);
+                if ($this->twilio->start($user->phone, $user->locale)) {
+                    Cache::put($this->key($user->phone), ['twilio' => true, 'attempts' => 0, 'expires_at' => $expiresAt], $expiresAt);
 
-                return;
+                    return;
+                }
+                // Twilio refused (e.g. a trial account's unverified number): the phone gateway sends our own code
+                // instead, when one is configured.
+                if (blank(config('services.sms_gateway.url'))) {
+                    return;
+                }
             }
 
             $code = (string) random_int(100000, 999999);

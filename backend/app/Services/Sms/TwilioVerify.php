@@ -15,14 +15,16 @@ class TwilioVerify
         return filled(config('services.twilio.account_sid')) && filled(config('services.twilio.auth_token')) && filled(config('services.twilio.verify_sid'));
     }
 
-    /** Sends the code by SMS. A refusal (e.g. a trial account's unverified number) is logged, not shown. */
-    public function start(string $phone, string $locale): void
+    /** Sends the code by SMS; false on a refusal (e.g. a trial account's unverified number), which is logged, not shown. */
+    public function start(string $phone, string $locale): bool
     {
         $response = $this->http()->post('Verifications', ['To' => $phone, 'Channel' => 'sms', 'Locale' => $locale]);
 
         if ($response->failed()) {
             Log::warning('Twilio Verify send failed', ['status' => $response->status(), 'code' => $response->json('code'), 'message' => $response->json('message')]);
         }
+
+        return $response->successful();
     }
 
     /** Twilio answers 404 once the verification is approved, expired or out of attempts. */

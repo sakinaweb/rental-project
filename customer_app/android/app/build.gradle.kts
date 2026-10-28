@@ -45,6 +45,10 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // R8 needs more than 2 GB of heap with the Stripe SDK; off so release builds work on 8 GB PCs.
+            // The Java/Kotlin part is small, so the APK grows only a little.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }

@@ -12,6 +12,7 @@ use App\Services\Sms\SmsDriver;
 use App\Support\DatabaseTranslationLoader;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\FileLoader;
 
@@ -42,6 +43,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Behind HTTPS that ends at a proxy (load balancer, Cloudflare, ngrok) PHP sees plain http; links must still be https.
+        if (str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
+
         // Password reset email in our own wording (site.reset_mail.*); it is sent in the user's locale (User::preferredLocale).
         ResetPassword::toMailUsing(fn (User $user, string $token) => (new MailMessage)
             ->subject(__('site.reset_mail.subject'))

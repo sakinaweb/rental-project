@@ -51,6 +51,7 @@ return [
         'url' => env('SMS_GATEWAY_URL'),
         'username' => env('SMS_GATEWAY_USERNAME'),
         'password' => env('SMS_GATEWAY_PASSWORD'),
+        'api_key' => env('SMS_GATEWAY_API_KEY'),
     ],
 
     // OTP by SMS through Twilio Verify; empty = codes are written to the log (LogSmsDriver).

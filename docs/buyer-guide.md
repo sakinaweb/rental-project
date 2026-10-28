@@ -87,7 +87,9 @@ Any Android phone with a SIM can send the sign-in codes, so you don't need an SM
    - `SMS_GATEWAY_USERNAME=` and `SMS_GATEWAY_PASSWORD=` as shown in the app.
 4. Sign in with "Phone code" on the website or the app and check that the SMS arrives.
 
-Keep the phone charged and the app allowed to run in the background (turn off battery optimisation for it). If the phone can't be reached, the error goes to `storage/logs/laravel.log` and the customer can ask for a new code. Twilio Verify, when set, takes priority over the phone.
+Keep the phone charged and the app allowed to run in the background (turn off battery optimisation for it). If the phone can't be reached, the error goes to `storage/logs/laravel.log` and the customer can ask for a new code.
+
+You can set up both Twilio and the phone. Twilio is tried first; when it refuses a number (for example a number that is not verified on a Twilio trial account), the phone sends the code instead.
 
 ### Countries, taxes and features
 

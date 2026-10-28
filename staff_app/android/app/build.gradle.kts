@@ -34,6 +34,9 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            // No R8: it needs more heap than 8 GB PCs can give; the Java/Kotlin part is small.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }

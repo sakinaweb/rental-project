@@ -7,6 +7,8 @@ services:
       - ./docker/php/dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
     working_dir: /app/backend
     command: php artisan serve --host=0.0.0.0 --port=8000
+    environment:
+      PHP_CLI_SERVER_WORKERS: 4 # handle several requests at once (e.g. the apps over a tunnel)
     ports:
       - "8000:8000"
     depends_on:

@@ -10,7 +10,7 @@
 
 ### OTP by SMS from your own Android phone
 
-- New SMS driver `App\Services\Sms\AndroidSmsGateway` for the free "SMS Gateway for Android" app (sms-gate.app): set `SMS_GATEWAY_URL` (the app's local address or its cloud relay), `SMS_GATEWAY_USERNAME` and `SMS_GATEWAY_PASSWORD`, and each OTP goes out as a normal SMS from the phone's SIM. Twilio Verify still takes priority when configured; with neither, codes go to the log as before.
+- New SMS driver `App\Services\Sms\AndroidSmsGateway` for the free "SMS Gateway for Android" app (sms-gate.app): set `SMS_GATEWAY_URL` (the app's local address or its cloud relay), `SMS_GATEWAY_USERNAME` and `SMS_GATEWAY_PASSWORD`, and each OTP goes out as a normal SMS from the phone's SIM. Twilio Verify is tried first when configured; when it refuses a number (e.g. unverified on a trial account), the phone sends the code instead. With neither, codes go to the log as before.
 - A refused send or an unreachable phone is logged (without the code) and the customer gets the usual answer. Steps in the buyer guide ("SMS from your own phone").
 
 ### Premium look (both apps and the admin panel)

@@ -126,6 +126,22 @@ class OtpTest extends TestCase
         $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000008'])
             ->assertOk()->assertJsonPath('message', __('messages.otp_sent'));
         Log::shouldHaveReceived('warning')->withArgs(fn ($msg, $ctx) => $msg === 'Twilio Verify send failed' && $ctx['code'] === 21608);
+        $this->assertCount(0, $this->sms->sent); // no phone gateway configured: nothing else is sent
+    }
+
+    public function test_phone_gateway_takes_over_when_twilio_refuses(): void
+    {
+        config(['services.twilio' => ['account_sid' => 'ACtest', 'auth_token' => 'secret', 'verify_sid' => 'VAtest']]);
+        config(['services.sms_gateway.url' => 'http://192.168.1.50:8080/message']);
+        Http::fake(['verify.twilio.com/*' => Http::response(['code' => 21608, 'message' => 'unverified number'], 400)]);
+        User::factory()->create(['phone' => '+919900000009']);
+
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000009'])->assertOk();
+        $this->assertCount(1, $this->sms->sent);
+
+        // Our own code is checked locally; Twilio is not asked.
+        $this->postJson('/api/v1/auth/otp/verify', ['phone' => '+919900000009', 'code' => $this->lastCode()])->assertOk()->assertJsonStructure(['token']);
+        Http::assertSentCount(1);
     }
 
     public function test_sms_is_in_the_users_locale(): void
@@ -151,6 +167,15 @@ class OtpTest extends TestCase
             && $request->hasHeader('Authorization', 'Basic '.base64_encode('sms:gate-pass'))
             && $request['phoneNumbers'] === ['+919900000007']
             && preg_match('/\d{6}/', $request['textMessage']['text']) === 1);
+
+        // "SMS Gateway Free" app: an API key selects its header and body.
+        config(['services.sms_gateway.url' => 'http://192.168.1.50:8080/api/send', 'services.sms_gateway.api_key' => 'key-123']);
+        User::factory()->create(['phone' => '+919900000010']);
+        $this->postJson('/api/v1/auth/otp/request', ['phone' => '+919900000010'])->assertOk();
+        Http::assertSent(fn ($request) => $request->url() === 'http://192.168.1.50:8080/api/send'
+            && $request->hasHeader('X-API-Key', 'key-123')
+            && $request['phone_number'] === '+919900000010'
+            && preg_match('/\d{6}/', $request['message']) === 1);
 
         // Phone off or out of the network: logged, and the user still gets the usual answer.
         Http::fake(fn () => throw new ConnectionException('timeout'));
