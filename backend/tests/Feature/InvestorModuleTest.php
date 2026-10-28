@@ -110,6 +110,7 @@ class InvestorModuleTest extends TestCase
     {
         $this->actingAs(User::factory()->create(['country_id' => $this->countryId()]), 'sanctum');
         $this->getJson('/api/v1/investment-plans')->assertOk();
+        $this->getJson('/api/v1/me')->assertJsonPath('data.investor_enabled', true); // the customer app shows "Invest" from this
 
         Country::find($this->countryId())->pack->update(['config_json' => ['features' => ['investor' => false]]]);
         $this->getJson('/api/v1/investment-plans')->assertForbidden()->assertJsonPath('message', __('messages.investor_disabled'));
@@ -117,6 +118,7 @@ class InvestorModuleTest extends TestCase
         Country::find($this->countryId())->pack->update(['config_json' => ['features' => ['investor' => true]]]);
         Setting::updateOrCreate(['key' => 'features.investor'], ['value_json' => false]);
         $this->getJson('/api/v1/investor/dashboard')->assertForbidden();
+        $this->getJson('/api/v1/me')->assertJsonPath('data.investor_enabled', false);
         $this->get('/investor')->assertForbidden();
         $this->get('/')->assertDontSee(route('investor.dashboard'));
     }

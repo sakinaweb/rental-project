@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\User;
+use App\Services\InvestorService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,6 +22,7 @@ class UserResource extends JsonResource
             'country_id' => $this->country_id,
             'locale' => $this->locale,
             'status' => $this->status,
+            'investor_enabled' => app(InvestorService::class)->enabledFor($this->resource), // global flag + the user's country pack
             'created_at' => $this->created_at,
         ];
     }

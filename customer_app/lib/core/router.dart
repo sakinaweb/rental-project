@@ -11,12 +11,13 @@ import '../features/booking/checkout_screen.dart';
 import '../features/booking/confirmation_screen.dart';
 import '../features/search/search_screen.dart';
 import '../features/search/vehicle_screen.dart';
+import '../features/investor/investor_screen.dart';
 import '../features/wallet/wallet_screen.dart';
 import 'session.dart';
 import 'ui.dart';
 
 /// Screens that need a signed-in customer; guests are sent to sign-in and brought back afterwards.
-const _protected = ['/bookings', '/wallet', '/profile', '/checkout', '/confirmation'];
+const _protected = ['/bookings', '/wallet', '/profile', '/checkout', '/confirmation', '/investor'];
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier(0);
@@ -71,6 +72,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/checkout/:id', builder: (_, s) => CheckoutScreen(int.parse(s.pathParameters['id']!))),
       GoRoute(path: '/confirmation/:id', builder: (_, s) => ConfirmationScreen(int.parse(s.pathParameters['id']!))),
+      GoRoute(path: '/investor', builder: (_, _) => const InvestorScreen()),
     ],
   );
 });

@@ -21,10 +21,15 @@ class TodayScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(day.value?.branch ?? t.today),
-          actions: [
-            IconButton(tooltip: t.signOut, icon: const Icon(Icons.logout), onPressed: () => ref.read(sessionProvider.notifier).signOut()),
-          ],
+          foregroundColor: Colors.white,
+          flexibleSpace: const DecoratedBox(decoration: BoxDecoration(gradient: brandGradient)),
+          actions: [IconButton(tooltip: t.signOut, icon: const Icon(Icons.logout), onPressed: () => ref.read(sessionProvider.notifier).signOut())],
           bottom: TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: const Color(0xB3FFFFFF),
+            indicatorColor: gold,
+            indicatorWeight: 3,
+            dividerColor: Colors.transparent,
             tabs: [
               Tab(text: '${t.pickups} (${day.value?.pickups.length ?? '…'})'),
               Tab(text: '${t.returns} (${day.value?.returns.length ?? '…'})'),
@@ -72,7 +77,10 @@ class _List extends ConsumerWidget {
                   margin: const EdgeInsets.only(bottom: 10),
                   // Late ones get an orange edge so they stand out while scrolling.
                   shape: due(b).isBefore(DateTime.now())
-                      ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.orange.shade300, width: 1.5))
+                      ? RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(color: Colors.orange.shade300, width: 1.5),
+                        )
                       : null,
                   child: ListTile(
                     key: Key('booking-${b.id}'),

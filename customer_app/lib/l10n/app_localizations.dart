@@ -882,6 +882,252 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Book again'**
   String get bookAgain;
+
+  /// No description provided for @investorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Investor dashboard'**
+  String get investorTitle;
+
+  /// No description provided for @investorApplyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Become an investor'**
+  String get investorApplyTitle;
+
+  /// No description provided for @investorApplyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Fund company bikes and cars and earn a share of what they make. Give the bank account for your earnings; we then check your identity (KYC) before you can invest.'**
+  String get investorApplyIntro;
+
+  /// No description provided for @investorKycPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks! We are checking your identity (KYC). You can invest once it is approved.'**
+  String get investorKycPending;
+
+  /// No description provided for @investorKycRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your identity check was not approved. You can apply again with updated details.'**
+  String get investorKycRejected;
+
+  /// No description provided for @investorDisclosureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk disclosure'**
+  String get investorDisclosureTitle;
+
+  /// No description provided for @investorAcceptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and understood this risk disclosure.'**
+  String get investorAcceptLabel;
+
+  /// No description provided for @investorAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept and continue'**
+  String get investorAccept;
+
+  /// No description provided for @investorPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment plans'**
+  String get investorPlans;
+
+  /// No description provided for @investorNoPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans are open in your country right now.'**
+  String get investorNoPlans;
+
+  /// No description provided for @investorMinimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum {amount}'**
+  String investorMinimum(String amount);
+
+  /// No description provided for @investorTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{{n} month term} other{{n} months term}}'**
+  String investorTerm(int n);
+
+  /// No description provided for @investorShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% of each rental (after tax) of your vehicles'**
+  String investorShare(String pct);
+
+  /// No description provided for @investorAllVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Any vehicle type'**
+  String get investorAllVehicles;
+
+  /// No description provided for @investorAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount ({currency})'**
+  String investorAmount(String currency);
+
+  /// No description provided for @investorInvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Invest'**
+  String get investorInvest;
+
+  /// No description provided for @investorInvested.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment requested. Transfer {amount} to our bank account with reference INV-{id}; we start your term when it arrives.'**
+  String investorInvested(String amount, String id);
+
+  /// No description provided for @investorInvestments.
+  ///
+  /// In en, this message translates to:
+  /// **'My investments'**
+  String get investorInvestments;
+
+  /// No description provided for @investorNoInvestments.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no investments yet.'**
+  String get investorNoInvestments;
+
+  /// No description provided for @investorStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting your transfer'**
+  String get investorStatusPending;
+
+  /// No description provided for @investorStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get investorStatusActive;
+
+  /// No description provided for @investorStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get investorStatusClosed;
+
+  /// No description provided for @investorStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get investorStatusCancelled;
+
+  /// No description provided for @investorVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Funded vehicles'**
+  String get investorVehicles;
+
+  /// No description provided for @payoutAccountHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Account holder'**
+  String get payoutAccountHolder;
+
+  /// No description provided for @payoutBankName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank name'**
+  String get payoutBankName;
+
+  /// No description provided for @payoutAccountNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Account number'**
+  String get payoutAccountNumber;
+
+  /// No description provided for @payoutRoutingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'IFSC / IBAN / SWIFT (optional)'**
+  String get payoutRoutingCode;
+
+  /// No description provided for @payoutBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get payoutBalance;
+
+  /// No description provided for @payoutAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available to pay out'**
+  String get payoutAvailable;
+
+  /// No description provided for @payoutAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get payoutAmount;
+
+  /// No description provided for @payoutCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get payoutCurrency;
+
+  /// No description provided for @payoutRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Request payout'**
+  String get payoutRequest;
+
+  /// No description provided for @payoutRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Payout requested. We will transfer it with the next payout batch.'**
+  String get payoutRequested;
+
+  /// No description provided for @payoutHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payout requests'**
+  String get payoutHistory;
+
+  /// No description provided for @payoutNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No payout requests yet.'**
+  String get payoutNone;
+
+  /// No description provided for @payoutStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get payoutStatusPending;
+
+  /// No description provided for @payoutStatusBatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Being processed'**
+  String get payoutStatusBatched;
+
+  /// No description provided for @payoutStatusPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get payoutStatusPaid;
+
+  /// No description provided for @payoutStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get payoutStatusRejected;
+
+  /// No description provided for @navInvestor.
+  ///
+  /// In en, this message translates to:
+  /// **'Invest'**
+  String get navInvestor;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

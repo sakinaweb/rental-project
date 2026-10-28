@@ -428,4 +428,149 @@ class L10nEs extends L10n {
 
   @override
   String get bookAgain => 'Reservar de nuevo';
+
+  @override
+  String get investorTitle => 'Panel de inversor';
+
+  @override
+  String get investorApplyTitle => 'Hazte inversor';
+
+  @override
+  String get investorApplyIntro =>
+      'Financia motos y coches de la empresa y gana una parte de lo que generan. Indica la cuenta bancaria para tus ganancias; después verificamos tu identidad (KYC) antes de que puedas invertir.';
+
+  @override
+  String get investorKycPending =>
+      '¡Gracias! Estamos verificando tu identidad (KYC). Podrás invertir cuando se apruebe.';
+
+  @override
+  String get investorKycRejected =>
+      'Tu verificación de identidad no fue aprobada. Puedes volver a solicitarlo con datos actualizados.';
+
+  @override
+  String get investorDisclosureTitle => 'Declaración de riesgos';
+
+  @override
+  String get investorAcceptLabel =>
+      'He leído y entendido esta declaración de riesgos.';
+
+  @override
+  String get investorAccept => 'Aceptar y continuar';
+
+  @override
+  String get investorPlans => 'Planes de inversión';
+
+  @override
+  String get investorNoPlans =>
+      'Ahora mismo no hay planes abiertos en tu país.';
+
+  @override
+  String investorMinimum(String amount) {
+    return 'Mínimo $amount';
+  }
+
+  @override
+  String investorTerm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Plazo de $n meses',
+      one: 'Plazo de $n mes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String investorShare(String pct) {
+    return '$pct% de cada alquiler (tras impuestos) de tus vehículos';
+  }
+
+  @override
+  String get investorAllVehicles => 'Cualquier tipo de vehículo';
+
+  @override
+  String investorAmount(String currency) {
+    return 'Importe ($currency)';
+  }
+
+  @override
+  String get investorInvest => 'Invertir';
+
+  @override
+  String investorInvested(String amount, String id) {
+    return 'Inversión solicitada. Transfiere $amount a nuestra cuenta bancaria con la referencia INV-$id; empezamos tu plazo cuando llegue.';
+  }
+
+  @override
+  String get investorInvestments => 'Mis inversiones';
+
+  @override
+  String get investorNoInvestments => 'Aún no tienes inversiones.';
+
+  @override
+  String get investorStatusPending => 'Esperando tu transferencia';
+
+  @override
+  String get investorStatusActive => 'Activa';
+
+  @override
+  String get investorStatusClosed => 'Cerrada';
+
+  @override
+  String get investorStatusCancelled => 'Cancelada';
+
+  @override
+  String get investorVehicles => 'Vehículos financiados';
+
+  @override
+  String get payoutAccountHolder => 'Titular de la cuenta';
+
+  @override
+  String get payoutBankName => 'Banco';
+
+  @override
+  String get payoutAccountNumber => 'Número de cuenta';
+
+  @override
+  String get payoutRoutingCode => 'IFSC / IBAN / SWIFT (opcional)';
+
+  @override
+  String get payoutBalance => 'Saldo';
+
+  @override
+  String get payoutAvailable => 'Disponible para cobrar';
+
+  @override
+  String get payoutAmount => 'Importe';
+
+  @override
+  String get payoutCurrency => 'Moneda';
+
+  @override
+  String get payoutRequest => 'Solicitar pago';
+
+  @override
+  String get payoutRequested =>
+      'Pago solicitado. Lo transferiremos en el próximo lote de pagos.';
+
+  @override
+  String get payoutHistory => 'Solicitudes de pago';
+
+  @override
+  String get payoutNone => 'Aún no hay solicitudes de pago.';
+
+  @override
+  String get payoutStatusPending => 'Pendiente';
+
+  @override
+  String get payoutStatusBatched => 'En proceso';
+
+  @override
+  String get payoutStatusPaid => 'Pagado';
+
+  @override
+  String get payoutStatusRejected => 'Rechazado';
+
+  @override
+  String get navInvestor => 'Invertir';
 }

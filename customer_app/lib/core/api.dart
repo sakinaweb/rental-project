@@ -34,6 +34,7 @@ class User {
   String? get phone => j['phone'];
   int? get countryId => j['country_id'];
   String get locale => j['locale'] ?? 'en';
+  bool get investorEnabled => j['investor_enabled'] == true;
 }
 
 class Country {
@@ -268,4 +269,15 @@ class Api {
   );
   Future<Intent> topup(int amountMinor, String currency, String gateway) =>
       _call(() => _dio.post('/wallet/topup', data: {'amount': amountMinor, 'currency_code': currency, 'gateway': gateway}), (d) => Intent(d['data']));
+
+  // Investor module (Phase 11). Raw JSON maps: shapes in docs/openapi.json. Dashboard is 404 until the user has applied.
+  Future<Map<String, dynamic>> investorDashboard() => _call(() => _dio.get('/investor/dashboard'), (d) => d['data'] as Map<String, dynamic>);
+  Future<void> investorApply(Map<String, String> payoutDetails) => _call(() => _dio.post('/investor/apply', data: {'payout_details': payoutDetails}), (_) {});
+  Future<Map<String, dynamic>> disclosure() => _call(() => _dio.get('/investor/disclosure'), (d) => d['data'] as Map<String, dynamic>);
+  Future<void> acceptDisclosure(String version) => _call(() => _dio.post('/investor/disclosure', data: {'version': version}), (_) {});
+  Future<List<Map<String, dynamic>>> investmentPlans() => _call(() => _dio.get('/investment-plans'), (d) => List<Map<String, dynamic>>.from(d['data']));
+  Future<Map<String, dynamic>> invest(int planId, int amountMinor) =>
+      _call(() => _dio.post('/investments', data: {'plan_id': planId, 'amount': amountMinor}), (d) => d['data'] as Map<String, dynamic>);
+  Future<void> requestInvestorPayout(String currency, int amountMinor) =>
+      _call(() => _dio.post('/investor/payout-requests', data: {'currency_code': currency, 'amount': amountMinor}), (_) {});
 }

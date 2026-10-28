@@ -417,4 +417,146 @@ class L10nAr extends L10n {
 
   @override
   String get bookAgain => 'احجز مرة أخرى';
+
+  @override
+  String get investorTitle => 'لوحة المستثمر';
+
+  @override
+  String get investorApplyTitle => 'كن مستثمرًا';
+
+  @override
+  String get investorApplyIntro =>
+      'موّل دراجات وسيارات الشركة واحصل على حصة مما تحققه. أدخل الحساب المصرفي لأرباحك، ثم نتحقق من هويتك (KYC) قبل أن تتمكن من الاستثمار.';
+
+  @override
+  String get investorKycPending =>
+      'شكرًا! نحن نتحقق من هويتك (KYC). يمكنك الاستثمار بعد الموافقة.';
+
+  @override
+  String get investorKycRejected =>
+      'لم تتم الموافقة على التحقق من هويتك. يمكنك التقدم مرة أخرى ببيانات محدّثة.';
+
+  @override
+  String get investorDisclosureTitle => 'إفصاح المخاطر';
+
+  @override
+  String get investorAcceptLabel => 'لقد قرأت إفصاح المخاطر هذا وفهمته.';
+
+  @override
+  String get investorAccept => 'قبول ومتابعة';
+
+  @override
+  String get investorPlans => 'خطط الاستثمار';
+
+  @override
+  String get investorNoPlans => 'لا توجد خطط مفتوحة في بلدك حاليًا.';
+
+  @override
+  String investorMinimum(String amount) {
+    return 'الحد الأدنى $amount';
+  }
+
+  @override
+  String investorTerm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'مدة $n أشهر',
+      one: 'مدة شهر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String investorShare(String pct) {
+    return '$pct% من كل تأجير (بعد الضريبة) لمركباتك';
+  }
+
+  @override
+  String get investorAllVehicles => 'أي نوع مركبة';
+
+  @override
+  String investorAmount(String currency) {
+    return 'المبلغ ($currency)';
+  }
+
+  @override
+  String get investorInvest => 'استثمر';
+
+  @override
+  String investorInvested(String amount, String id) {
+    return 'تم طلب الاستثمار. حوّل $amount إلى حسابنا المصرفي بالمرجع INV-$id؛ نبدأ مدتك عند وصوله.';
+  }
+
+  @override
+  String get investorInvestments => 'استثماراتي';
+
+  @override
+  String get investorNoInvestments => 'ليست لديك استثمارات بعد.';
+
+  @override
+  String get investorStatusPending => 'بانتظار تحويلك';
+
+  @override
+  String get investorStatusActive => 'نشط';
+
+  @override
+  String get investorStatusClosed => 'مغلق';
+
+  @override
+  String get investorStatusCancelled => 'ملغى';
+
+  @override
+  String get investorVehicles => 'المركبات المموّلة';
+
+  @override
+  String get payoutAccountHolder => 'صاحب الحساب';
+
+  @override
+  String get payoutBankName => 'اسم البنك';
+
+  @override
+  String get payoutAccountNumber => 'رقم الحساب';
+
+  @override
+  String get payoutRoutingCode => 'IFSC / IBAN / SWIFT (اختياري)';
+
+  @override
+  String get payoutBalance => 'الرصيد';
+
+  @override
+  String get payoutAvailable => 'المتاح للصرف';
+
+  @override
+  String get payoutAmount => 'المبلغ';
+
+  @override
+  String get payoutCurrency => 'العملة';
+
+  @override
+  String get payoutRequest => 'طلب صرف';
+
+  @override
+  String get payoutRequested => 'تم طلب الصرف. سنحوّله مع دفعة الصرف القادمة.';
+
+  @override
+  String get payoutHistory => 'طلبات الصرف';
+
+  @override
+  String get payoutNone => 'لا توجد طلبات صرف بعد.';
+
+  @override
+  String get payoutStatusPending => 'معلّق';
+
+  @override
+  String get payoutStatusBatched => 'قيد المعالجة';
+
+  @override
+  String get payoutStatusPaid => 'مدفوع';
+
+  @override
+  String get payoutStatusRejected => 'مرفوض';
+
+  @override
+  String get navInvestor => 'استثمر';
 }

@@ -101,6 +101,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           const SizedBox(height: 16),
           FilledButton(key: const Key('save'), onPressed: busy ? null : _save, child: Text(t.profileSave)),
+          if (ref.watch(sessionProvider).user?.investorEnabled ?? false) ...[
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              key: const Key('invest'),
+              onPressed: () => context.push('/investor'),
+              icon: const Icon(Icons.trending_up),
+              label: Text(t.navInvestor),
+            ),
+          ],
           const SizedBox(height: 32),
           OutlinedButton(
             key: const Key('logout'),

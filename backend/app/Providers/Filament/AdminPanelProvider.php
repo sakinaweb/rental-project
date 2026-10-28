@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\RedirectToInstaller;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,6 +11,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -28,10 +30,15 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName(fn () => config('app.name').' Admin')
+            ->brandLogo(fn () => view('filament.brand'))
+            ->brandLogoHeight('2.1rem')
+            ->font('Plus Jakarta Sans') // same typeface as both apps
             ->colors([
                 'primary' => Color::Indigo, // same brand colour as the website and both apps
+                'gray' => Color::Slate,
                 'warning' => Color::Amber,
             ])
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => view('filament.styles'))
             ->sidebarCollapsibleOnDesktop()
             ->navigationGroups(['Bookings & money', 'Fleet', 'Pricing', 'Geography', 'System'])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
@@ -44,6 +51,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
             ])
             ->middleware([
+                RedirectToInstaller::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

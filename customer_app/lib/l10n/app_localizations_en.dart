@@ -424,4 +424,148 @@ class L10nEn extends L10n {
 
   @override
   String get bookAgain => 'Book again';
+
+  @override
+  String get investorTitle => 'Investor dashboard';
+
+  @override
+  String get investorApplyTitle => 'Become an investor';
+
+  @override
+  String get investorApplyIntro =>
+      'Fund company bikes and cars and earn a share of what they make. Give the bank account for your earnings; we then check your identity (KYC) before you can invest.';
+
+  @override
+  String get investorKycPending =>
+      'Thanks! We are checking your identity (KYC). You can invest once it is approved.';
+
+  @override
+  String get investorKycRejected =>
+      'Your identity check was not approved. You can apply again with updated details.';
+
+  @override
+  String get investorDisclosureTitle => 'Risk disclosure';
+
+  @override
+  String get investorAcceptLabel =>
+      'I have read and understood this risk disclosure.';
+
+  @override
+  String get investorAccept => 'Accept and continue';
+
+  @override
+  String get investorPlans => 'Investment plans';
+
+  @override
+  String get investorNoPlans => 'No plans are open in your country right now.';
+
+  @override
+  String investorMinimum(String amount) {
+    return 'Minimum $amount';
+  }
+
+  @override
+  String investorTerm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n months term',
+      one: '$n month term',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String investorShare(String pct) {
+    return '$pct% of each rental (after tax) of your vehicles';
+  }
+
+  @override
+  String get investorAllVehicles => 'Any vehicle type';
+
+  @override
+  String investorAmount(String currency) {
+    return 'Amount ($currency)';
+  }
+
+  @override
+  String get investorInvest => 'Invest';
+
+  @override
+  String investorInvested(String amount, String id) {
+    return 'Investment requested. Transfer $amount to our bank account with reference INV-$id; we start your term when it arrives.';
+  }
+
+  @override
+  String get investorInvestments => 'My investments';
+
+  @override
+  String get investorNoInvestments => 'You have no investments yet.';
+
+  @override
+  String get investorStatusPending => 'Awaiting your transfer';
+
+  @override
+  String get investorStatusActive => 'Active';
+
+  @override
+  String get investorStatusClosed => 'Closed';
+
+  @override
+  String get investorStatusCancelled => 'Cancelled';
+
+  @override
+  String get investorVehicles => 'Funded vehicles';
+
+  @override
+  String get payoutAccountHolder => 'Account holder';
+
+  @override
+  String get payoutBankName => 'Bank name';
+
+  @override
+  String get payoutAccountNumber => 'Account number';
+
+  @override
+  String get payoutRoutingCode => 'IFSC / IBAN / SWIFT (optional)';
+
+  @override
+  String get payoutBalance => 'Balance';
+
+  @override
+  String get payoutAvailable => 'Available to pay out';
+
+  @override
+  String get payoutAmount => 'Amount';
+
+  @override
+  String get payoutCurrency => 'Currency';
+
+  @override
+  String get payoutRequest => 'Request payout';
+
+  @override
+  String get payoutRequested =>
+      'Payout requested. We will transfer it with the next payout batch.';
+
+  @override
+  String get payoutHistory => 'Payout requests';
+
+  @override
+  String get payoutNone => 'No payout requests yet.';
+
+  @override
+  String get payoutStatusPending => 'Pending';
+
+  @override
+  String get payoutStatusBatched => 'Being processed';
+
+  @override
+  String get payoutStatusPaid => 'Paid';
+
+  @override
+  String get payoutStatusRejected => 'Rejected';
+
+  @override
+  String get navInvestor => 'Invest';
 }

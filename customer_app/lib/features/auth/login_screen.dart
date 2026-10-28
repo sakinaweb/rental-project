@@ -50,102 +50,99 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final t = context.t;
     final api = ref.read(apiProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(t.authSignIn)),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          SegmentedButton<bool>(
-            segments: [
-              ButtonSegment(value: false, label: Text(t.authWithPassword)),
-              ButtonSegment(value: true, label: Text(t.authWithOtp)),
-            ],
-            selected: {otp},
-            onSelectionChanged: (s) => setState(() => otp = s.first),
+    return AuthScaffold(
+      title: t.authSignIn,
+      children: [
+        SegmentedButton<bool>(
+          segments: [
+            ButtonSegment(value: false, label: Text(t.authWithPassword)),
+            ButtonSegment(value: true, label: Text(t.authWithOtp)),
+          ],
+          selected: {otp},
+          onSelectionChanged: (s) => setState(() => otp = s.first),
+        ),
+        const SizedBox(height: 16),
+        if (notice != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(notice!, style: const TextStyle(color: Colors.green)),
           ),
-          const SizedBox(height: 16),
-          if (notice != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(notice!, style: const TextStyle(color: Colors.green)),
+        if (!otp) ...[
+          TextField(
+            key: const Key('email'),
+            controller: email,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(labelText: t.authEmail),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('password'),
+            controller: password,
+            obscureText: true,
+            decoration: InputDecoration(labelText: t.authPassword),
+          ),
+          // The emailed link opens the website's reset page; the server answers the same for unknown emails.
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              key: const Key('forgot'),
+              onPressed: busy
+                  ? null
+                  : () => _run(() async {
+                      final message = await api.forgotPassword(email.text.trim());
+                      setState(() => notice = message);
+                    }),
+              child: Text(t.authForgotPassword),
             ),
-          if (!otp) ...[
-            TextField(
-              key: const Key('email'),
-              controller: email,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: t.authEmail),
-            ),
+          ),
+        ] else ...[
+          TextField(
+            key: const Key('phone'),
+            controller: phone,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(labelText: t.authPhone, helperText: t.authPhoneHint),
+          ),
+          if (codeSent) ...[
             const SizedBox(height: 12),
             TextField(
-              key: const Key('password'),
-              controller: password,
-              obscureText: true,
-              decoration: InputDecoration(labelText: t.authPassword),
+              key: const Key('code'),
+              controller: code,
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              decoration: InputDecoration(labelText: t.authCode),
             ),
-            // The emailed link opens the website's reset page; the server answers the same for unknown emails.
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: TextButton(
-                key: const Key('forgot'),
-                onPressed: busy
-                    ? null
-                    : () => _run(() async {
-                        final message = await api.forgotPassword(email.text.trim());
-                        setState(() => notice = message);
-                      }),
-                child: Text(t.authForgotPassword),
-              ),
-            ),
-          ] else ...[
-            TextField(
-              key: const Key('phone'),
-              controller: phone,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(labelText: t.authPhone, helperText: t.authPhoneHint),
-            ),
-            if (codeSent) ...[
-              const SizedBox(height: 12),
-              TextField(
-                key: const Key('code'),
-                controller: code,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                decoration: InputDecoration(labelText: t.authCode),
-              ),
-            ],
           ],
-          if (error != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Text(error!, style: const TextStyle(color: Colors.red)),
-            ),
-          const SizedBox(height: 16),
-          FilledButton(
-            key: const Key('submit'),
-            onPressed: busy
-                ? null
-                : () => _run(() async {
-                    if (!otp) return _signIn(await api.login(email.text.trim(), password.text));
-                    if (!codeSent) {
-                      final message = await api.requestOtp(phone.text.trim()); // same answer whether or not registered
-                      setState(() {
-                        codeSent = true;
-                        notice = message;
-                      });
-                      return;
-                    }
-                    return _signIn(await api.verifyOtp(phone.text.trim(), code.text.trim()));
-                  }),
-            child: Text(!otp ? t.authSignIn : (codeSent ? t.authVerify : t.authSendCode)),
-          ),
-          const SizedBox(height: 24),
-          TextButton(
-            onPressed: () => context.go(Uri(path: '/register', queryParameters: {'from': ?widget.from}).toString()),
-            child: Text('${t.authNoAccount} ${t.authCreateAccount}'),
-          ),
         ],
-      ),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(error!, style: const TextStyle(color: Colors.red)),
+          ),
+        const SizedBox(height: 16),
+        FilledButton(
+          key: const Key('submit'),
+          onPressed: busy
+              ? null
+              : () => _run(() async {
+                  if (!otp) return _signIn(await api.login(email.text.trim(), password.text));
+                  if (!codeSent) {
+                    final message = await api.requestOtp(phone.text.trim()); // same answer whether or not registered
+                    setState(() {
+                      codeSent = true;
+                      notice = message;
+                    });
+                    return;
+                  }
+                  return _signIn(await api.verifyOtp(phone.text.trim(), code.text.trim()));
+                }),
+          child: Text(!otp ? t.authSignIn : (codeSent ? t.authVerify : t.authSendCode)),
+        ),
+        const SizedBox(height: 24),
+        TextButton(
+          onPressed: () => context.go(Uri(path: '/register', queryParameters: {'from': ?widget.from}).toString()),
+          child: Text('${t.authNoAccount} ${t.authCreateAccount}'),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:customer_app/features/investor/investor_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers.dart';
@@ -442,5 +444,96 @@ void main() {
     await settle(tester);
     expect(find.byKey(const Key('submit')), findsOneWidget); // sign-in page, not the wallet
     expect(backend.sent('GET /wallet'), isEmpty);
+  });
+
+  testWidgets('investor: Invest only where the module is on; apply → KYC pending → disclosure → invest', (tester) async {
+    final backend = indiaBackend();
+    await pumpApp(tester, backend, signedIn: true, initial: '/profile');
+    expect(find.byKey(const Key('invest')), findsNothing);
+
+    var dashboard = <String, dynamic>{};
+    backend
+      ..on('GET /me', (_) => {'data': userJson()..['investor_enabled'] = true})
+      ..on('GET /investor/dashboard', (_) => dashboard.isEmpty ? (404, {'message': 'No investor profile.'}) : {'data': dashboard})
+      ..on('POST /investor/apply', (_) {
+        dashboard = {'kyc_status': 'pending', 'disclosure_accepted': false};
+        return (
+          201,
+          {
+            'data': {'kyc_status': 'pending'},
+          },
+        );
+      })
+      ..on(
+        'GET /investor/disclosure',
+        (_) => {
+          'data': {'version': '2026-10', 'text': 'Earnings are not guaranteed.'},
+        },
+      )
+      ..on('POST /investor/disclosure', (_) {
+        dashboard['disclosure_accepted'] = true;
+        return (
+          201,
+          {
+            'data': {'version': '2026-10'},
+          },
+        );
+      })
+      ..on(
+        'GET /investment-plans',
+        (_) => {
+          'data': [
+            {
+              'id': 3,
+              'name': 'Scooter fleet',
+              'currency_code': 'INR',
+              'min_amount': 10000000,
+              'term_months': 12,
+              'revenue_share_pct': '20.00',
+              'category': null,
+            },
+          ],
+        },
+      )
+      ..on(
+        'POST /investments',
+        (r) => (
+          201,
+          {
+            'data': {'id': 41, 'status': 'pending', 'amount': r.data['amount'], 'currency_code': 'INR'},
+          },
+        ),
+      );
+    await pumpApp(tester, backend, signedIn: true, initial: '/profile');
+    await tester.tap(find.byKey(const Key('invest')));
+    await settle(tester);
+
+    await tester.enterText(find.byKey(const Key('payout-account_holder')), 'Asha');
+    await tester.enterText(find.byKey(const Key('payout-bank_name')), 'HDFC');
+    await tester.enterText(find.byKey(const Key('payout-account_number')), '123456');
+    await tester.tap(find.byKey(const Key('apply')));
+    await settle(tester);
+    expect(backend.sent('POST /investor/apply').single.data, {
+      'payout_details': {'account_holder': 'Asha', 'bank_name': 'HDFC', 'account_number': '123456'},
+    });
+    expect(find.textContaining('checking your identity'), findsOneWidget);
+
+    dashboard['kyc_status'] = 'approved'; // the admin approves KYC
+    ProviderScope.containerOf(tester.element(find.byType(InvestorScreen))).invalidate(investorProvider); // what pull-to-refresh does
+    await settle(tester);
+    expect(find.text('Earnings are not guaranteed.'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('accept')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('accept-disclosure')));
+    await settle(tester);
+    expect(backend.sent('POST /investor/disclosure').single.data, {'version': '2026-10'});
+
+    expect(find.text('20%'), findsOneWidget);
+    expect(find.textContaining('12 months term'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('invest-amount-3')), '150000');
+    await tester.tap(find.byKey(const Key('invest-3')));
+    await settle(tester);
+    expect(backend.sent('POST /investments').single.data, {'plan_id': 3, 'amount': 15000000});
+    expect(find.textContaining('reference INV-41'), findsOneWidget);
   });
 }

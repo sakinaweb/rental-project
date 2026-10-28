@@ -164,5 +164,84 @@
   "signInToContinue": "Sign in to continue",
   "selectDate": "Select date and time",
   "statusExpired": "Expired",
-  "bookAgain": "Book again"
+  "bookAgain": "Book again",
+  "investorTitle": "Investor dashboard",
+  "investorApplyTitle": "Become an investor",
+  "investorApplyIntro": "Fund company bikes and cars and earn a share of what they make. Give the bank account for your earnings; we then check your identity (KYC) before you can invest.",
+  "investorKycPending": "Thanks! We are checking your identity (KYC). You can invest once it is approved.",
+  "investorKycRejected": "Your identity check was not approved. You can apply again with updated details.",
+  "investorDisclosureTitle": "Risk disclosure",
+  "investorAcceptLabel": "I have read and understood this risk disclosure.",
+  "investorAccept": "Accept and continue",
+  "investorPlans": "Investment plans",
+  "investorNoPlans": "No plans are open in your country right now.",
+  "investorMinimum": "Minimum {amount}",
+  "@investorMinimum": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "investorTerm": "{n, plural, =1{{n} month term} other{{n} months term}}",
+  "@investorTerm": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "investorShare": "{pct}% of each rental (after tax) of your vehicles",
+  "@investorShare": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "investorAllVehicles": "Any vehicle type",
+  "investorAmount": "Amount ({currency})",
+  "@investorAmount": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "investorInvest": "Invest",
+  "investorInvested": "Investment requested. Transfer {amount} to our bank account with reference INV-{id}; we start your term when it arrives.",
+  "@investorInvested": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "investorInvestments": "My investments",
+  "investorNoInvestments": "You have no investments yet.",
+  "investorStatusPending": "Awaiting your transfer",
+  "investorStatusActive": "Active",
+  "investorStatusClosed": "Closed",
+  "investorStatusCancelled": "Cancelled",
+  "investorVehicles": "Funded vehicles",
+  "payoutAccountHolder": "Account holder",
+  "payoutBankName": "Bank name",
+  "payoutAccountNumber": "Account number",
+  "payoutRoutingCode": "IFSC / IBAN / SWIFT (optional)",
+  "payoutBalance": "Balance",
+  "payoutAvailable": "Available to pay out",
+  "payoutAmount": "Amount",
+  "payoutCurrency": "Currency",
+  "payoutRequest": "Request payout",
+  "payoutRequested": "Payout requested. We will transfer it with the next payout batch.",
+  "payoutHistory": "Payout requests",
+  "payoutNone": "No payout requests yet.",
+  "payoutStatusPending": "Pending",
+  "payoutStatusBatched": "Being processed",
+  "payoutStatusPaid": "Paid",
+  "payoutStatusRejected": "Rejected",
+  "navInvestor": "Invest"
 }

@@ -419,4 +419,148 @@ class L10nHi extends L10n {
 
   @override
   String get bookAgain => 'फिर से बुक करें';
+
+  @override
+  String get investorTitle => 'निवेशक डैशबोर्ड';
+
+  @override
+  String get investorApplyTitle => 'निवेशक बनें';
+
+  @override
+  String get investorApplyIntro =>
+      'कंपनी की बाइक और कारों को फ़ंड करें और उनकी कमाई में हिस्सा पाएँ। अपनी कमाई के लिए बैंक खाता दें; निवेश से पहले हम आपकी पहचान (KYC) जाँचते हैं।';
+
+  @override
+  String get investorKycPending =>
+      'धन्यवाद! हम आपकी पहचान (KYC) जाँच रहे हैं। स्वीकृति के बाद आप निवेश कर सकते हैं।';
+
+  @override
+  String get investorKycRejected =>
+      'आपकी पहचान जाँच स्वीकृत नहीं हुई। आप अपडेट किए गए विवरण के साथ फिर से आवेदन कर सकते हैं।';
+
+  @override
+  String get investorDisclosureTitle => 'जोखिम प्रकटीकरण';
+
+  @override
+  String get investorAcceptLabel =>
+      'मैंने यह जोखिम प्रकटीकरण पढ़ और समझ लिया है।';
+
+  @override
+  String get investorAccept => 'स्वीकार करें और आगे बढ़ें';
+
+  @override
+  String get investorPlans => 'निवेश योजनाएँ';
+
+  @override
+  String get investorNoPlans => 'अभी आपके देश में कोई योजना खुली नहीं है।';
+
+  @override
+  String investorMinimum(String amount) {
+    return 'न्यूनतम $amount';
+  }
+
+  @override
+  String investorTerm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n महीने की अवधि',
+      one: '$n महीने की अवधि',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String investorShare(String pct) {
+    return 'आपके वाहनों के हर किराये (कर के बाद) का $pct%';
+  }
+
+  @override
+  String get investorAllVehicles => 'कोई भी वाहन प्रकार';
+
+  @override
+  String investorAmount(String currency) {
+    return 'राशि ($currency)';
+  }
+
+  @override
+  String get investorInvest => 'निवेश करें';
+
+  @override
+  String investorInvested(String amount, String id) {
+    return 'निवेश का अनुरोध हो गया। संदर्भ INV-$id के साथ $amount हमारे बैंक खाते में भेजें; राशि मिलते ही आपकी अवधि शुरू होगी।';
+  }
+
+  @override
+  String get investorInvestments => 'मेरे निवेश';
+
+  @override
+  String get investorNoInvestments => 'आपके अभी कोई निवेश नहीं हैं।';
+
+  @override
+  String get investorStatusPending => 'आपके ट्रांसफ़र की प्रतीक्षा';
+
+  @override
+  String get investorStatusActive => 'सक्रिय';
+
+  @override
+  String get investorStatusClosed => 'बंद';
+
+  @override
+  String get investorStatusCancelled => 'रद्द';
+
+  @override
+  String get investorVehicles => 'फ़ंड किए गए वाहन';
+
+  @override
+  String get payoutAccountHolder => 'खाताधारक';
+
+  @override
+  String get payoutBankName => 'बैंक का नाम';
+
+  @override
+  String get payoutAccountNumber => 'खाता संख्या';
+
+  @override
+  String get payoutRoutingCode => 'IFSC / IBAN / SWIFT (वैकल्पिक)';
+
+  @override
+  String get payoutBalance => 'शेष राशि';
+
+  @override
+  String get payoutAvailable => 'भुगतान के लिए उपलब्ध';
+
+  @override
+  String get payoutAmount => 'राशि';
+
+  @override
+  String get payoutCurrency => 'मुद्रा';
+
+  @override
+  String get payoutRequest => 'भुगतान का अनुरोध करें';
+
+  @override
+  String get payoutRequested =>
+      'भुगतान का अनुरोध किया गया। हम इसे अगले भुगतान बैच में भेजेंगे।';
+
+  @override
+  String get payoutHistory => 'भुगतान अनुरोध';
+
+  @override
+  String get payoutNone => 'अभी कोई भुगतान अनुरोध नहीं।';
+
+  @override
+  String get payoutStatusPending => 'लंबित';
+
+  @override
+  String get payoutStatusBatched => 'प्रक्रिया में';
+
+  @override
+  String get payoutStatusPaid => 'भुगतान हो गया';
+
+  @override
+  String get payoutStatusRejected => 'अस्वीकृत';
+
+  @override
+  String get navInvestor => 'निवेश';
 }

@@ -37,33 +37,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.t;
-    return Scaffold(
-      appBar: AppBar(title: Text(t.appTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          TextField(
-            key: const Key('email'),
-            controller: email,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(labelText: t.email),
+    return AuthScaffold(
+      title: t.appTitle,
+      children: [
+        TextField(
+          key: const Key('email'),
+          controller: email,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(labelText: t.email),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          key: const Key('password'),
+          controller: password,
+          obscureText: true,
+          decoration: InputDecoration(labelText: t.password),
+        ),
+        const SizedBox(height: 16),
+        FilledButton(key: const Key('sign-in'), onPressed: busy ? null : _signIn, child: Text(t.signIn)),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(error!, style: const TextStyle(color: Colors.red)),
           ),
-          const SizedBox(height: 12),
-          TextField(
-            key: const Key('password'),
-            controller: password,
-            obscureText: true,
-            decoration: InputDecoration(labelText: t.password),
-          ),
-          const SizedBox(height: 16),
-          FilledButton(key: const Key('sign-in'), onPressed: busy ? null : _signIn, child: Text(t.signIn)),
-          if (error != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Text(error!, style: const TextStyle(color: Colors.red)),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }

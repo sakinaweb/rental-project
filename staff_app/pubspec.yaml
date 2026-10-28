@@ -26,3 +26,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  # Plus Jakarta Sans (SIL OFL 1.1, assets/fonts/OFL.txt), variable weight. Arabic/Devanagari fall back to the system font.
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans.ttf
