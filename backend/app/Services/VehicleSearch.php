@@ -20,6 +20,7 @@ class VehicleSearch
     public static function rules(): array
     {
         return [
+            'q' => ['nullable', 'string', 'max:60'],
             'city_id' => ['nullable', 'integer'],
             'category' => ['nullable', 'integer'],
             'type' => ['nullable', Rule::in(VehicleCategory::TYPES)],
@@ -44,6 +45,9 @@ class VehicleSearch
             ->with(self::RELATIONS)
             ->when($filters['city_id'] ?? null, fn (Builder $q, $id) => $q->whereHas('branch.location', fn (Builder $l) => $l->where('city_id', $id)))
             ->whereHas('vehicleModel', fn (Builder $m) => $m
+                ->when($filters['q'] ?? null, fn (Builder $q, string $text) => $q->where(fn (Builder $w) => $w
+                    ->where('name', 'like', '%'.addcslashes($text, '%_\\').'%')
+                    ->orWhereHas('brand', fn (Builder $b) => $b->where('name', 'like', '%'.addcslashes($text, '%_\\').'%'))))
                 ->when($filters['category'] ?? null, fn (Builder $q, $id) => $q->where('category_id', $id))
                 ->when($filters['type'] ?? null, fn (Builder $q, $type) => $q->whereHas('category', fn (Builder $c) => $c->where('type', $type)))
                 ->when($filters['brand_id'] ?? null, fn (Builder $q, $id) => $q->where('brand_id', $id))

@@ -815,6 +815,16 @@
         "description": "Only in-service vehicles in active countries. With `from`/`to`, vehicles booked in that period (plus the turnaround buffer) are left out.",
         "parameters": [
           {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "description": "Part of the model or brand name"
+          },
+          {
             "name": "city_id",
             "in": "query",
             "required": false,
@@ -4136,6 +4146,10 @@
           },
           "status": {
             "type": "string"
+          },
+          "investor_enabled": {
+            "type": "boolean",
+            "description": "The investor module is on for this user (global flag and their country pack)"
           },
           "created_at": {
             "type": "string",

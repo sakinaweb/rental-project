@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+### Premium look (both apps and the admin panel)
+
+- One typeface everywhere: Plus Jakarta Sans (SIL OFL 1.1, bundled in `assets/fonts/` of both apps; Arabic and Devanagari fall back to the system font). The admin panel loads it too.
+- New palette in `core/ui.dart` of both apps: ink text on a soft canvas, an indigo → violet gradient for headers and hero, gold for prices and badges. Cards use soft shadows instead of grey outlines, with larger corners and taller buttons.
+- Admin panel: brand logo, slate greys and extra styles (`resources/views/filament/brand.blade.php`, `styles.blade.php`).
+
+### Website catalog and booking pages
+
+- Demo fleet: 22 models (was 14). New: Suzuki Access 125, Royal Enfield Himalayan 450, Triumph Speed 400 (Premium), Hyundai i20, Škoda Slavia, Kia Carens, BMW 3 Series and Mercedes-Benz E-Class (Luxury). Real Wikimedia Commons photos, credited in `CREDITS.tsv` and the buyer guide. The seeder stores every photo as a 1200×750 JPEG (about 100–300 KB): cropped to fill when close to 16:10, otherwise fitted over a blurred copy of itself.
+- Catalog: text search on model and brand (also `q` on `GET /vehicles`), type and category chips, maximum price per day, minimum seats and sorting (recommended, price both ways, newest). One card per model and branch with the number of free vehicles; the price is the real quote including tax, per day without dates or the total for the chosen dates.
+- Vehicle page: large photo, specifications, pick-up branch, and one booking panel with dates, availability, the full breakdown (days, tax, refundable deposit, to pay now) and add-ons and coupon folded away. On phones the total and the button stay at the bottom of the screen.
+- Checkout, confirmation and booking details share a new summary with the photo, coloured status, pick-up and return times, branch and breakdown. The amount due is shown large; the card button names the gateway.
+- The website font is now Plus Jakarta Sans, like the apps and the admin panel.
+- Tests: search by text, price filter and sorting; demo fleet size and photo size. `phpunit.xml` blanks the Razorpay, Stripe and Firebase keys so tests never use a developer's real ones.
+
+### Web installer and buyer guide (Phase 13)
+
+- **`/install`:** one page for buyers. It checks PHP 8.3+, the needed extensions and writable folders. It then takes the site name and address, the MySQL details, whether Redis is available, the first admin and whether to add the demo fleet. It tests the database connection, writes `.env` (production, debug off, a new `APP_KEY` if empty; without Redis the cache is file and the queue is database), runs the migrations, the reference seeders and optionally `DemoSeeder`, links storage and creates the admin. It finishes on `/admin`.
+- Until it has run, every website and admin page redirects to `/install`. When it finishes it writes `storage/installed` (`config('app.installed_marker')`); after that `/install` is a 404. Command-line installs create that file themselves (see the guide). The installer runs outside the web middleware group (no session or cookies), so it works before a database or key exists.
+- **`docs/buyer-guide.md`:** requirements, web and CLI install, cron, every service key (Stripe, Razorpay, Twilio, Firebase, mail, S3), country packs and feature switches, building and branding both apps, updating, troubleshooting, and the Wikimedia credits for the demo photos.
+- Tests: `InstallerTest` (redirects, bad database details, full install writing `.env`, admin and lock).
+
+### Investor module in the customer app
+
+- Profile → **Invest**, shown only when `GET /me` says `investor_enabled` (new field: the global flag and the user's country pack). The steps match the website: apply with bank details → "checking your identity" until the admin approves → accept the risk disclosure (text from the server, in the user's language) → plans (share, term, minimum) and invest (pending, with the bank-transfer reference INV-{id}) → investments with their vehicles, balances, payout requests. Monthly statements stay on the website.
+- Strings in all five languages, taken from the website's wording. Widget test for the whole path.
+
 ### OTP by SMS through Twilio Verify
 
 - With `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and `TWILIO_VERIFY_SID` set, OTP codes are created, sent and checked by Twilio Verify (`App\Services\Sms\TwilioVerify`), in the account's language. Any of them empty: codes go to the log as before.

@@ -10,6 +10,7 @@ return [
         'no_results' => 'No vehicles match your search. Try other dates or filters.', 'dates_invalid' => 'Return must be after pick-up.',
         'total_for_dates' => 'total for your dates', 'pick_dates_for_price' => 'Choose pick-up and return to see the price.',
         'subtitle' => 'Bikes and cars from trusted branches. Pick your dates, see the full price, book in a minute.', 'quick' => 'Quick dates', 'days' => ':n day|:n days', 'week' => '1 week', 'from_price' => 'View details',
+        'search_placeholder' => 'Search a model or brand', 'all' => 'All', 'max_price' => 'Max price / day', 'any_price' => 'Any price', 'sort' => 'Sort by', 'sort_recommended' => 'Recommended', 'sort_price_asc' => 'Price: low to high', 'sort_price_desc' => 'Price: high to low', 'sort_newest' => 'Newest', 'results' => ':n vehicle|:n vehicles', 'per_day' => '/ day', 'incl_tax' => 'incl. tax', 'available_n' => ':n available', 'book' => 'Book', 'more_filters' => 'More filters',
     ],
     'vehicle' => [
         'seats' => ':n seat|:n seats', 'seats_label' => 'Seats', 'transmission' => 'Transmission', 'fuel' => 'Fuel', 'branch' => 'Branch',
@@ -17,6 +18,7 @@ return [
         'addon_per_day' => 'per day', 'addon_per_booking' => 'per booking', 'qty' => 'Quantity', 'coupon' => 'Coupon code', 'quote' => 'Your price',
         'subtotal' => 'Subtotal', 'discounts' => 'Discounts', 'tax' => 'Tax', 'total' => 'Total', 'deposit' => 'Refundable deposit', 'due_now' => 'To pay now',
         'book_now' => 'Book now', 'login_to_book' => 'Sign in to book', 'price_unavailable' => 'No price for these dates',
+        'hours' => ':n hour|:n hours', 'extras' => 'Add-ons and coupon', 'pickup_return' => 'Pick-up and return', 'deposit_note' => 'Refunded after you return the vehicle.', 'specs' => 'Specifications', 'type' => 'Type',
     ],
     'auth' => [
         'sign_in' => 'Sign in', 'with_password' => 'Password', 'with_otp' => 'Phone code', 'email' => 'Email', 'password' => 'Password',

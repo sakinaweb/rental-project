@@ -100,6 +100,15 @@ class WebsiteTest extends TestCase
 
         Livewire::test(Search::class)->set('city_id', 999999)->assertSee(__('site.search.no_results'));
         $this->assertNotNull($dubai);
+
+        // Text search, price per day (real quote, one day from tomorrow) and sorting.
+        $cheap = $this->vehicleIn('Mumbai', ['name' => 'Creta']);
+        PricingRule::create(['scope_type' => 'model', 'scope_id' => $cheap->model_id, 'unit' => 'day', 'base_rate' => 500]);
+        Livewire::test(Search::class)->set('country_id', $in)
+            ->set('q', 'swi')->assertSee('Swift')->assertDontSee('Creta')
+            ->set('q', '')->set('max_price', 5)->assertSee('Creta')->assertDontSee('Swift')
+            ->set('max_price', null)->set('sort', 'price_asc')->assertSeeInOrder(['Creta', 'Swift'])
+            ->set('sort', 'price_desc')->assertSeeInOrder(['Swift', 'Creta']);
     }
 
     public function test_vehicle_details_availability_and_quote_with_addons_and_coupon(): void

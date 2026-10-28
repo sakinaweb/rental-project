@@ -9,6 +9,7 @@ return [
         'no_results' => 'Keine Fahrzeuge passen zu Ihrer Suche. Versuchen Sie andere Daten oder Filter.', 'dates_invalid' => 'Die Rückgabe muss nach der Abholung liegen.',
         'total_for_dates' => 'gesamt für Ihre Daten', 'pick_dates_for_price' => 'Wählen Sie Abholung und Rückgabe, um den Preis zu sehen.',
         'subtitle' => 'Motorräder und Autos von geprüften Filialen. Daten wählen, Gesamtpreis sehen, in einer Minute buchen.', 'quick' => 'Schnellauswahl', 'days' => ':n Tag|:n Tage', 'week' => '1 Woche', 'from_price' => 'Details ansehen',
+        'search_placeholder' => 'Modell oder Marke suchen', 'all' => 'Alle', 'max_price' => 'Max. Preis / Tag', 'any_price' => 'Beliebiger Preis', 'sort' => 'Sortieren nach', 'sort_recommended' => 'Empfohlen', 'sort_price_asc' => 'Preis: aufsteigend', 'sort_price_desc' => 'Preis: absteigend', 'sort_newest' => 'Neueste', 'results' => ':n Fahrzeug|:n Fahrzeuge', 'per_day' => '/ Tag', 'incl_tax' => 'inkl. Steuern', 'available_n' => ':n verfügbar', 'book' => 'Buchen', 'more_filters' => 'Weitere Filter',
     ],
     'vehicle' => [
         'seats' => ':n Sitz|:n Sitze', 'seats_label' => 'Sitze', 'transmission' => 'Getriebe', 'fuel' => 'Kraftstoff', 'branch' => 'Filiale',
@@ -16,6 +17,7 @@ return [
         'addon_per_day' => 'pro Tag', 'addon_per_booking' => 'pro Buchung', 'qty' => 'Menge', 'coupon' => 'Gutscheincode', 'quote' => 'Ihr Preis',
         'subtotal' => 'Zwischensumme', 'discounts' => 'Rabatte', 'tax' => 'Steuer', 'total' => 'Gesamt', 'deposit' => 'Erstattbare Kaution', 'due_now' => 'Jetzt zu zahlen',
         'book_now' => 'Jetzt buchen', 'login_to_book' => 'Zum Buchen anmelden', 'price_unavailable' => 'Kein Preis für diesen Zeitraum',
+        'hours' => ':n Stunde|:n Stunden', 'extras' => 'Extras und Gutschein', 'pickup_return' => 'Abholung und Rückgabe', 'deposit_note' => 'Wird nach der Rückgabe des Fahrzeugs erstattet.', 'specs' => 'Ausstattung', 'type' => 'Typ',
     ],
     'auth' => [
         'sign_in' => 'Anmelden', 'with_password' => 'Passwort', 'with_otp' => 'SMS-Code', 'email' => 'E-Mail', 'password' => 'Passwort',

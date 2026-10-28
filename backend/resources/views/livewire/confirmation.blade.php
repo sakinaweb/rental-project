@@ -1,7 +1,12 @@
 <div class="mx-auto max-w-2xl" @if ($state === 'waiting') wire:poll.3s @endif>
     <div class="card">
         @if ($state === 'confirmed')
-            <p class="text-sm font-semibold text-emerald-700">✓ {{ __('site.confirmation.confirmed') }}</p>
+            <div class="flex items-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30">
+                    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                </span>
+                <p class="text-base font-semibold text-emerald-700">{{ __('site.confirmation.confirmed') }}</p>
+            </div>
         @elseif ($state === 'failed')
             <p class="text-sm font-semibold text-red-700">{{ __('site.confirmation.failed') }}</p>
         @else

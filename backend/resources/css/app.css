@@ -6,7 +6,8 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    /* Plus Jakarta Sans (bundled by vite.config.js), the same typeface as both apps and the admin panel. */
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     /* Brand: indigo, shared with the admin panel (Color::Indigo) and both Flutter apps (seed 0xFF4F46E5). */
     --color-brand-50: var(--color-indigo-50);

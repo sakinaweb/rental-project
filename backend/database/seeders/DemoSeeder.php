@@ -39,6 +39,14 @@ class DemoSeeder extends Seeder
             ['toyota-innova', 'Toyota', 'Innova Hycross', 'MPV', 'car', 7, 'automatic', 'hybrid', 500000],
             ['mahindra-thar', 'Mahindra', 'Thar', 'SUV', 'car', 4, 'manual', 'diesel', 450000],
             ['toyota-fortuner', 'Toyota', 'Fortuner', 'SUV', 'car', 7, 'automatic', 'diesel', 700000],
+            ['suzuki-access', 'Suzuki', 'Access 125', 'Scooter', 'bike', 2, 'automatic', 'petrol', 55000],
+            ['re-himalayan', 'Royal Enfield', 'Himalayan 450', 'Premium', 'bike', 2, 'manual', 'petrol', 250000],
+            ['triumph-speed-400', 'Triumph', 'Speed 400', 'Premium', 'bike', 2, 'manual', 'petrol', 280000],
+            ['hyundai-i20', 'Hyundai', 'i20', 'Hatchback', 'car', 5, 'manual', 'petrol', 220000],
+            ['skoda-slavia', 'Škoda', 'Slavia', 'Sedan', 'car', 5, 'automatic', 'petrol', 320000],
+            ['kia-carens', 'Kia', 'Carens', 'MPV', 'car', 7, 'manual', 'diesel', 400000],
+            ['bmw-3-series', 'BMW', '3 Series', 'Luxury', 'car', 5, 'automatic', 'petrol', 900000],
+            ['mercedes-e-class', 'Mercedes-Benz', 'E-Class', 'Luxury', 'car', 5, 'automatic', 'diesel', 1200000],
         ];
 
         $disk = Storage::disk(VehicleModel::imageDisk());
@@ -46,8 +54,8 @@ class DemoSeeder extends Seeder
             $file = glob(__DIR__."/images/$slug.*")[0] ?? null;
             $image = null;
             if ($file) {
-                $image = 'vehicle-models/demo-'.basename($file);
-                $disk->put($image, file_get_contents($file));
+                $image = "vehicle-models/demo-$slug.jpg";
+                $disk->put($image, self::cardPhoto($file));
             }
 
             $model = VehicleModel::updateOrCreate(
@@ -66,5 +74,51 @@ class DemoSeeder extends Seeder
                 );
             }
         }
+    }
+
+    /**
+     * 1200×750 progressive JPEG (~100–200 KB) so every card has the same shape and loads fast. Photos close to 16:10
+     * are cropped to fill; very wide or tall ones (e.g. a portrait scooter) are fitted whole over a blurred copy of
+     * themselves. Without GD the original file is used as is.
+     */
+    private static function cardPhoto(string $file): string
+    {
+        $src = function_exists('imagecreatefromstring') ? @imagecreatefromstring((string) file_get_contents($file)) : false;
+        if (! $src) {
+            return (string) file_get_contents($file);
+        }
+
+        [$w, $h, $sw, $sh] = [1200, 750, imagesx($src), imagesy($src)];
+        $out = imagecreatetruecolor($w, $h);
+        imagefill($out, 0, 0, (int) imagecolorallocate($out, 255, 255, 255));
+        $cover = function () use ($out, $src, $w, $h, $sw, $sh) {
+            $scale = max($w / $sw, $h / $sh);
+            $cw = (int) round($w / $scale);
+            $ch = (int) round($h / $scale);
+            imagecopyresampled($out, $src, 0, 0, intdiv($sw - $cw, 2), intdiv($sh - $ch, 2), $w, $h, $cw, $ch);
+        };
+
+        $ratio = $sw / $sh;
+        if ($ratio >= 1.3 && $ratio <= 1.9) {
+            $cover();
+        } else {
+            // Blurred backdrop: blur a small copy of the cover crop, then scale it back up smoothly.
+            $cover();
+            $small = imagescale($out, 120, 75, IMG_BICUBIC);
+            for ($n = 0; $n < 8; $n++) {
+                imagefilter($small, IMG_FILTER_GAUSSIAN_BLUR);
+            }
+            imagecopyresampled($out, $small, 0, 0, 0, 0, $w, $h, 120, 75);
+            $scale = min($w / $sw, $h / $sh);
+            $fw = (int) round($sw * $scale);
+            $fh = (int) round($sh * $scale);
+            imagecopyresampled($out, $src, intdiv($w - $fw, 2), intdiv($h - $fh, 2), 0, 0, $fw, $fh, $sw, $sh);
+        }
+
+        imageinterlace($out, true);
+        ob_start();
+        imagejpeg($out, null, 80);
+
+        return (string) ob_get_clean();
     }
 }

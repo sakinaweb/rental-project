@@ -9,6 +9,7 @@ return [
         'no_results' => 'Ningún vehículo coincide con tu búsqueda. Prueba otras fechas o filtros.', 'dates_invalid' => 'La devolución debe ser posterior a la recogida.',
         'total_for_dates' => 'total para tus fechas', 'pick_dates_for_price' => 'Elige recogida y devolución para ver el precio.',
         'subtitle' => 'Motos y coches de sucursales de confianza. Elige fechas, mira el precio total y reserva en un minuto.', 'quick' => 'Fechas rápidas', 'days' => ':n día|:n días', 'week' => '1 semana', 'from_price' => 'Ver detalles',
+        'search_placeholder' => 'Busca un modelo o marca', 'all' => 'Todos', 'max_price' => 'Precio máx. / día', 'any_price' => 'Cualquier precio', 'sort' => 'Ordenar por', 'sort_recommended' => 'Recomendados', 'sort_price_asc' => 'Precio: de menor a mayor', 'sort_price_desc' => 'Precio: de mayor a menor', 'sort_newest' => 'Más nuevos', 'results' => ':n vehículo|:n vehículos', 'per_day' => '/ día', 'incl_tax' => 'impuestos incl.', 'available_n' => ':n disponibles', 'book' => 'Reservar', 'more_filters' => 'Más filtros',
     ],
     'vehicle' => [
         'seats' => ':n plaza|:n plazas', 'seats_label' => 'Plazas', 'transmission' => 'Transmisión', 'fuel' => 'Combustible', 'branch' => 'Sucursal',
@@ -16,6 +17,7 @@ return [
         'addon_per_day' => 'por día', 'addon_per_booking' => 'por reserva', 'qty' => 'Cantidad', 'coupon' => 'Código de cupón', 'quote' => 'Tu precio',
         'subtotal' => 'Subtotal', 'discounts' => 'Descuentos', 'tax' => 'Impuestos', 'total' => 'Total', 'deposit' => 'Depósito reembolsable', 'due_now' => 'A pagar ahora',
         'book_now' => 'Reservar ahora', 'login_to_book' => 'Inicia sesión para reservar', 'price_unavailable' => 'Sin precio para estas fechas',
+        'hours' => ':n hora|:n horas', 'extras' => 'Extras y cupón', 'pickup_return' => 'Recogida y devolución', 'deposit_note' => 'Se devuelve cuando entregas el vehículo.', 'specs' => 'Especificaciones', 'type' => 'Tipo',
     ],
     'auth' => [
         'sign_in' => 'Iniciar sesión', 'with_password' => 'Contraseña', 'with_otp' => 'Código por SMS', 'email' => 'Correo electrónico', 'password' => 'Contraseña',
