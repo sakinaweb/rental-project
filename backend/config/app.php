@@ -84,6 +84,10 @@ return [
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
+    // Written by the web installer (/install) when it finishes; while missing, the website sends visitors to the installer.
+    // APP_INSTALLED_MARKER is relative to the backend folder (tests point it at a file that always exists).
+    'installed_marker' => env('APP_INSTALLED_MARKER') ? base_path(env('APP_INSTALLED_MARKER')) : storage_path('installed'),
+
     // Locales shipped in lang/ (MD §2). Arabic is RTL.
     'supported_locales' => ['en', 'ar', 'hi', 'es', 'de'],
 
